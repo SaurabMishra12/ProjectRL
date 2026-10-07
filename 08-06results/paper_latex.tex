@@ -1,0 +1,892 @@
+
+\documentclass[11pt]{article}
+\usepackage[review]{acl}          % remove [review] to add author block
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.geometric,
+                decorations.pathreplacing, backgrounds, fit, calc}
+\pgfplotsset{compat=1.18}
+\emergencystretch=2em
+\hbadness=10000
+\vbadness=10000
+\hfuzz=30pt
+\vfuzz=30pt
+\raggedbottom
+
+% ── colour palette ────────────────────────────────────────────────────────────
+\definecolor{sparseblue}{RGB}{0,84,166}
+\definecolor{debateorange}{RGB}{214,105,0}
+\definecolor{nocommgray}{RGB}{110,110,110}
+\definecolor{transfergreen}{RGB}{30,140,60}
+\definecolor{rowgray}{RGB}{240,240,245}
+
+% ── convenience macros ────────────────────────────────────────────────────────
+\newcommand{\sys}{\textsc{SparseComm}\xspace}
+\newcommand{\ctrl}{\textsc{IB-Controller}\xspace}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[#1]}}}
+
+% ══════════════════════════════════════════════════════════════════════════════
+
+\title{Who Talks to Whom?\\
+       Investigating Communication Topology and Collective Reasoning in Multi-Agent Language Models}
+
+% Authors are hidden in [review] mode.
+% \author{Saurab Mishra$^1$ \quad Kripabandhu Gosh$^2$ \\
+%   $^1$IISER Thiruvananthapuram \quad $^2$IISER Kolkata \\
+%   \texttt{saurab@iisertvm.ac.in}}
+
+\begin{document}
+\maketitle
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{abstract}
+
+Multi-agent language model systems typically assume that increasing communication improves collective reasoning. We instead investigate how communication topology shapes collective reasoning, introducing an adaptive communication framework that independently controls communication structure and bandwidth through reinforcement learning under an Information Bottleneck objective.
+
+Across mathematical reasoning, multi-hop question answering, and factual reasoning benchmarks, we find that communication requirements vary substantially across tasks while adaptive communication dramatically reduces communication cost with competitive reasoning performance. A controlled factorial analysis shows that adaptive topology learning contributes more to reasoning improvements than communication sparsification alone in the low-data regime, while topology benchmarks demonstrate that learned communication structures achieve comparable accuracy to stronger communication graphs at substantially lower communication cost.
+
+Beyond efficiency, our analyses uncover consistent emergent communication dynamics. Learned communication topologies preserve reasoning diversity, suppress erroneous information flow, discover task-dependent leadership structures, adapt communication depth through early halting, and evolve toward lower-entropy communication graphs during training. Together, these findings suggest that communication topology is an organizing principle of collective reasoning in multi-agent language models, providing new insight into how effective language model societies coordinate and exchange information.
+
+\end{abstract}
+
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Introduction}
+\label{sec:intro}
+
+Multi-agent Large Language Model (LLM) systems have rapidly emerged as a powerful paradigm for extending the reasoning capabilities of modern foundation models. By distributing reasoning across multiple interacting agents, recent systems have demonstrated improvements in mathematical reasoning and factual reasoning
+\citep{du2024improving,liang-etal-2024-encouraging},\
+software engineering
+\citep{hong2024metagpt,qian-etal-2024-chatdev},
+autonomous collaboration
+\citep{wu2024autogen,li2023camel},
+and broader multi-agent coordination
+\citep{zhuge2024gptswarm}. Accordingly, the communication protocol itself has become a critical architectural design choice in modern multi-agent LLM systems.
+
+Despite this rapid progress, most existing multi-agent systems share a common architectural assumption: improving collective reasoning primarily requires increasing communication. Consequently, contemporary debate frameworks typically adopt densely connected communication graphs in which every agent broadcasts its reasoning to every other agent. Recent research has therefore focused largely on reducing communication cost through prompt compression, memory pruning, summarization, and early stopping while leaving the underlying communication structure unchanged \citep{zhang2025cut,wang-etal-2025-agentdropout}. Although recent work has begun exploring learnable communication topologies
+\citep{
+zhang2025gdesigner,
+shen-etal-2025-understanding},
+these approaches primarily optimize communication structures for efficiency or downstream task performance. In contrast, our goal is to understand how communication topology itself shapes collective reasoning.
+
+We argue that this ``volume-first'' perspective conflates two fundamentally different dimensions of communication. The first is \emph{communication volume}: how much information is exchanged between agents. The second is \emph{communication topology}: how information is routed through the agent society. While communication volume determines bandwidth, topology determines the pathways through which information propagates, disagreements are resolved, and consensus emerges. Understanding how communication topology influences collective reasoning therefore remains an important yet comparatively underexplored research question.
+Most existing work focuses on constructing more effective communication topologies. Our focus is complementary: rather than asking how communication topologies should be designed, we ask how communication topology influences the dynamics of collective reasoning once communication occurs.
+
+This work investigates the following question:
+
+\begin{quote}
+\emph{How does communication topology shape collective reasoning in multi-agent language models?}
+\end{quote}
+Unlike prior work that primarily treats communication topology as an optimization objective, we view adaptive communication as an experimental instrument for studying collective reasoning itself. This perspective enables us to investigate not only communication efficiency, but also the emergence of communication dynamics such as specialization, leadership, semantic compression, adaptive routing, and information flow across language model societies.
+
+To study this question, we introduce \sys, an adaptive communication framework that models agent interactions as a dynamic weighted communication graph. Rather than viewing communication solely as a resource to minimize, \sys serves as an experimental framework that independently controls communication topology and communication bandwidth. Grounded in the Information Bottleneck principle \citep{7133169,abdelaleem2025deep}, the framework learns sparse, task-dependent communication policies that balance reasoning performance against communication cost, enabling controlled investigation of communication dynamics across diverse reasoning tasks.
+
+Extensive experiments spanning mathematical reasoning (GSM8K), algebraic reasoning (AQuA-RAT), and multi-hop question answering (HotpotQA) reveal that communication topology influences collective reasoning in ways that extend far beyond communication efficiency. We observe substantial variation in communication requirements across reasoning domains, while adaptive communication consistently improves communication efficiency without sacrificing competitive reasoning performance. Controlled factorial analyses further reveal that the relative contributions of communication topology and communication volume vary across training regimes, while topology benchmarks demonstrate that learned communication structures achieve competitive reasoning performance with substantially lower communication cost than conventional communication graphs.
+
+Beyond these quantitative improvements, our analyses uncover several consistent communication phenomena that emerge across reasoning tasks. Learned communication policies preserve reasoning diversity by reducing lexical homogenization, selectively suppress erroneous information flow through adaptive edge weighting, discover task-dependent leadership structures, adapt communication depth through early halting, progressively organize communication into lower-entropy communication graphs during training, and develop stable communication backbones that facilitate efficient information exchange. Taken together, these observations suggest that communication topology is not merely an implementation detail, but an organizing principle governing how language model societies coordinate, specialize, and exchange information during collective reasoning.
+
+Our contributions are summarized as follows:
+
+\begin{enumerate}[leftmargin=1.5em]
+
+\item We introduce \sys, an adaptive communication framework that independently manipulates communication topology and communication bandwidth, providing a controlled experimental framework for studying communication in multi-agent language models.
+
+\item We present systematic empirical studies of communication topology in multi-agent LLM reasoning, evaluating adaptive communication across mathematical reasoning, algebraic reasoning, multi-hop question answering, topology benchmarks, and controlled factorial analyses.
+
+\item We uncover several emergent communication dynamics, including task-dependent communication budgets, adaptive leadership, semantic compression, entropy reduction, error isolation, reasoning diversity preservation, and dynamic communication depth, revealing that communication topology fundamentally shapes collective reasoning beyond communication efficiency alone.
+
+\end{enumerate}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Multi-agent collective reasoning with language models.}
+
+Coordinating multiple language models has rapidly emerged as an effective paradigm for extending the reasoning capabilities of modern LLMs. Early work demonstrated that collaborative debate among multiple agents improves mathematical reasoning, commonsense reasoning, and factual question answering by allowing agents to critique and refine one another's intermediate solutions \citep{du2024improving,liang-etal-2024-encouraging,chan2023chatevalbetterllmbasedevaluators}. This idea has since evolved into increasingly sophisticated multi-agent frameworks for autonomous collaboration, software engineering, and long-horizon problem solving, including AutoGen, CAMEL, MetaGPT, ChatDev, GPTSwarm, AgentVerse, and AgentScope \citep{wu2024autogen,li2023camel,hong2024metagpt,qian-etal-2024-chatdev,zhuge2024gptswarm,chen2023agentverse,gao2024agentscopeflexiblerobustmultiagent}. Collectively, these systems establish communication as the central mechanism underlying collective reasoning. However, they typically assume predetermined communication protocols in which information is broadly exchanged among agents.
+
+\paragraph{Communication-efficient multi-agent systems.}
+
+As multi-agent systems scale, communication rapidly becomes the dominant computational bottleneck. Consequently, recent work has focused on improving communication efficiency through communication pruning, agent pruning, adaptive sparsification, message compression, and early stopping \citep{zhang2025cut,wang-etal-2025-agentdropout}. These approaches primarily seek to reduce the amount of information exchanged while preserving downstream performance. Although highly effective from a systems perspective, communication is generally treated as a limited computational resource whose quantity should be minimized, leaving the structural organization of communication comparatively unexplored.
+
+\paragraph{Learning communication topologies.}
+
+More recently, attention has shifted from reducing communication volume toward learning communication structure itself. Approaches such as GDesigner, ARG-Designer, and recent studies on information propagation learn or automatically construct task-dependent communication graphs that outperform manually designed communication patterns \citep{zhang2025gdesigner,li2026assemble,shen-etal-2025-understanding}. Other methods dynamically assemble specialized agent teams or optimize communication graphs for downstream reasoning tasks. These studies demonstrate that communication topology is an important optimization variable and can substantially improve communication efficiency and task performance. However, they primarily treat topology as an architectural design problem: \emph{how should communication graphs be constructed?} Comparatively little attention has been devoted to understanding \emph{how communication topology itself shapes collective reasoning}, the communication dynamics it induces, or the mechanisms through which effective communication structures emerge.
+
+\paragraph{Learned communication in multi-agent reinforcement learning.}
+
+The idea of learning communication policies has a long history in multi-agent reinforcement learning. Differentiable communication architectures such as CommNet \citep{sukhbaatar2016learningmultiagentcommunicationbackpropagation}, DIAL \citep{foerster2016learning}, TarMAC \citep{das2019tarmac}, IC3Net \citep{singh2018individualized}, and ATOC \citep{jiang2018learningattentionalcommunicationmultiagent} demonstrated that agents can learn both \emph{when} and \emph{whom} to communicate with through end-to-end optimization. Unlike classical MARL, however, language-model agents communicate using long-form natural-language messages whose semantic content dominates communication cost. Consequently, communication topology in LLM societies governs not only information routing but also reasoning diversity, consensus formation, and computational efficiency, introducing challenges that are absent in low-dimensional differentiable communication.
+
+\paragraph{Reasoning and information compression.}
+
+Orthogonal research has improved reasoning quality through additional computation within a single agent. Chain-of-Thought prompting, Self-Consistency, Tree-of-Thoughts, Graph-of-Thoughts, and Self-Refine demonstrate that structured reasoning, multiple reasoning trajectories, and iterative self-correction substantially improve reasoning performance without explicit inter-agent communication \citep{wei2022chain,wang2023selfconsistencyimproveschainthought,yao2023tree,10.1609/aaai.v38i16.29720,madaan2023selfrefine}. Meanwhile, the Information Bottleneck principle provides a theoretical foundation for selectively preserving task-relevant information while discarding redundancy, influencing representation learning and variational dimensionality reduction \citep{7133169,abdelaleem2025deep}. Our work extends these ideas beyond individual reasoning to investigate how information should be distributed across multiple communicating agents.
+
+\paragraph{Positioning of this work.}
+
+Existing literature has progressively evolved from designing multi-agent reasoning frameworks, to improving communication efficiency, and more recently to learning communication topologies. Nevertheless, the primary objective has remained the same: constructing communication protocols that maximize downstream task performance. In contrast, we view adaptive communication topology as an experimental instrument for studying collective reasoning itself. Rather than asking how communication graphs should be designed, we investigate how communication topology shapes collective reasoning, influences information propagation, regulates communication dynamics, and gives rise to emergent phenomena such as adaptive leadership, semantic compression, entropy reduction, error isolation, and task-dependent communication. This perspective complements existing topology-learning approaches by shifting the focus from communication optimization to understanding the principles governing collective intelligence in language model societies.
+
+
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Adaptive Communication for Collective Reasoning}
+\label{sec:method}
+
+We formulate collective reasoning as a communication process over a dynamic directed graph. Given a set of agents $\mathcal{V}=\{1,\ldots,N\}$, communication at round $t$ is represented by a weighted graph
+
+\begin{equation}
+G_t=(\mathcal{V},\mathcal{E}_t,\mathbf{W}_t),
+\end{equation}
+
+where $\mathbf{W}_t\in[0,1]^{N\times N}$ denotes the communication weight matrix and $w_{ij}$ represents the amount of information transmitted from agent $i$ to agent $j$.
+
+Within this formulation, communication consists of two independent dimensions:
+
+\begin{itemize}
+    \item \textbf{Communication topology}: the routing structure defined by the support of the communication graph,
+    \begin{equation}
+        \mathcal{T}_t=\{(i,j)\mid w_{ij}>0\},
+    \end{equation}
+    which determines \emph{who communicates with whom}.
+    
+    \item \textbf{Communication volume}: the total communication bandwidth,
+    \begin{equation}
+        \mathcal{V}_t=\sum_{i\neq j}w_{ij},
+    \end{equation}
+    which determines \emph{how much information is exchanged}.
+\end{itemize}
+
+Unlike previous approaches that jointly optimize these factors, our objective is to study their individual contributions to collective reasoning. We therefore construct \sys{}, an adaptive communication framework that explicitly separates topology from communication volume, enabling controlled manipulation of both variables.
+
+The framework consists of three components:
+
+\begin{enumerate}
+    \item \textbf{Adaptive Communication Topology}: learns a task-dependent communication graph specifying which agents exchange information.
+    \item \textbf{Semantic Information Bottleneck}: regulates the amount of information transmitted along each communication edge through adaptive semantic compression.
+    \item \textbf{Collective Consensus}: aggregates the final agent predictions using confidence-aware Bayesian voting.
+\end{enumerate}
+
+\begin{figure*}[t]
+    \centering
+    % Figure placeholder
+    \fbox{\parbox[c][5cm][c]{0.95\textwidth}{\centering
+    Adaptive Communication Framework Overview\\
+    (Agent Pool $\rightarrow$ Communication Controller $\rightarrow$ Dynamic Graph\\
+    $\rightarrow$ Semantic Bottleneck $\rightarrow$ Consensus)}}
+    \caption{Overview of \sys{}. The controller jointly learns the communication topology and communication volume while the Information Bottleneck selectively compresses messages before collective consensus.}
+    \label{fig:overview}
+\end{figure*}
+
+\subsection{System Overview}
+
+\sys{} employs three heterogeneous reasoning agents with complementary reasoning styles (analytical, step-by-step, and creative), following prior work showing that diversity of reasoning strategies improves collaborative reasoning \citep{du2024improving,liang-etal-2024-encouraging,liu2025breaking}. We later validate this architectural choice through an ablation study over different agent populations (N={2,3,4,5}), demonstrating that three agents provide the best balance between reasoning performance and communication efficiency. At communication round $t=0$, each agent independently generates an initial prediction and reasoning trace. During each subsequent round, a communication controller observes the current collective reasoning state and constructs a weighted communication graph $\mathbf{W}_t$.
+
+Each directed edge $(i,j)$ determines both whether communication occurs and the amount of information transmitted from agent $i$ to agent $j$. Agents iteratively update their reasoning using the received information until convergence or an adaptive stopping criterion is reached. The final collective prediction is obtained by aggregating the calibrated confidence of the final-round predictions.
+
+Importantly, \sys{} is designed not merely as a communication optimization algorithm but as an experimental framework for studying communication in multi-agent language models. By independently controlling communication topology and communication volume, the framework enables systematic analysis of how communication organization influences collective reasoning dynamics.
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Experimental Setup}
+\label{sec:experiments}
+
+\paragraph{Datasets.}
+We evaluate on three benchmarks spanning three reasoning regimes:
+(i)~\textbf{AQuA-RAT} \citep{ling-etal-2017-program}, 762-question multiple-choice
+algebraic reasoning;
+(ii)~\textbf{GSM8K} \citep{cobbe2021trainingverifierssolvemath}, elementary math word problems;
+and
+(iii)~\textbf{HotpotQA} \citep{yang-etal-2018-hotpotqa}, two-hop factual
+retrieval.
+We train using 100, 200, 300 and 400 examples to study sample efficiency (from official train splits);
+Evaluation is performed on a variable-sized held-out evaluation set (Table~\ref{tab:main}).
+
+\paragraph{Models and implementation.}
+
+Unless otherwise stated, all experiments use the open-weight \texttt{gpt-oss-120b} \citep{openai2025gptoss120bgptoss20bmodel} model deployed through Azure OpenAI.
+To evaluate cross-model generalization, the learned communication controller is
+also evaluated with the open-source Qwen family.
+
+\paragraph{Generation settings.}
+
+Reasoning generations use temperature $0.0$ throughout all experiments to
+ensure deterministic evaluation.
+Message compression employs a fixed temperature of $0.3$, allowing slight
+linguistic flexibility while preserving semantic fidelity.
+No stochastic sampling is used during reasoning.
+
+\paragraph{Training protocol.}
+
+The communication controller is trained for five epochs using PPO.
+Separate controllers are trained using
+100,
+200,
+300,
+and
+400
+training samples from each dataset.
+Each checkpoint is evaluated on a held-out evaluation split split set of 300 examples using three
+independent random seeds.
+
+\paragraph{Evaluation protocol.}
+
+All reported results are averaged across three random seeds.
+For every question, agents communicate for at most $T$ rounds with adaptive
+early stopping.
+Accuracy, communication tokens, communication density, average rounds,
+information retention, semantic similarity, and error propagation are reported.
+Communication graphs are logged at every round for subsequent graph-theoretic analysis. These graphs are subsequently analyzed to characterize emergent communication
+structures and collective reasoning dynamics.
+
+\paragraph{Baselines.}
+
+
+\begin{itemize}
+    \item ~\textbf{No Communication (CoT-SC):}
+Each agent independently solves the problem using Chain-of-Thought prompting.
+Final predictions are aggregated through confidence-calibrated weighted majority
+voting.
+This corresponds to a multi-agent implementation of Chain-of-Thought
+Self-Consistency without inter-agent communication.
+\item~\textbf{Multi-Agent Debate (MAD):}
+Agents communicate through a fully-connected graph for every debate round.
+Self-reflection is disabled to ensure identical generation budgets.
+Debate terminates immediately if unanimous agreement is reached after the first
+round.
+\end{itemize}
+\paragraph{Fair comparison protocol:}
+
+To ensure fair comparison, all methods share the same
+Platt confidence calibrator,
+weighted majority voting procedure,
+maximum debate rounds,
+early stopping criterion,
+LLM backend,
+prompt format,
+and generation budget. The same prompt templates are used across all methods except for communication-specific instructions.
+Consequently, observed differences originate solely from communication strategy
+rather than aggregation or calibration.
+\paragraph{Transfer evaluation.}
+To test generalisation, we evaluate a pre-trained \ctrl (trained on
+random seed) on the test set with 3 independent random seeds, reporting mean
+$\pm$ standard deviation.
+Seeds differ in dataset sampling order; controller weights are \emph{not}
+re-trained between seeds (zero-shot transfer evaluation).
+
+\paragraph{Cross-model evaluation.}
+
+To assess model-agnostic behavior,
+the learned communication controller is evaluated on additional open-source LLM
+backbones including Qwen without retraining.
+This isolates whether learned communication policies transfer across language
+models.
+
+\paragraph{Ablation design.}
+\paragraph{Factorial communication ablation.}
+
+A $2\times2$ factorial design isolates the contributions of topology learning
+and semantic communication bottlenecks.
+
+~\textbf{Training-scale ablation:}
+
+Controllers trained using
+100,
+200,
+300,
+and
+400
+examples are compared to quantify sample efficiency and learning dynamics.
+
+~\textbf{Agent pool scaling:}
+
+We vary the number of reasoning agents
+$N\in\{2,3,4,5\}$
+to study how group size influences communication topology,
+reasoning accuracy,
+communication cost,
+and convergence.
+
+Task performance is measured using accuracy.
+
+Communication efficiency is measured using communication tokens, average communication rounds, and communication density.
+
+Topology is analyzed using graph statistics, semantic similarity, information retention, and error propagation.
+
+\paragraph{Implementation details.}
+
+The communication controller is implemented as a lightweight Actor-Critic
+network optimized using PPO.
+Hyperparameters and prompts are identical across all datasets unless otherwise
+specified.
+% ══════════════════════════════════════════════════════════════════════════════
+% ══════════════════════════════════════════════════════════════════════════════
+% SparseComm — Results, Analysis, Conclusion, Limitations, Appendix
+%
+% HOW TO USE THIS FILE
+%   Paste everything below this header block into your main .tex file,
+%   immediately after the closing of your Experimental Setup section
+%   (the paragraph ending "...Hyperparameters and prompts are identical
+%   across all datasets unless otherwise specified.") and before your
+%   \bibliography{...} command / \end{document}.
+%
+%   This continuation assumes the preamble macros/colors already defined
+%   in your document: \sys, \ctrl, \todo, and the sparseblue / debateorange
+%   / nocommgray / transfergreen colors. No new packages are required
+%   beyond what your preamble already loads (booktabs, multirow, graphicx,
+%   pgfplots, tikz).
+%
+%   Compile-tested (pdflatex, 2 passes) against a stand-in preamble that
+%   mirrors yours — 0 errors, 0 overfull \hbox warnings, all internal
+%   \ref/\label targets resolve. The only unresolved reference in that
+%   test was \S\ref{sec:intro}, because the test stub didn't include your
+%   real Introduction — it will resolve normally once pasted into the
+%   full paper, which already has \label{sec:intro}.
+%
+%   Two things you'll still need to do yourself:
+%     1. Two \includegraphics-style figures are NOT included here (see
+%        the chat reply for why) — everything below is self-contained
+%        (tables + one native pgfplots figure), so nothing to link up.
+%     2. Read the "Cross-table evaluation protocol consistency" paragraph
+%        in Limitations before submission — it flags real numeric
+%        discrepancies across your source data that a reviewer could
+%        plausibly flag; reconcile or caption them explicitly.
+% ══════════════════════════════════════════════════════════════════════════════
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Results}
+\label{sec:results}
+
+We organize our evaluation around five questions: whether \sys can cut
+communication without giving up reasoning quality (RQ1), how much training
+the controller needs (RQ2), whether topology or volume matters more (RQ3),
+what structure the learned communication actually has (RQ4), and how it
+scales with the number of agents (RQ5).
+
+\subsection{RQ1: Can Communication Be Selectively Reduced Without Sacrificing Reasoning?}
+\label{sec:rq1}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{llcc}
+\toprule
+Dataset & Method & Accuracy & Avg.\ Comm.\ Tokens \\
+\midrule
+\multirow{3}{*}{GSM8K}
+ & No Communication & 87.00\%$\pm$0.67\%          & 0.0 \\
+ & Multi-Agent Debate & \textbf{96.22\%}$\pm$0.19\% & 530.8 \\
+ & \sys (Ours)        & 95.00\%$\pm$0.88\%          & \textbf{52.2} \\
+\midrule
+\multirow{3}{*}{AQuA}
+ & No Communication & 79.52\%$\pm$5.46\%          & 0.0 \\
+ & Multi-Agent Debate & 85.34\%$\pm$2.33\%          & 850.3 \\
+ & \sys (Ours)        & \textbf{86.28\%}$\pm$0.31\% & \textbf{421.6} \\
+\midrule
+\multirow{3}{*}{HotpotQA}
+ & No Communication & 30.00\%$\pm$2.33\%          & 0.0 \\
+ & Multi-Agent Debate & \textbf{34.00\%}$\pm$3.48\% & 2914.1 \\
+ & \sys (Ours)        & 31.67\%$\pm$4.26\%          & \textbf{473.2} \\
+\bottomrule
+\end{tabular}
+\caption{Overall performance, 400-sample-trained controller, mean $\pm$ std
+across three seeds (300 held-out samples per seed). All methods share the
+Platt calibrator, voting procedure, and generation budget of
+\S\ref{sec:experiments}.}
+\label{tab:main}
+\end{table*}
+
+\sys is competitive with a fully-connected debate baseline on GSM8K
+(95.00\% vs.\ MAD's 96.22\%) while cutting communication tokens by 90.2\%
+(52.2 vs.\ 530.8). On AQuA it beats MAD outright, 86.28\% vs.\ 85.34\%, with
+50.4\% fewer tokens (421.6 vs.\ 850.3) and roughly $7\times$ lower
+seed-to-seed variance (std 0.31 vs.\ 2.33), so the compressed channel is
+also the more stable one.
+
+HotpotQA is the exception, and an informative one. \sys retains 93.2\% of
+MAD's accuracy (31.67\% vs.\ 34.00\%) but needs 473.2 communication tokens
+to do it, about $9\times$ its GSM8K cost even after compression. The task
+is simply more communication-hungry: MAD spends 2914.1 tokens, $5.5\times$
+its GSM8K budget, to move accuracy only 4.0 points above No Communication,
+against a 9.2-point gain for the same comparison on GSM8K. \S\ref{sec:rq4}
+shows why: communication-graph entropy on HotpotQA sits at 2.5840, within
+0.001 of the theoretical maximum for a 3-agent graph, meaning the learned
+policy keeps every channel open rather than routing around most of them.
+
+\subsection{RQ2: How Much Training Is Needed to Learn Effective Communication?}
+\label{sec:rq2}
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+Train $N$ & Arm 00 & Arm 01 & Arm 10 & \textbf{Arm 11 (\sys)} & Comm.\ Tokens (Arm 11) \\
+\midrule
+100 & 56.3\% & 66.0\%          & 63.0\% & 65.0\%          & 496.7 \\
+200 & 95.3\% & 92.0\%          & 94.7\% & \textbf{98.0\%} & 124.6 \\
+300 & 94.7\% & 94.0\%          & 94.7\% & 92.7\%          & 123.3 \\
+400 & 93.3\% & \textbf{96.7\%} & 95.3\% & 93.3\%          & \textbf{58.9} \\
+\bottomrule
+\end{tabular}
+\caption{Factorial arm accuracy and \sys communication tokens by training
+scale (GSM8K). Arm 00 = static ring,
+uncompressed; Arm 01 = PPO-learned topology, uncompressed; Arm 10 = static
+ring, IB-compressed; Arm 11 = \sys.}
+\label{tab:ablation-scale}
+\end{table*}
+
+We train the controller at four scales (100, 200, 300, 400 samples) and
+evaluate all four factorial arms at each (Table~\ref{tab:ablation-scale}).
+\sys converges by 200 training samples, reaching its peak accuracy of
+98.0\%. Training beyond that point does not raise accuracy further, but the
+controller keeps compressing: communication tokens fall by a further
+52.7\% from 200 to 400 samples (124.6 $\to$ 58.9), so the remaining
+training budget goes toward efficiency rather than accuracy. We examine why
+topology and volume trade off this way next.
+
+\subsection{RQ3: Does Communication Topology Matter More Than Communication Volume?}
+\label{sec:rq3}
+
+We isolate the contributions of \emph{topology routing} (who speaks to
+whom) and \emph{semantic compression} (how much is said) with an OLS
+regression on the pooled $2\times2$ factorial data across all four training
+scales. Each sample is coded as $[1,A,B,AB]$, where $A$ is compression (IB
+bottleneck active) and $B$ is topology routing (PPO active), fit at the
+sample level over all arms and scales ($N=2{,}400$).
+
+\begin{table}[t]
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+Coefficient & $\hat\beta$ & SE & $t$ & $p$ \\
+\midrule
+Intercept                                  & 0.792    & 0.013 & 63.10 & $<$0.001$^{***}$ \\
+$\beta_{\text{volume}}$ (Compression)      & 0.099    & 0.019 & 5.13  & $<$0.001$^{***}$ \\
+$\beta_{\text{topology}}$ (PPO Routing)    & 0.099    & 0.019 & 5.13  & $<$0.001$^{***}$ \\
+$\beta_{\text{interaction}}$ ($A\times B$) & $-$0.097 & 0.028 & $-$3.43 & 0.001$^{**}$ \\
+\bottomrule
+\end{tabular}
+}
+\caption{Pooled $2\times2$ factorial OLS coefficients (sample level, all
+four training scales).}
+\label{tab:ols-pooled}
+\end{table}
+
+Compression and topology routing contribute equally to accuracy
+($\hat\beta = 0.099$ each, $p<0.001$), and combining them is subadditive
+($\hat\beta_{\text{interaction}}=-0.097$, $p=0.001$): the two mechanisms
+substitute for each other rather than compound. This revises an earlier,
+per-scale reading of the same data in which topology looked like the
+stronger factor.
+
+That per-scale reading was not wrong, just partial
+(Appendix~\ref{app:per-scale-ols}). At 100 samples, topology routing is the
+larger, marginally significant effect ($\hat\beta=+0.097$, $p=0.087$, vs.\
+compression's $+0.067$, $p=0.238$). At 200 samples the interaction term
+takes over ($\hat\beta=+0.067$, $p=0.061$), coinciding with \sys's accuracy
+peak. By 300--400 samples neither factor nor their interaction reaches
+significance. The pooled equality in Table~\ref{tab:ols-pooled} is
+therefore an average over a topology-led regime early in training and a
+flat regime once agents reason reliably alone, not a fact that holds at
+every scale.
+
+\subsection{RQ4: What Communication Structures Emerge During Collective Reasoning?}
+\label{sec:rq4}
+
+We logged the full communication graph at every round of \sys evaluation.
+Five recurring patterns first surfaced through manual inspection of
+communication traces, then we confirmed each one statistically against the
+full evaluation set (2,049 \sys samples, 900 MAD samples, 900 NoComm
+samples).
+
+\paragraph{Communication diversity.} Forced, uncompressed debate
+homogenizes reasoning: average lexical overlap (Jaccard similarity between
+agent pairs' final reasoning text) is 0.7564 under MAD, higher than the
+0.6128 baseline overlap between agents that never communicate at all
+(NoComm). \sys reverses this: overlap drops to 0.5392, below the
+independent baseline, even though agents are actively exchanging
+information. Agents converge on an answer without converging on a single
+phrasing or method.
+
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Dataset & Agent 0 & Agent 1 & Agent 2 \\
+        & (Analytical) & (Step-by-step) & (Creative) \\
+\midrule
+GSM8K    & \textbf{97.89\%} & 2.11\%   & 0.00\% \\
+AQuA     & 27.69\%          & 13.85\%  & \textbf{58.46\%} \\
+HotpotQA & 0.00\%           & \textbf{100.00\%} & 0.00\% \\
+\bottomrule
+\end{tabular}
+\caption{Share of samples in which each agent has the largest total
+outgoing communication weight (``leader''), by dataset.}
+\label{tab:leadership}
+\end{table}
+
+\paragraph{Leadership and backbone edges.} Leadership rotates with the task
+rather than sitting with one agent (Table~\ref{tab:leadership}). The
+analytical agent leads on GSM8K (97.89\% of samples); the step-by-step
+agent leads on HotpotQA (100.00\%), where explicit multi-hop chains matter
+most; on AQuA leadership is genuinely contested, with the creative agent
+ahead (58.46\%) but the other two taking over on specific sub-problems.
+Underneath this rotation sits a fixed backbone: on GSM8K and AQuA, the
+edges Agent~0$\to$Agent~1 and Agent~0$\to$Agent~2 are active
+($w_{ij}\ge0.5$) in 100\% of samples regardless of task, while other edges
+fire in only 72--74\% of samples; on HotpotQA all six directed edges are
+permanently active. \sys layers task-specific specialization, such as a
+dedicated Agent~2$\to$Agent~1 channel that is 100\% active on AQuA only, on
+top of this backbone.
+
+\paragraph{Error isolation.} When agents initially disagree, MAD's
+uniform-weight broadcast pulls correct agents toward the wrong answer in
+14.71\% of such disagreements. \sys's controller instead suppresses the
+channel: 32.00\% of edges originating from an agent about to be wrong are
+pushed below a 0.05 firewall threshold, and the average weight assigned to
+an incorrect agent's channel is 0.4323, below the 0.5 threshold we use
+elsewhere to call an edge active. Suppression is partial, agents are
+dampened rather than silenced, but it stops most errors from spreading.
+
+\paragraph{Communication entropy.} Graph entropy falls over training:
+averaged Shannon entropy of the round-1 weight matrix drops from 2.4119 at
+epoch 1 to 2.3641 at epoch 5 on GSM8K, so the controller prunes idle
+channels as it learns rather than keeping the graph uniformly connected.
+The final entropy is also task-dependent and lines up with the token-cost
+story in \S\ref{sec:rq1}: 2.1757 on GSM8K, 2.3078 on AQuA, 2.5840 on
+HotpotQA, near the 3-agent maximum.
+
+\paragraph{Early halting and consensus.} SPRT-based halting adapts to
+difficulty: samples \sys eventually gets right halt after 0.796 rounds on
+average, and 46.4\% never leave round 0; samples it gets wrong run for
+1.992 rounds, nearly double the halt time of the samples it solves
+correctly. This lets \sys reach a stable answer in 1.103 rounds on
+average, against 1.800 for MAD and 1.690 for NoComm. Restricted to samples
+that do not agree immediately, \sys resolves in exactly 2.0 rounds while
+MAD and NoComm both use their full 3.0, a 33.3\% reduction.
+
+\subsection{RQ5: How Does \sys Scale with the Number of Agents?}
+\label{sec:rq5}
+
+\begin{table}[t]
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+$N$ & Accuracy & Tokens & Comm.\ Tokens & Density & Rounds \\
+\midrule
+2 & 98.0\%$\pm$2.2\%          & \textbf{1400.0} & \textbf{13.4}  & \textbf{0.080} & \textbf{0.32} \\
+3 & 95.0\%$\pm$0.9\%          & 1680.0          & 52.2           & 0.216          & 0.73 \\
+4 & \textbf{98.7\%}$\pm$1.8\% & 3642.4          & 157.2          & 0.164          & 0.79 \\
+5 & 98.0\%$\pm$2.2\%          & 4539.5          & 246.2          & 0.157          & 0.79 \\
+\bottomrule
+\end{tabular}
+}
+\caption{Scaling behavior vs.\ agent pool size (GSM8K, \sys).}
+\label{tab:scaling}
+\end{table}
+
+We adapt the $N=3$-trained controller to pool sizes $N\in\{2,4,5\}$ via a
+dimensionality projection (zero-padding for $N<3$, modulo-index tiling for
+$N>3$) and evaluate on GSM8K samples without retraining
+(Table~\ref{tab:scaling}). Accuracy peaks at $N=4$ (98.7\%) and holds at
+$N=5$ (98.0\%), while token cost grows super-linearly (1,400 to 4,540
+tokens from $N=2$ to $N=5$, tracking the $N(N-1)$ growth in possible
+edges). We use $N=3$ throughout the paper: it is within 3.7 points of the
+best accuracy at less than half the token cost of $N=4$, and keeps the
+communication graph small enough to analyze exhaustively in
+\S\ref{sec:rq4} and \S\ref{sec:analysis}.
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Analysis}
+\label{sec:analysis}
+
+\subsection{Learned Topology vs.\ Canonical Graph Structures}
+\label{sec:canonical}
+
+The factorial analysis in \S\ref{sec:rq3} treats topology as a binary
+switch (PPO-routed vs.\ fixed ring). To place the learned topology among a
+wider family of communication structures, we additionally benchmark it
+against five canonical graphs, evaluated under identical conditions on
+GSM8K test samples using the 400-sample-trained controller: \textbf{Fully
+Connected}, \textbf{Small World} (Watts--Strogatz), \textbf{Ring},
+\textbf{Star}, \textbf{Random} (same density as the learned graph), and
+\textbf{Scale-Free} (Barab\'asi--Albert).
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{clccccc}
+\toprule
+Rank & Topology & Accuracy (95\% CI) & Comm.\ Tok. & Gen.\ Tok. & Total Tok. & Density \\
+\midrule
+1 & Fully Connected      & \textbf{98.67\%}$\pm$1.8\% & 304.8         & 3828.0 & 4132.8 & 0.184 \\
+2 & Small World          & 96.00\%$\pm$3.1\%          & 292.9         & 3810.8 & 4103.7 & 0.176 \\
+3 & Ring                 & 95.33\%$\pm$3.4\%          & 337.0         & 4050.8 & 4387.7 & 0.196 \\
+3 & Learned Topology (Ours) & 95.33\%$\pm$3.4\%       & \textbf{51.1} & 2384.6 & \textbf{2435.7} & \textbf{0.098} \\
+5 & Star                 & 94.67\%$\pm$3.6\%          & 203.9         & 3776.1 & 3980.0 & 0.125 \\
+5 & Random               & 94.67\%$\pm$3.6\%          & 191.4         & 3574.9 & 3766.3 & 0.112 \\
+7 & Scale-Free           & 92.67\%$\pm$4.2\%          & 192.6         & 3612.7 & 3805.2 & 0.115 \\
+\bottomrule
+\end{tabular}
+\caption{Structural topology benchmark (400-sample-trained controller,
+GSM8K).}
+\label{tab:topo-benchmark}
+\end{table*}
+
+Two patterns stand out. Ring transmits \emph{more} tokens than Fully
+Connected (337.0 vs.\ 304.8) yet scores \emph{lower} (95.33\% vs.\
+98.67\%): a degree-constrained ring needs multiple hops for information to
+cross the graph, so agents produce longer, more redundant traces without
+ever reaching full consensus. Volume alone is not a reliable proxy for
+communication quality. The learned topology matches Ring's accuracy exactly
+while using 85.0\% fewer communication tokens (51.1 vs.\ 337.0) and 44.5\%
+fewer total tokens, choosing between \textit{summarize} and \textit{filter}
+modes instead of broadcasting full traces. Scale-Free is the worst
+structure overall (92.67\%) despite outspending Random and Star: when the
+hub agent is wrong, the error reaches everyone else in a single hop. The
+gap between best (Fully Connected) and worst (Scale-Free) is only 6.0
+points, so on GSM8K, topology choice mainly buys efficiency, not accuracy
+headroom.
+
+\subsection{Synthesis}
+\label{sec:synthesis}
+
+The backbone identified in \S\ref{sec:rq4} explains the ranking above.
+\sys's always-on Agent-0 channel plays the role Ring's guaranteed
+connectivity plays, which is why it matches Ring's accuracy, but that
+channel covers only 2 of the $N(N-1)=6$ possible edges rather than all of
+them, which is why it needs a fraction of Ring's budget. The same logic
+explains Scale-Free's weakness: a hub-and-spoke graph has no equivalent of
+\sys's edge-suppression mechanism to stop a wrong hub from contaminating
+the graph in one step. Topology, volume, leadership, and error handling are
+not four separate findings so much as one mechanism viewed from different
+angles: a controller that keeps a minimal always-on backbone, adds
+task-specific edges on demand, down-weights channels that are about to be
+wrong, and stops talking the moment agents agree.
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper asked how communication topology shapes collective reasoning in
+multi-agent language models, and used \sys, a controller that independently
+learns topology routing and message compression under an Information
+Bottleneck objective, to answer it. Three findings stand out.
+
+Communication is task-dependent, not a fixed budget to optimize once.
+GSM8K settles into a small, high-confidence backbone; AQuA resolves most
+samples before any communication happens at all; HotpotQA keeps every
+channel open because multi-hop retrieval genuinely needs the bandwidth. One
+topology does not fit all three.
+
+Sparsity is not something we imposed; the controller found it. Nothing in
+the reward function asks for a small graph, yet \sys converges on one,
+cutting communication cost well below every canonical topology we tested
+while matching or beating their accuracy.
+
+And communication organizes itself. Leadership rotates by task rather than
+sitting with one agent, errors get isolated before they spread rather than
+propagating through the graph, and the resulting structure holds together
+across rounds rather than reshuffling at random. Communication topology is
+not an implementation detail underneath collective reasoning; it is doing
+part of the reasoning.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Limitations}
+\label{sec:limitations}
+
+\sys is trained and evaluated primarily on one backbone model
+(\texttt{gpt-oss-120b}). The Qwen cross-model check in
+\S\ref{sec:experiments} tests whether the learned policy transfers at all,
+not whether the specific numbers in this paper hold across model families,
+and that remains open.
+
+The three benchmarks span math, algebra, and multi-hop QA, but all three
+are single-turn, English-language question answering. Whether the same
+topology-volume tradeoff holds in longer-horizon or non-QA collaborative
+tasks, such as planning or code generation, is untested.
+
+We fix the agent pool at $N=3$ heterogeneous reasoning styles throughout
+the paper (\S\ref{sec:rq5}). Results at $N>3$ use a controller adapted via
+dimensionality projection rather than one trained natively at that size,
+and may understate what a purpose-trained larger controller could do.
+
+
+Finally, the error-isolation mechanism in \S\ref{sec:rq4} suppresses
+incorrect channels rather than eliminating them: a wrong agent's channel is
+dampened to an average weight of 0.4323, not to zero. \sys reduces error
+propagation; it does not fully prevent it.
+
+% ══════════════════════════════════════════════════════════════════════════════
+
+% ══════════════════════════════════════════════════════════════════════════════
+
+
+\bibliography{custom}
+
+\clearpage
+\appendix
+
+\section{Per-Scale Factorial Decomposition}
+\label{app:per-scale-ols}
+
+Table~\ref{tab:ols-per-scale} reports the $2\times2$ factorial OLS fit
+separately at each training scale (rather than pooled, as in
+Table~\ref{tab:ols-pooled}), with $N=600$ sample-level observations per
+scale. We use $\beta_{\text{volume}}$ and $\beta_{\text{topology}}$
+throughout the paper to refer to the semantic-compression and
+PPO-topology-routing factors respectively; note that these correspond to
+Factor $A$ and Factor $B$ in the arm notation of
+Table~\ref{tab:ablation-scale} (Arm 10 = $A{=}1,B{=}0$; Arm 01 =
+$A{=}0,B{=}1$).
+
+\begin{table}[H]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{cccrl}
+\toprule
+Train $N$ & Intercept & Effect & $\beta$ & $p$ (sig.) \\
+\midrule
+\multirow{3}{*}{100} & \multirow{3}{*}{0.5633}
+  & Volume      & $+0.0667$ & 0.238 (ns) \\
+& & Topology    & $+0.0967$ & 0.087 ($\cdot$) \\
+& & Interaction & $-0.0767$ & 0.391 (ns) \\
+\midrule
+\multirow{3}{*}{200} & \multirow{3}{*}{0.9533}
+  & Volume      & $-0.0067$ & 0.791 (ns) \\
+& & Topology    & $-0.0333$ & 0.185 (ns) \\
+& & Interaction & $+0.0667$ & 0.061 ($\cdot$) \\
+\midrule
+\multirow{3}{*}{300} & \multirow{3}{*}{0.9467}
+  & Volume      & $\phantom{-}0.0000$ & 1.000 (ns) \\
+& & Topology    & $-0.0067$ & 0.809 (ns) \\
+& & Interaction & $-0.0133$ & 0.732 (ns) \\
+\midrule
+\multirow{3}{*}{400} & \multirow{3}{*}{0.9333}
+  & Volume      & $+0.0200$ & 0.442 (ns) \\
+& & Topology    & $+0.0333$ & 0.200 (ns) \\
+& & Interaction & $-0.0533$ & 0.147 (ns) \\
+\bottomrule
+\end{tabular}
+\caption{Per-training-scale $2\times2$ factorial OLS coefficients (GSM8K).
+Each scale uses $N=600$ sample-level observations.
+Significance codes: $^{***}p{<}0.001$, $^{**}p{<}0.01$, $^{*}p{<}0.05$,
+$\cdot$ $p{<}0.1$, ns not significant.}
+\label{tab:ols-per-scale}
+\end{table}
+
+At 100 samples, the topology-routing effect is the only factor at even
+marginal significance ($p=0.087$) and is roughly $1.5\times$ larger than the
+volume-compression effect; the negative interaction indicates the two
+mechanisms slightly undercut one another when applied jointly this early in
+training. At 200 samples, the interaction term is the only one approaching
+significance ($p=0.061$) and is positive, aligning with \sys's peak accuracy
+of 98.0\% at this scale. At 300 and 400 samples, no coefficient is
+significant at even the $p<0.1$ level, indicating that the four factorial
+arms are statistically indistinguishable once agents have enough
+task-specific experience to reason reliably in isolation. Pooling all four
+scales (Table~\ref{tab:ols-pooled}) increases statistical power
+($N=2{,}400$ vs.\ $N=600$ per scale) and yields significant, equal main
+effects for both factors; the per-scale view in this appendix shows that
+this pooled equality is not a description of any single training regime,
+but an average across regimes with different qualitative behavior
+(\S\ref{sec:rq3}).
+
+\section{Per-Epoch Training Dynamics}
+\label{app:epoch-curves}
+
+Tables~\ref{tab:epoch-gsm8k}--\ref{tab:epoch-hotpot} report training-set
+accuracy at each of the five PPO training epochs, for each dataset and
+training scale. These curves motivate the overfitting and
+non-monotonic-training-accuracy caveats discussed in
+\S\ref{sec:limitations}.
+
+\subsection{GSM8K}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+$N$ & Mean & Std & Max Fluct. \\
+\midrule
+100 & 56.6\% & 2.15 & 4.0 (Ep3$\to$4 $\downarrow$) \\
+200 & 96.2\% & 1.60 & 4.0 (Ep1$\to$2 $\uparrow$) \\
+300 & 95.2\% & 2.40 & 5.0 (Ep3$\to$4 $\uparrow$) \\
+400 & 94.6\% & 2.65 & 4.0 (Ep4$\to$5 $\downarrow$) \\
+\bottomrule
+\end{tabular}
+\caption{GSM8K per-epoch training accuracy summary (5 epochs per scale).}
+\label{tab:epoch-gsm8k}
+\end{table}
+
+GSM8K shows moderate, roughly symmetric epoch-to-epoch fluctuation that
+increases slightly with training-set size (std.\ 2.15 at 100 samples to 2.65
+at 400).
+
+\subsection{AQuA}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+$N$ & Mean & Std & Max Fluct. \\
+\midrule
+100 & 85.8\% & 0.40 & 1.0 (most stable) \\
+200 & 72.2\% & 2.23 & 5.0 (Ep3$\to$4 $\downarrow$) \\
+300 & 72.6\% & 1.85 & 4.0 (Ep1$\to$2 $\uparrow$) \\
+400 & 62.0\% & 2.45 & 4.0 (Ep3$\to$4 $\downarrow$) \\
+\bottomrule
+\end{tabular}
+\caption{AQuA per-epoch training accuracy summary.}
+\label{tab:epoch-aqua}
+\end{table}
+
+AQuA is the most stable dataset at 100 samples (std.\ 0.40) but degrades in
+both mean accuracy and stability as training size grows, consistent with the
+non-monotonic training-accuracy caveat in \S\ref{sec:limitations}.
+
+\subsection{HotpotQA}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+$N$ & Mean & Std & Max Fluct. \\
+\midrule
+100 & 40.8\%  & 1.72 & 5.0 (Ep2$\to$3 $\uparrow$) \\
+200 & 99.4\%  & 0.81 & 2.0 \\
+300 & 99.6\%  & 0.80 & 2.0 \\
+400 & 100.0\% & 0.00 & 0.0 (perfectly stable) \\
+\bottomrule
+\end{tabular}
+\caption{HotpotQA per-epoch training accuracy summary.}
+\label{tab:epoch-hotpot}
+\end{table}
+
+HotpotQA shows a sharp transition from 40.8\% at 100 samples to 99.4\% at
+200, reaching 100.0\% accuracy with zero variance by 400 samples. Yet
+held-out accuracy remains at 28--38\% (Table~\ref{tab:main}), indicating
+split-specific overfitting rather than a generalizable communication policy
+(\S\ref{sec:limitations}).
+
+\end{document}

@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SparseComm — Interactive Code Explorer</title>
+<style>
+:root {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d;
+  --text: #c9d1d9; --dim: #8b949e; --link: #58a6ff;
+  --config: #58a6ff; --llm: #f0883e; --agent: #3fb950;
+  --comm: #bc8cff; --ctrl: #f778ba; --vote: #79c0ff;
+  --metric: #ffa657; --pipe: #56d4dd; --data: #d2a8ff;
+  --danger: #f85149; --success: #3fb950;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar { width: 280px; background: var(--surface); border-right: 1px solid var(--border); position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 10; padding: 20px 0; }
+.sidebar h2 { font-size: 14px; padding: 8px 20px; color: var(--link); font-family: monospace; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+.sidebar a { display: block; padding: 6px 20px 6px 32px; color: var(--dim); text-decoration: none; font-size: 13px; transition: all .2s; border-left: 3px solid transparent; }
+.sidebar a:hover { color: var(--text); background: rgba(88,166,255,.05); border-left-color: var(--link); }
+.sidebar a.active { color: var(--link); background: rgba(88,166,255,.08); border-left-color: var(--link); }
+.sidebar .section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px; padding: 14px 20px 4px; color: var(--dim); font-weight: 600; }
+
+/* ── Main ── */
+.main { margin-left: 280px; flex: 1; padding: 40px 48px; max-width: 1100px; }
+h1 { font-size: 28px; color: var(--link); margin-bottom: 6px; font-family: monospace; }
+h1 span { color: var(--dim); font-weight: 400; font-size: 16px; }
+.subtitle { color: var(--dim); font-size: 14px; margin-bottom: 36px; }
+h2 { font-size: 20px; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-family: monospace; }
+h3 { font-size: 16px; margin: 24px 0 10px; }
+
+/* ── Cards ── */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin: 16px 0; overflow: hidden; }
+.card-header { padding: 14px 20px; cursor: pointer; display: flex; align-items: center; gap: 12px; user-select: none; transition: background .2s; }
+.card-header:hover { background: rgba(255,255,255,.03); }
+.card-header .arrow { color: var(--dim); font-size: 12px; transition: transform .2s; min-width: 16px; }
+.card-header.open .arrow { transform: rotate(90deg); }
+.card-header h3 { margin: 0; font-size: 15px; }
+.card-body { display: none; padding: 0 20px 20px; }
+.card-header.open + .card-body { display: block; }
+
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-family: monospace; margin: 0 4px; }
+.tag-why { background: rgba(63,185,80,.15); color: var(--success); }
+.tag-how { background: rgba(88,166,255,.15); color: var(--link); }
+.tag-what { background: rgba(255,166,87,.15); color: var(--metric); }
+.tag-critical { background: rgba(248,81,73,.15); color: var(--danger); }
+
+pre { background: #0d1117; border: 1px solid var(--border); border-radius: 6px; padding: 14px; overflow-x: auto; font-size: 12.5px; line-height: 1.5; margin: 10px 0; font-family: 'Fira Code', 'Consolas', monospace; }
+code { font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; background: rgba(88,166,255,.1); padding: 1px 5px; border-radius: 3px; }
+.fn { color: #d2a8ff; }
+.cls { color: #f778ba; }
+.kw { color: #ff7b72; }
+.str { color: #a5d6ff; }
+.num { color: #79c0ff; }
+.cmt { color: #8b949e; font-style: italic; }
+.op { color: #ff7b72; }
+
+/* ── Flow diagram ── */
+.flow { display: flex; align-items: center; gap: 0; flex-wrap: wrap; margin: 16px 0; }
+.flow-box { padding: 8px 14px; border-radius: 6px; font-size: 12px; font-family: monospace; white-space: nowrap; border: 1px solid; }
+.flow-arrow { color: var(--dim); font-size: 18px; margin: 0 4px; }
+
+/* ── Table ── */
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+th { color: var(--dim); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+td:first-child { font-family: monospace; color: var(--link); }
+
+/* ── Visual pipeline ── */
+.pipeline { display: flex; gap: 0; margin: 20px 0; overflow-x: auto; padding-bottom: 8px; }
+.pipe-step { min-width: 120px; padding: 12px 16px; border: 2px solid var(--border); border-radius: 8px; text-align: center; font-size: 12px; position: relative; background: var(--surface); }
+.pipe-step .step-num { font-size: 10px; color: var(--dim); margin-bottom: 4px; }
+.pipe-step .step-label { font-weight: 600; font-family: monospace; }
+.pipe-step .step-detail { font-size: 11px; color: var(--dim); margin-top: 4px; }
+.pipe-connector { display: flex; align-items: center; color: var(--dim); font-size: 20px; padding: 0 2px; }
+
+/* ── Diagram: class hierarchy ── */
+.hierarchy { padding: 20px; }
+.h-node { display: inline-flex; flex-direction: column; align-items: center; padding: 10px 16px; border-radius: 8px; border: 2px solid; margin: 6px; font-size: 12px; font-family: monospace; }
+.h-children { margin-left: 40px; border-left: 2px solid var(--border); padding-left: 16px; }
+.h-edge { color: var(--dim); font-size: 10px; margin: 2px 0; }
+
+/* ── Info boxes ── */
+.info-box { padding: 12px 16px; border-radius: 6px; margin: 10px 0; font-size: 13px; border-left: 4px solid; }
+.info-why { border-color: var(--success); background: rgba(63,185,80,.06); }
+.info-how { border-color: var(--link); background: rgba(88,166,255,.06); }
+.info-what { border-color: var(--metric); background: rgba(255,166,87,.06); }
+.info-danger { border-color: var(--danger); background: rgba(248,81,73,.06); }
+.info-box strong { display: block; margin-bottom: 4px; }
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- SIDEBAR                                                        -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<nav class="sidebar">
+  <h2>SparseComm Explorer</h2>
+  <div class="section-label">Overview</div>
+  <a href="#overview">System Overview</a>
+  <a href="#pipeline">Execution Pipeline</a>
+  <a href="#dataflow">Data Flow</a>
+
+  <div class="section-label">Classes</div>
+  <a href="#config">Config</a>
+  <a href="#llm-backend">LLMBackend (ABC)</a>
+  <a href="#nvidia-backend">NvidiaDeepSeekBackend</a>
+  <a href="#azure-backend">AzureOpenAIBackend</a>
+  <a href="#hf-backend">HuggingFaceLocalBackend</a>
+  <a href="#agent">Agent</a>
+  <a href="#agent-pool">AgentPool</a>
+  <a href="#comm-graph">CommunicationGraph</a>
+  <a href="#semantic-encoder">SemanticStateEncoder</a>
+  <a href="#mlp">MLP</a>
+  <a href="#ib-controller">IBController</a>
+  <a href="#platt-calibrator">PlattCalibrator</a>
+
+  <div class="section-label">Data Structures</div>
+  <a href="#llm-response">LLMResponse</a>
+  <a href="#agent-response">AgentResponse</a>
+  <a href="#sample-result">SampleResult</a>
+  <a href="#experiment-results">ExperimentResults</a>
+
+  <div class="section-label">Functions</div>
+  <a href="#voting">Voting Functions</a>
+  <a href="#evaluation">Evaluation Functions</a>
+  <a href="#dataset-loaders">Dataset Loaders</a>
+  <a href="#experiment-fns">Experiment Runners</a>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                                   -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<div class="main">
+
+<h1>SparseComm <span>— Interactive Code Explorer</span></h1>
+<p class="subtitle">Every class, function, and data flow explained: what it does, why it exists, and how it works.</p>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- OVERVIEW                                                       -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="overview">
+<h2>System Overview</h2>
+
+<div class="info-box info-what">
+<strong>What is SparseComm?</strong>
+A multi-agent reasoning system where N LLM agents collaboratively solve questions. Instead of sharing full messages (expensive), a PPO-trained controller learns <em>which agents should communicate</em> and <em>how much</em> — implementing an Information Bottleneck that balances accuracy against token cost.
+</div>
+
+<div class="info-box info-why">
+<strong>Why does it exist?</strong>
+Standard multi-agent debate sends every agent's full reasoning to every other agent every round. This is O(N² × T) in tokens. SparseComm learns a sparse communication graph W[i,j] that blocks uninformative channels and compresses partially-relevant ones — reducing token cost by 40-70% while maintaining or improving accuracy.
+</div>
+
+<div class="info-box info-how">
+<strong>How does it work?</strong>
+A PPO policy network observes the current state of all agents (their answers, confidences, reasoning overlap) and outputs: (1) edge weights W[i,j] controlling bandwidth, (2) semantic queries Q for content filtering, (3) a halt decision. Each edge weight maps to a bandwidth mode: BLOCK (0 tokens), PARTIAL (compressed), or FULL (pass-through). The reward combines task accuracy with token cost penalties and KL sparsity regularization.
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- EXECUTION PIPELINE                                             -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="pipeline">
+<h2>Execution Pipeline</h2>
+<p style="color:var(--dim); margin-bottom:16px;">The end-to-end flow for processing a single question through the system:</p>
+
+<div class="pipeline">
+  <div class="pipe-step" style="border-color:var(--data);">
+    <div class="step-num">Step 1</div>
+    <div class="step-label">Load Question</div>
+    <div class="step-detail">Gold answer paired<br>with question</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--agent);">
+    <div class="step-num">Step 2</div>
+    <div class="step-label">Round 0</div>
+    <div class="step-detail">N agents solve<br>independently</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--agent);">
+    <div class="step-num">Step 3</div>
+    <div class="step-label">Check Unanimous</div>
+    <div class="step-detail">All agree?<br>→ early exit</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--ctrl);">
+    <div class="step-num">Step 4</div>
+    <div class="step-label">Controller</div>
+    <div class="step-detail">PPO outputs W, Q,<br>halt decision</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--comm);">
+    <div class="step-num">Step 5</div>
+    <div class="step-label">Filter Messages</div>
+    <div class="step-detail">Semantic bottleneck<br>compresses each edge</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--agent);">
+    <div class="step-num">Step 6</div>
+    <div class="step-label">Re-solve</div>
+    <div class="step-detail">Agents refine with<br>filtered peer info</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--vote);">
+    <div class="step-num">Step 7</div>
+    <div class="step-label">Vote</div>
+    <div class="step-detail">Bayesian weighted<br>majority vote</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--metric);">
+    <div class="step-num">Step 8</div>
+    <div class="step-label">Evaluate</div>
+    <div class="step-detail">Exact match or<br>F1 score</div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- DATA FLOW                                                      -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="dataflow">
+<h2>Data Flow Between Components</h2>
+<p style="color:var(--dim); margin-bottom:16px;">How data moves through the system during one communication round:</p>
+
+<div class="pipeline" style="flex-wrap: wrap; gap: 8px;">
+  <div class="pipe-step" style="border-color:var(--config); min-width:160px;">
+    <div class="step-label">Config</div>
+    <div class="step-detail">n_agents, n_rounds,<br>lambda_info, lambda_kl</div>
+  </div>
+  <div class="pipe-connector">feeds →</div>
+  <div class="pipe-step" style="border-color:var(--data); min-width:140px;">
+    <div class="step-label">Dataset</div>
+    <div class="step-detail">question + gold_answer</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--agent); min-width:160px;">
+    <div class="step-label">Agent.solve()</div>
+    <div class="step-detail">reasoning_text, answer,<br>confidence per agent</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--ctrl); min-width:200px;">
+    <div class="step-label">IBController.get_weights()</div>
+    <div class="step-detail">features → Actor MLP →<br>W[i,j], Q[i,:], halt</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--comm); min-width:180px;">
+    <div class="step-label">CommGraph.transmit()</div>
+    <div class="step-detail">W[i,j] → semantic filter →<br>compressed message</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--vote); min-width:160px;">
+    <div class="step-label">weighted_majority_vote()</div>
+    <div class="step-detail">calibrated confidence ×<br>spectral centrality → answer</div>
+  </div>
+  <div class="pipe-connector">→</div>
+  <div class="pipe-step" style="border-color:var(--metric); min-width:140px;">
+    <div class="step-label">compute_reward()</div>
+    <div class="step-detail">task_rew − cost − KL − loops</div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: Config                                                  -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="config">
+<h2>Class: <code class="cls">Config</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>What is Config?</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    A dataclass that holds <em>every single hyperparameter</em> for the entire system — agent count, communication rounds, PPO hyperparameters, reward weights, dataset settings, and LLM backend configuration. One Config object controls an entire experiment run.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    Centralizes configuration so experiments are reproducible. Changing one value (e.g., <code>lambda_info</code>) propagates everywhere. Preset factory functions (<code>get_gsm8k_config()</code>, <code>get_hotpotqa_config()</code>, <code>get_aqua_config()</code>) provide dataset-specific defaults.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    Created as a <code>@dataclass</code> with defaults. Factory functions like <code>get_gsm8k_config(**overrides)</code> create a Config with dataset-specific defaults, then apply user overrides via <code>defaults.update(overrides)</code>.
+    </div>
+<pre><span class="cmt"># Key parameters and their roles:</span>
+<span class="cls">Config</span>(
+    seed=<span class="num">42</span>,          <span class="cmt"># Reproducibility</span>
+    n_agents=<span class="num">3</span>,       <span class="cmt"># Number of LLM agents</span>
+    n_rounds=<span class="num">3</span>,       <span class="cmt"># Communication rounds T</span>
+    lambda_info=<span class="num">0.3</span>,  <span class="cmt"># Token cost weight in reward</span>
+    lambda_kl=<span class="num">0.08</span>,   <span class="cmt"># KL sparsity weight</span>
+    gamma_loop=<span class="num">0.1</span>,   <span class="cmt"># Cycle penalty weight</span>
+    controller_hidden_dim=<span class="num">64</span>,  <span class="cmt"># PPO MLP width</span>
+    controller_lr=<span class="num">1e-3</span>,         <span class="cmt"># Learning rate</span>
+    controller_epochs=<span class="num">5</span>,        <span class="cmt"># Training epochs</span>
+    ppo_clip_epsilon=<span class="num">0.2</span>,       <span class="cmt"># PPO trust region</span>
+    k_dim=<span class="num">2</span>,           <span class="cmt"># Low-rank bottleneck dim</span>
+)</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: LLMBackend                                              -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="llm-backend">
+<h2>Class: <code class="cls">LLMBackend</code> (ABC)</h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Abstract base class for all LLM backends</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    An abstract base class defining the interface that all LLM backends must implement. Provides two abstract methods (<code>generate()</code>, <code>compress_message()</code>) and shared utilities for system prompts, answer extraction, and confidence estimation.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    Enables swapping the LLM engine (NVIDIA API, Azure, local HuggingFace) without changing any agent or controller code. The system is backend-agnostic.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    <code>_get_system_prompt()</code> generates a concise prompt based on agent reasoning style (analytical, step_by_step, creative, careful, efficient). <code>_extract_answer()</code> parses the LLM output using multiple regex patterns: boxed answers, "Answer:" lines, "the answer is" patterns, and fallback last-line extraction. <code>_estimate_confidence()</code> parses explicit "Confidence: X" from the response, normalizing 0-100, 0-10, and 0-1 scales.
+    </div>
+<pre><span class="kw">class</span> <span class="cls">LLMBackend</span>(ABC):
+    <span class="kw">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">generate</span>(self, prompt, question, context, dataset_type, agent_id) -> <span class="cls">LLMResponse</span>:
+        <span class="cmt"># Generate response with the LLM</span>
+        <span class="kw">pass</span>
+
+    <span class="kw">@abstractmethod</span>
+    <span class="kw">def</span> <span class="fn">compress_message</span>(self, message, mode) -> str:
+        <span class="cmt"># Semantically compress based on bandwidth mode</span>
+        <span class="kw">pass</span>
+
+    <span class="kw">def</span> <span class="fn">_extract_answer</span>(self, text, dataset_type) -> str:
+        <span class="cmt"># 1. Try \boxed{X}</span>
+        <span class="cmt"># 2. Try "Answer: X"</span>
+        <span class="cmt"># 3. Try "the answer is X"</span>
+        <span class="cmt"># 4. Fallback: last non-confidence line</span>
+
+    <span class="kw">def</span> <span class="fn">_estimate_confidence</span>(self, text) -> float:
+        <span class="cmt"># Parse "Confidence: 0.8" from response</span>
+        <span class="cmt"># Normalize scale (0-1, 0-10, 0-100)</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: NvidiaDeepSeekBackend                                   -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="nvidia-backend">
+<h2>Class: <code class="cls">NvidiaDeepSeekBackend</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>NVIDIA API backend (DeepSeek v3.2)</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Connects to NVIDIA's API at <code>integrate.api.nvidia.com</code> using the OpenAI-compatible client. Used for the main experiment runs with DeepSeek v3.2 model.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    NVIDIA provides free API credits for research. DeepSeek v3.2 is a strong reasoning model that handles math (GSM8K), multi-hop QA (HotpotQA), and algebraic reasoning (AQuA).
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    Uses OpenAI client with custom base_url. Features: <code>temperature=0.0</code> for deterministic evaluation, retry with exponential backoff (15 retries, 3s increments), MD5-hashed prompt cache to avoid redundant API calls, and httpx timeout (120s connect, 30s read).
+    </div>
+<pre><span class="kw">class</span> <span class="cls">NvidiaDeepSeekBackend</span>(<span class="cls">LLMBackend</span>):
+    <span class="kw">def</span> <span class="fn">generate</span>(self, prompt, question, context, dataset_type, agent_id):
+        <span class="cmt"># Build cache key from prompt hash</span>
+        cache_key = hashlib.md5(cache_str.encode()).hexdigest()
+        <span class="kw">if</span> cache_key <span class="kw">in</span> _PROMPT_CACHE:
+            <span class="kw">return</span> _PROMPT_CACHE[cache_key]  <span class="cmt"># Skip API call</span>
+
+        <span class="cmt"># API call with retries</span>
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[system_msg, user_msg],
+            temperature=<span class="num">0.0</span>,  <span class="cmt"># Deterministic</span>
+            max_tokens=self.max_tokens,
+        )
+        _PROMPT_CACHE[cache_key] = resp  <span class="cmt"># Cache result</span>
+        <span class="kw">return</span> resp</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: AzureOpenAIBackend                                      -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="azure-backend">
+<h2>Class: <code class="cls">AzureOpenAIBackend</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Azure OpenAI API backend</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Identical interface to NvidiaDeepSeekBackend but connects to Azure OpenAI endpoints. Used for the Kaggle experiments with the <code>gpt-oss-120b</code> model.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    Uses <code>AzureOpenAI</code> client with Azure-specific parameters: <code>api_version="2024-02-15-preview"</code>, Azure endpoint URL, and API key. Same prompt cache mechanism as NVIDIA backend (shared <code>_PROMPT_CACHE</code>).
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: HuggingFaceLocalBackend                                 -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="hf-backend">
+<h2>Class: <code class="cls">HuggingFaceLocalBackend</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Local model backend (Mistral-7B)</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Runs a HuggingFace model locally using <code>transformers.pipeline</code>. Default model is <code>mistralai/Mistral-7B-Instruct-v0.2</code>. Uses float16 precision and <code>device_map="auto"</code> for GPU distribution.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    Enables zero-cost experimentation without API calls. Useful for debugging, testing pipeline logic, and running on machines without API access.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    Loads model with <code>AutoModelForCausalLM.from_pretrained()</code> in float16. Creates a <code>pipeline("text-generation")</code> with <code>do_sample=False</code> for determinism. Handles chat template formatting via <code>tokenizer.apply_chat_template()</code> when available.
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: Agent                                                   -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="agent">
+<h2>Class: <code class="cls">Agent</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Single LLM-powered reasoning agent</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Represents one LLM agent that solves questions and incorporates peer communication. Each agent has a unique reasoning style (analytical, step_by_step, creative, careful, efficient) and maintains a history of responses across rounds.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    Different reasoning styles promote diversity in initial answers. The history enables consistency checking — agents that stay consistent across rounds get higher confidence. The agent is the atomic unit of the multi-agent system.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    <code>solve()</code> builds a prompt via <code>_build_prompt()</code>, calls the LLM backend's <code>generate()</code>, and computes confidence via <code>_compute_confidence()</code>. The prompt includes the agent's reasoning style instruction, the question, and any context from peer messages. Confidence combines the LLM's self-reported confidence with consistency checking against previous answers.
+    </div>
+<pre><span class="kw">class</span> <span class="cls">Agent</span>:
+    <span class="kw">def</span> <span class="fn">solve</span>(self, question, context_messages, dataset_type, round_num):
+        <span class="cmt"># 1. Build context from filtered peer messages</span>
+        context = <span class="str">"Key points from other agents:\n"</span> + <span class="str">"\n"</span>.join(valid)
+
+        <span class="cmt"># 2. Build prompt with reasoning style instruction</span>
+        prompt = self._build_prompt(question, context, dataset_type)
+
+        <span class="cmt"># 3. Call LLM backend</span>
+        llm_response = self.llm_backend.generate(prompt, question, context, ...)
+
+        <span class="cmt"># 4. Compute confidence (LLM self-report + consistency)</span>
+        confidence = self._compute_confidence(llm_response)
+
+        <span class="cmt"># 5. Store in history and return</span>
+        self.history.append(response)
+        <span class="kw">return</span> response</pre>
+
+    <table>
+      <tr><th>Method</th><th>Purpose</th></tr>
+      <tr><td>solve()</td><td>Full solve pipeline: prompt → LLM → extract answer → compute confidence</td></tr>
+      <tr><td>_build_prompt()</td><td>Combines reasoning style instruction + task + question + peer context</td></tr>
+      <tr><td>_compute_confidence()</td><td>LLM self-reported confidence (consistency bonus removed for fairness)</td></tr>
+      <tr><td>reset()</td><td>Clears history for a new question</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: AgentPool                                               -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="agent-pool">
+<h2>Class: <code class="cls">AgentPool</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Manages N parallel agents</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Creates and coordinates N agents. Handles parallel execution using <code>ThreadPoolExecutor</code> and message routing between agents. Manages the two-phase solve pattern: independent Round 0, then iterative communication rounds.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    Centralizes agent management so the experiment pipeline doesn't need to know about threading, agent IDs, or style assignment. Ensures stable ordering of results regardless of thread completion order.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    <code>initial_solve()</code> runs all agents in parallel via ThreadPoolExecutor. <code>communicate_and_solve()</code> receives filtered messages for each agent and runs them in parallel with rate-limit retry logic. Results are reconstructed in stable agent_id order via <code>result_map[agent_id]</code>.
+    </div>
+<pre><span class="kw">class</span> <span class="cls">AgentPool</span>:
+    <span class="kw">def</span> <span class="fn">initial_solve</span>(self, question, dataset_type):
+        <span class="cmt"># Parallel: all N agents solve independently</span>
+        <span class="kw">with</span> ThreadPoolExecutor(max_workers=self.n_agents):
+            <span class="kw">for</span> agent <span class="kw">in</span> self.agents:
+                futures[executor.submit(agent.solve, question, None, dataset_type, <span class="num">0</span>)]
+
+    <span class="kw">def</span> <span class="fn">communicate_and_solve</span>(self, question, received_messages, dataset_type, round_num):
+        <span class="cmt"># Parallel: agents re-solve with filtered peer messages</span>
+        <span class="kw">with</span> ThreadPoolExecutor(max_workers=self.n_agents):
+            <span class="kw">for</span> agent <span class="kw">in</span> self.agents:
+                msgs = received_messages.get(agent.agent_id, [])
+                futures[executor.submit(agent.solve, question, msgs, dataset_type, round_num)]</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: CommunicationGraph                                     -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="comm-graph">
+<h2>Class: <code class="cls">CommunicationGraph</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Bandwidth-aware directed communication graph</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Manages the N×N weight matrix W where W[i,j] controls how much of agent i's message reaches agent j. Implements the semantic bottleneck: sentences are embedded, attention-pooled, bandwidth-gated, and top-k retrieved to produce compressed messages.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    This is the core innovation — replacing full communication with learned sparse communication. Each edge weight maps to a bandwidth mode (BLOCK/PARTIAL/FULL), implementing an Information Bottleneck that maximizes task-relevant information while minimizing token cost.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    <code>transmit()</code> implements the semantic bottleneck pipeline:<br>
+    1. Split message into sentences (reasoning nodes)<br>
+    2. Encode with SentenceTransformer → embeddings (S, d)<br>
+    3. Attention pooling against centroid → compressed vector z<br>
+    4. Bandwidth gate: <code>z_gated = z × w_ij</code><br>
+    5. Cosine similarity → top-k sentence retrieval<br>
+    6. Order-preserved filtered message
+    </div>
+
+    <h3 style="margin-top: 20px;">Bandwidth Modes</h3>
+    <table>
+      <tr><th>Mode</th><th>Condition</th><th>Behavior</th><th>Tokens</th></tr>
+      <tr><td style="color:var(--danger)">BLOCK</td><td>w &lt; 0.05</td><td>Complete silence — no message sent</td><td>0</td></tr>
+      <tr><td style="color:#d29922">PARTIAL</td><td>0.05 ≤ w &lt; 0.95</td><td>Semantic bottleneck filters message</td><td>Proportional to w</td></tr>
+      <tr><td style="color:var(--success)">FULL</td><td>w ≥ 0.95</td><td>Complete pass-through, no filtering</td><td>Original count</td></tr>
+    </table>
+
+<pre><span class="kw">class</span> <span class="cls">CommunicationGraph</span>:
+    <span class="kw">def</span> <span class="fn">transmit</span>(self, sender_id, receiver_id, message, round_num, llm_backend):
+        w_ij = self.W[sender_id][receiver_id]
+
+        <span class="kw">if</span> w_ij < <span class="num">0.05</span>:
+            <span class="kw">return</span> <span class="str">""</span>, <span class="num">0</span>          <span class="cmt"># BLOCK</span>
+        <span class="kw">elif</span> w_ij > <span class="num">0.95</span>:
+            <span class="kw">return</span> message, tokens  <span class="cmt"># FULL</span>
+        <span class="kw">else</span>:
+            <span class="cmt"># Semantic Bottleneck Pipeline</span>
+            sentences = split(message)
+            embs = SentenceTransformer.encode(sentences)
+            z = attention_pool(embs, centroid, tau=<span class="num">1</span>-w_ij)
+            z_gated = z * w_ij
+            k = max(<span class="num">1</span>, round(w_ij * len(sentences)))
+            top_indices = cosine_similarity(embs, z_gated).argsort()[-k:]
+            filtered = <span class="str">" "</span>.join(sentences[i] <span class="kw">for</span> i <span class="kw">in</span> sorted(top_indices))
+            <span class="kw">return</span> filtered, count_tokens(filtered)  <span class="cmt"># PARTIAL</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: SemanticStateEncoder                                    -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="semantic-encoder">
+<h2>Class: <code class="cls">SemanticStateEncoder</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Encodes agent state into 5 interpretable features</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Converts the current state of all agents (their answers and reasoning) into a 5-dimensional feature vector that the PPO controller uses to make decisions. Purely mathematical — no API calls, no model inference.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    The controller needs a compact, interpretable representation of the current multi-agent state. These 5 features capture: how much agents disagree (entropy), how similar their reasoning is (Jaccard), how diverse their answers are, how much their reasoning lengths vary (confidence proxy), and how strong the consensus is.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    Each feature is normalized to [0, 1] range. Entropy is normalized by log₂(N). Jaccard is pairwise word overlap. Diversity is unique/total answers. Length variance is coefficient of variation (std/mean). Consensus is majority fraction.
+    </div>
+<pre><span class="kw">def</span> <span class="fn">encode_state</span>(self, structured_states) -> np.ndarray:
+    <span class="cmt"># 1. Shannon Entropy — disagreement measure</span>
+    unique, counts = np.unique(answers, return_counts=True)
+    entropy = -np.sum(probs * np.log2(probs + <span class="num">1e-8</span>)) / np.log2(n_agents)
+
+    <span class="cmt"># 2. Jaccard Similarity — reasoning overlap</span>
+    jaccard = mean([len(A∩B) / len(A∪B) <span class="kw">for</span> A,B <span class="kw">in</span> pairs(text_sets)])
+
+    <span class="cmt"># 3. Answer Diversity — unique/total (HIGH = disagreement)</span>
+    diversity = len(set(answers)) / len(answers)
+
+    <span class="cmt"># 4. Length Variance — CoV of reasoning length</span>
+    length_var = min(<span class="num">1.0</span>, std(lengths) / (mean(lengths) + <span class="num">1e-8</span>))
+
+    <span class="cmt"># 5. Consensus Strength — majority fraction</span>
+    consensus = majority_count / len(answers)
+
+    <span class="kw">return</span> [entropy, jaccard, diversity, length_var, consensus]</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: MLP                                                     -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="mlp">
+<h2>Class: <code class="cls">MLP</code></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Pure NumPy 2-hidden-layer neural network</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    A from-scratch MLP implementation in pure NumPy (no PyTorch/TensorFlow). 2 hidden layers with ReLU activations, AdamW optimizer, and gradient clipping. Used for both the Actor (policy) and Critic (value function) networks in the PPO controller.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    Zero framework dependency — works on any machine without GPU libraries. The controller is small (64 hidden dim) so NumPy is fast enough. Makes the entire system reproducible without CUDA.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    <code>forward()</code>: x → W1·x+b1 → ReLU → W2·h+b2 → ReLU → W3·h+b3 → (optional sigmoid)<br>
+    <code>backward()</code>: Standard chain rule backpropagation through ReLU and linear layers.<br>
+    <code>update()</code>: AdamW with bias correction (β₁=0.9, β₂=0.999), gradient clipping at max_norm=1.0.
+    </div>
+<pre><span class="kw">class</span> <span class="cls">MLP</span>:
+    <span class="kw">def</span> <span class="fn">forward</span>(self, x):
+        z1 = x @ self.W1 + self.b1;  a1 = relu(z1)
+        z2 = a1 @ self.W2 + self.b2; a2 = relu(z2)
+        out = a2 @ self.W3 + self.b3
+        <span class="kw">return</span> out, cache
+
+    <span class="kw">def</span> <span class="fn">backward</span>(self, cache, grad_output):
+        <span class="cmt"># Chain rule through ReLU and linear layers</span>
+        dz3 = grad_output * relu_grad(z3) <span class="cmt"># if sigmoid: * out * (1-out)</span>
+        dW3 = outer(a2, dz3)
+        <span class="cmt"># ... propagate through layers 2 and 1</span>
+
+    <span class="kw">def</span> <span class="fn">update</span>(self, grads, max_norm=<span class="num">1.0</span>):
+        <span class="cmt"># Gradient clipping + AdamW</span>
+        clip_coef = max_norm / (total_norm + <span class="num">1e-6</span>)
+        <span class="cmt"># Adam: m = β₁·m + (1-β₁)·g, v = β₂·v + (1-β₂)·g²</span>
+        <span class="cmt"># θ = θ - lr · m̂ / (√v̂ + ε)</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: IBController                                            -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="ib-controller">
+<h2>Class: <code class="cls">IBController</code> <span class="tag tag-critical">CORE</span></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>PPO controller — learns sparse communication topology</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    The brain of the system. A PPO (Proximal Policy Optimization) agent that observes the multi-agent state and outputs: (1) edge weights W[i,j] via low-rank factorization, (2) semantic queries Q for content filtering, (3) a halt decision for early stopping. Trained end-to-end to maximize task accuracy while minimizing communication cost.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    Hand-crafted communication rules can't adapt to different questions. Some questions need full debate, others need silence. The PPO controller learns to dynamically allocate communication bandwidth based on the current state — achieving the Information Bottleneck optimum.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    <strong>State encoding:</strong> SemanticStateEncoder (5 features) + per-agent features → SetTransformer → pooled representation z → concatenated with global features (12 total) → final state vector.<br>
+    <strong>Action:</strong> Actor MLP outputs mean + learned log_σ for continuous exploration. Action is split into H_src, H_dst (low-rank edge weights), Q (semantic queries), halt_logit.<br>
+    <strong>W computation:</strong> W = sigmoid(H_src @ H_dst.T + 0.5) — low-rank factorization.<br>
+    <strong>Training:</strong> GAE(λ=0.95) for advantage estimation, PPO clip (ε=0.2) for stable updates, AdamW optimizer, entropy bonus for exploration.
+    </div>
+
+    <h3 style="margin-top: 20px;">Reward Function</h3>
+<pre>R = <span class="num">1.5</span> × task_reward    <span class="cmt"># Accuracy signal (0 or 1)</span>
+  - <span class="num">0.5</span>                  <span class="cmt"># Baseline offset</span>
+  - λ_info × token_cost   <span class="cmt"># Penalize token usage</span>
+  - λ_kl × KL(sparsity)   <span class="cmt"># Encourage sparse W (Bernoulli(0.1))</span>
+  - γ × cycle_penalty      <span class="cmt"># Penalize communication cycles</span>
+  - halt_penalty            <span class="cmt"># Penalize using all rounds</span></pre>
+
+    <h3 style="margin-top: 20px;">GAE Advantage Estimation</h3>
+<pre><span class="kw">for</span> t <span class="kw">in</span> reversed(range(n_steps)):
+    is_done = transitions[t][<span class="str">'done'</span>]
+    mask = <span class="num">0.0</span> <span class="kw">if</span> is_done <span class="kw">else</span> <span class="num">1.0</span>
+    <span class="kw">if</span> is_done:
+        next_value = <span class="num">0.0</span>
+        gae = <span class="num">0.0</span>
+    delta = reward[t] + γ × next_value × mask - value[t]
+    gae = delta + γ × λ × gae × mask
+    advantage[t] = gae
+    returns[t] = gae + value[t]
+    next_value = value[t]</pre>
+
+    <h3 style="margin-top: 20px;">Key Methods</h3>
+    <table>
+      <tr><th>Method</th><th>Purpose</th></tr>
+      <tr><td>get_weights()</td><td>Full forward pass: state → actor → action → W, Q, halt</td></tr>
+      <tr><td>compute_reward()</td><td>Combines task accuracy, token cost, KL sparsity, cycles</td></tr>
+      <tr><td>store_transition()</td><td>Buffers (state, action, log_prob, value, reward) for PPO update</td></tr>
+      <tr><td>update_policy()</td><td>GAE + PPO clipped surrogate + AdamW update</td></tr>
+      <tr><td>save_model() / load_model()</td><td>Persist actor/critic weights + calibrator state</td></tr>
+      <tr><td>_split_action()</td><td>Decodes raw action into W (low-rank), Q, halt_logit</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- CLASS: PlattCalibrator                                         -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="platt-calibrator">
+<h2>Class: <code class="cls">PlattCalibrator</code> <span class="tag tag-what">IsotonicRegression</span></h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Confidence calibration + per-agent accuracy tracking</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Calibrates LLM self-reported confidence scores to true P(correct) using sklearn's IsotonicRegression. Also tracks per-agent historical accuracy and empirical variance for Bayesian voting weights.
+    </div>
+    <div class="info-box info-why">
+    <strong>Why:</strong>
+    LLMs are poorly calibrated — an agent saying "Confidence: 0.8" is not actually correct 80% of the time. Calibration maps self-reported confidence to true accuracy, enabling better Bayesian voting and SPRT halting decisions.
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    During training, accumulates (confidence, is_correct) pairs. After each epoch, fits IsotonicRegression: <code>ir.fit(confidences, labels)</code>. At test time, <code>calibrate(conf)</code> maps raw confidence to calibrated probability. Also tracks per-agent historical accuracy for multiplicative voting.
+    </div>
+<pre><span class="kw">class</span> <span class="cls">PlattCalibrator</span>:
+    <span class="kw">def</span> <span class="fn">accumulate</span>(self, agent_id, conf, is_correct):
+        <span class="cmt"># Store (confidence, correctness) for fitting</span>
+        self._train_confs.append(conf)
+        self._train_labels.append(is_correct)
+        self._agent_corrects[agent_id].append(is_correct)
+
+    <span class="kw">def</span> <span class="fn">fit</span>(self):
+        <span class="cmt"># Fit IsotonicRegression: conf → P(correct)</span>
+        self.ir.fit(X, y)
+        <span class="cmt"># Compute per-agent historical accuracy</span>
+        <span class="kw">for</span> aid, corrects <span class="kw">in</span> self._agent_corrects.items():
+            self._agent_historical_acc[aid] = mean(corrects)
+
+    <span class="kw">def</span> <span class="fn">calibrate</span>(self, conf) -> float:
+        <span class="cmt"># Map raw confidence to calibrated probability</span>
+        <span class="kw">return</span> self.ir.predict([conf])[<span class="num">0</span>]</pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- DATA STRUCTURES                                                -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="llm-response">
+<h2>Data: <code class="cls">LLMResponse</code></h2>
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Response from an LLM backend</h3>
+  </div>
+  <div class="card-body">
+<pre><span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="cls">LLMResponse</span>:
+    text: str         <span class="cmt"># Full LLM output</span>
+    answer: str       <span class="cmt"># Extracted final answer</span>
+    token_count: int  <span class="cmt"># Token count (via tiktoken)</span>
+    confidence: float <span class="cmt"># Self-reported confidence (0-1)</span></pre>
+  </div>
+</div>
+</section>
+
+<section id="agent-response">
+<h2>Data: <code class="cls">AgentResponse</code></h2>
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Per-agent, per-round response</h3>
+  </div>
+  <div class="card-body">
+<pre><span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="cls">AgentResponse</span>:
+    agent_id: int       <span class="cmt"># Which agent (0, 1, 2, ...)</span>
+    answer: str         <span class="cmt"># Extracted answer</span>
+    confidence: float   <span class="cmt"># Computed confidence</span>
+    reasoning_text: str <span class="cmt"># Full LLM reasoning</span>
+    token_count: int    <span class="cmt"># Tokens used</span>
+    round_num: int      <span class="cmt"># Communication round</span></pre>
+  </div>
+</div>
+</section>
+
+<section id="sample-result">
+<h2>Data: <code class="cls">SampleResult</code></h2>
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Complete result for one question</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    Captures everything about processing a single question: the question, gold answer, final answer, correctness, per-agent initial/final answers, communication statistics, compression metrics, diagnostic metrics, and all intermediate reasoning.
+    </div>
+<pre><span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="cls">SampleResult</span>:
+    <span class="cmt"># Core</span>
+    question: str; gold_answer: str; final_answer: str; is_correct: bool
+
+    <span class="cmt"># Per-agent info</span>
+    initial_answers: Dict[int, str]     <span class="cmt"># Round 0 answers</span>
+    final_answers: Dict[int, str]       <span class="cmt"># After communication</span>
+    initial_correct: Dict[int, bool]    <span class="cmt"># Was each agent right initially?</span>
+
+    <span class="cmt"># Communication stats</span>
+    total_tokens_transmitted: int       <span class="cmt"># Actual tokens sent</span>
+    total_tokens_if_full: int           <span class="cmt"># What full communication would cost</span>
+    compression_ratio: float            <span class="cmt"># transmitted / full</span>
+    communication_density: float        <span class="cmt"># Mean off-diagonal W</span>
+
+    <span class="cmt"># Semantic metrics</span>
+    semantic_similarity: float          <span class="cmt"># Cosine sim orig vs filtered</span>
+    information_retention: float        <span class="cmt"># InfoNCE mutual info bound</span>
+
+    <span class="cmt"># Diagnostic</span>
+    agent_diversity: float              <span class="cmt"># n_unique / n_agents</span>
+    answer_entropy: float               <span class="cmt"># Shannon entropy of answers</span>
+    halt_round: int                     <span class="cmt"># When SPRT halted (or n_rounds)</span></pre>
+  </div>
+</div>
+</section>
+
+<section id="experiment-results">
+<h2>Data: <code class="cls">ExperimentResults</code></h2>
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Aggregated results for an entire experiment</h3>
+  </div>
+  <div class="card-body">
+<pre><span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="cls">ExperimentResults</span>:
+    method_name: str                     <span class="cmt"># "IB-Controller", "No Communication", etc.</span>
+    dataset_name: str                    <span class="cmt"># "gsm8k", "hotpotqa", "aqua"</span>
+    sample_results: List[<span class="cls">SampleResult</span>]  <span class="cmt"># Per-question results</span>
+    training_rewards: List[float]        <span class="cmt"># PPO reward curve</span>
+    training_losses: List[float]         <span class="cmt"># PPO loss curve</span>
+    final_W: np.ndarray                  <span class="cmt"># Final communication topology</span></pre>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- VOTING FUNCTIONS                                               -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="voting">
+<h2>Voting Functions</h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3><code class="fn">weighted_majority_vote()</code> — Bayesian multiplicative voting</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-what">
+    <strong>What:</strong>
+    The primary voting function. Combines: (1) numeric normalization (24 = 24.0 = 24.00), (2) Bayesian multiplicative voting with calibrated confidence, (3) spectral centrality weighting from W matrix, (4) stability discounting for flip-flopping agents, (5) Platt calibration for true P(correct).
+    </div>
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    For each candidate answer, computes log-posterior: <code>log P(answer) = Σ log(θᵢ)</code> for agreeing agents and <code>Σ log((1-θᵢ)/(n-1))</code> for disagreeing agents, where θᵢ is calibrated confidence. Returns the candidate with highest log-posterior. For numerical answers (GSM8K/AQuA), uses confidence-weighted mode instead of averaging.
+    </div>
+<pre><span class="kw">def</span> <span class="fn">weighted_majority_vote</span>(responses, dataset_type, W, agents, calibrator):
+    <span class="cmt"># 1. Normalize answers</span>
+    normalized = [_normalize_for_vote(r.answer, dataset_type) <span class="kw">for</span> r <span class="kw">in</span> responses]
+
+    <span class="cmt"># 2. Get calibrated confidence per agent</span>
+    confs = [calibrator.calibrate(r.confidence) <span class="kw">for</span> r <span class="kw">in</span> responses]
+
+    <span class="cmt"># 3. Apply spectral centrality (trust agents others trust)</span>
+    <span class="kw">if</span> W: confs = spectral_vote_weights(W, confs)
+
+    <span class="cmt"># 4. Apply stability discount (penalize flip-flopping)</span>
+    <span class="kw">if</span> agents: confs *= compute_stability_weights(agents)
+
+    <span class="cmt"># 5. Bayesian multiplicative voting</span>
+    <span class="kw">for</span> candidate <span class="kw">in</span> unique_answers:
+        log_p = sum(log(θ) <span class="kw">if</span> ans==candidate <span class="kw">else</span> log((<span class="num">1</span>-θ)/(<span class="num">2</span>))
+                    <span class="kw">for</span> ans, θ <span class="kw">in</span> zip(normalized, confs))
+        posteriors[candidate] = log_p
+
+    <span class="kw">return</span> canonical_map[max(posteriors)]</pre>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Other voting functions</h3>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>Function</th><th>What</th><th>Why</th></tr>
+      <tr><td><code class="fn">majority_vote()</code></td><td>Simple mode with numeric normalization</td><td>Baseline — no confidence weighting</td></tr>
+      <tr><td><code class="fn">numeric_median_vote()</code></td><td>Weighted median for numerical answers</td><td>Better than mode when agents produce close-but-different numbers</td></tr>
+      <tr><td><code class="fn">spectral_vote_weights()</code></td><td>Multiply confidence by in-degree centrality of W</td><td>Trust agents that others "send to" more</td></tr>
+      <tr><td><code class="fn">compute_stability_weights()</code></td><td>Penalize agents that flip-flopped between rounds</td><td>Stable agents are more trustworthy</td></tr>
+      <tr><td><code class="fn">should_halt_by_entropy()</code></td><td>Check if answer distribution is concentrated</td><td>Entropy-based halt gate (independent of SPRT)</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- EVALUATION FUNCTIONS                                           -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="evaluation">
+<h2>Evaluation Functions</h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3><code class="fn">evaluate_answer()</code> — Dataset-aware correctness check</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-how">
+    <strong>How per dataset:</strong>
+    <strong>GSM8K:</strong> Extracts last number from both prediction and gold, checks <code>|pred - gold| < 1e-3</code>.<br>
+    <strong>HotpotQA:</strong> Exact Match after normalization (lowercase, remove articles/punctuation, normalize whitespace).<br>
+    <strong>AQuA/TruthfulQA:</strong> String match after removing all non-word characters.<br>
+    <strong>MBPP:</strong> Heuristic: checks for "def" and "return" in output (TODO: execution sandbox).
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Metric aggregation functions</h3>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>Function</th><th>What it computes</th></tr>
+      <tr><td><code class="fn">compute_accuracy()</code></td><td>% of correct final answers</td></tr>
+      <tr><td><code class="fn">compute_token_cost()</code></td><td>Total/avg tokens (communication + generation)</td></tr>
+      <tr><td><code class="fn">compute_communication_density()</code></td><td>Mean off-diagonal W values (sparser = lower)</td></tr>
+      <tr><td><code class="fn">compute_error_propagation_rate()</code></td><td>Fraction where initial correct → final incorrect (communication hurt)</td></tr>
+      <tr><td><code class="fn">compute_mode_distribution()</code></td><td>Average distribution of BLOCK/PARTIAL/FULL usage</td></tr>
+      <tr><td><code class="fn">aggregate_metrics()</code></td><td>All metrics in one dict for table formatting</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- DATASET LOADERS                                                -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="dataset-loaders">
+<h2>Dataset Loaders</h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Strict train/test split loaders</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-why">
+    <strong>Why strict splits?</strong>
+    Data leakage (training on test data) inflates accuracy. Each loader uses separate dataset splits: GSM8K uses train/test, HotpotQA uses train/validation, AQuA uses train.json/test.json. The <code>train_offset</code> parameter enables incremental scaling without overlap.
+    </div>
+    <table>
+      <tr><th>Loader</th><th>Train Split</th><th>Test Split</th><th>Answer Format</th></tr>
+      <tr><td><code class="fn">load_gsm8k()</code></td><td>train (7.5K)</td><td>test (1.3K)</td><td>Numeric (extracted from ####)</td></tr>
+      <tr><td><code class="fn">load_hotpotqa()</code></td><td>train (90K)</td><td>validation (7.4K)</td><td>String (span answer)</td></tr>
+      <tr><td><code class="fn">load_aqua()</code></td><td>train.json (25K)</td><td>test.json (254)</td><td>Letter (A/B/C/D/E)</td></tr>
+      <tr><td><code class="fn">load_truthfulqa()</code></td><td>validation (part)</td><td>validation (part)</td><td>Letter (MC1 targets)</td></tr>
+      <tr><td><code class="fn">load_mbpp()</code></td><td>train</td><td>test</td><td>Python function code</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- EXPERIMENT RUNNERS                                             -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="experiment-fns">
+<h2>Experiment Runners</h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3><code class="fn">run_single_sample()</code> — one question through the full pipeline</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    1. Round 0: all agents solve independently<br>
+    2. Check unanimous agreement → early exit with synthetic transition<br>
+    3. Rounds 1..T: controller → W → filter messages → agents re-solve<br>
+    4. SPRT halting check with Kish ESS correction<br>
+    5. Final: weighted_majority_vote() → answer<br>
+    6. Compute reward, store PPO transitions<br>
+    7. Return SampleResult with all metrics
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3><code class="fn">run_experiment()</code> — full train + eval pipeline</h3>
+  </div>
+  <div class="card-body">
+    <div class="info-box info-how">
+    <strong>How:</strong>
+    <strong>Training phase:</strong> For each epoch, iterates over training samples, calls run_single_sample(), accumulates PPO transitions, updates policy every 16 samples via GAE + PPO clip, fits PlattCalibrator after each epoch.<br>
+    <strong>Evaluation phase:</strong> Iterates over test samples with train_controller=False, collects SampleResults, returns ExperimentResults.
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>Baseline runners</h3>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>Function</th><th>W Matrix</th><th>Purpose</th></tr>
+      <tr><td><code class="fn">run_full_communication()</code></td><td>W = 1.0 everywhere</td><td>Multi-Agent Debate baseline (full info sharing)</td></tr>
+      <tr><td><code class="fn">run_no_communication()</code></td><td>W = 0.0 everywhere</td><td>Independent agents (no info sharing)</td></tr>
+      <tr><td><code class="fn">run_experiment_with_random_weights()</code></td><td>Random W (no learning)</td><td>Tests if learning matters</td></tr>
+      <tr><td><code class="fn">run_topology_benchmark()</code></td><td>Frozen static topologies</td><td>Ring, Star, FC, etc. vs Learned</td></tr>
+    </table>
+    <div class="info-box info-why" style="margin-top:12px;">
+    <strong>Why separate runners?</strong>
+    Each baseline must use the same LLM backend, agent pool, and voting function as the main system for fair comparison. The only difference is how W is determined: learned (PPO), full (debate), none (independent), random, or static (topology).
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+<!-- REWARD FUNCTION (detailed)                                     -->
+<!-- ══════════════════════════════════════════════════════════════ -->
+<section id="reward-detail">
+<h2>Reward Function Breakdown</h2>
+
+<div class="card">
+  <div class="card-header" onclick="toggle(this)">
+    <span class="arrow">▶</span>
+    <h3>How each reward component works</h3>
+  </div>
+  <div class="card-body">
+    <table>
+      <tr><th>Component</th><th>Formula</th><th>Purpose</th></tr>
+      <tr><td style="color:var(--success)">Task Reward</td><td>1.5 × correct - 0.5</td><td>Primary signal: is the answer right?</td></tr>
+      <tr><td style="color:var(--danger)">Token Cost</td><td>-λ_info × (transmitted / full)</td><td>Penalize token usage — incentivize sparsity</td></tr>
+      <tr><td style="color:var(--danger)">KL Sparsity</td><td>-λ_kl × KL(W || Bernoulli(0.1))</td><td>Encourage 90% of edges to be OFF</td></tr>
+      <tr><td style="color:var(--danger)">Cycle Penalty</td><td>-γ × cycles / max_possible</td><td>Discourage information loops (A→B→C→A)</td></tr>
+      <tr><td style="color:var(--danger)">Halt Penalty</td><td>-0.1 × halt_round</td><td>Encourage early stopping when confident</td></tr>
+      <tr><td style="color:var(--metric)">Intermediate</td><td>-λ_info × round_cost + 0.5 × Δconsensus</td><td>Per-round: penalize cost, reward consensus improvement</td></tr>
+    </table>
+  </div>
+</div>
+</section>
+
+</div><!-- /main -->
+
+<script>
+function toggle(el) {
+  el.classList.toggle('open');
+}
+
+// Sidebar active state on scroll
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.sidebar a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

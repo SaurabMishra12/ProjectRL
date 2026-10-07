@@ -1,0 +1,1570 @@
+Who Talks to Whom Matters More Than How Much They Talk:
+Adaptive Communication Topologies for Multi-Agent LLM Reasoning
+
+Anonymous ACL submission
+
+001
+
+Abstract
+
+002
+003
+
+Multi-agent language model systems are commonly built on the assumption that increasing
+communication improves collective reasoning.
+We investigate a complementary hypothesis:
+that communication topology may matter more
+than communication volume. To study this
+question, we develop an adaptive communication mechanism that learns sparse interaction
+patterns among debating agents under an information bottleneck objective.
+
+004
+005
+006
+007
+008
+009
+010
+011
+
+Across mathematical, factual, and multi-hop
+reasoning tasks, we observe that communication requirements vary substantially across
+domains, ranging from near-silent coordination on AQuA-RAT to significantly higher
+bandwidth demands on HotpotQA. More importantly, a controlled factorial analysis on
+GSM8K reveals that adaptive routing contributes roughly twice the performance gain
+of communication sparsification alone (β =
++0.06 versus β = +0.03). Despite reducing
+inter-agent communication by up to 94.8%,
+adaptive routing preserves or improves reasoning performance.
+
+012
+013
+014
+015
+016
+017
+018
+019
+020
+021
+022
+023
+024
+025
+
+Beyond efficiency, our analysis reveals that successful reasoning episodes exhibit significantly
+more asymmetric communication patterns than
+failed episodes, while excessive communication is associated with lower-quality collective
+decisions. Together, these findings suggest that
+collective intelligence in language model societies depends less on maximizing communication and more on learning effective communication topologies.
+
+026
+027
+028
+029
+030
+031
+032
+033
+034
+035
+036
+037
+038
+039
+040
+041
+042
+
+cal reasoning, factual question answering, and complex decision-making tasks (Du et al., 2023; Liang
+et al., 2023; Chan et al., 2023). As a result, much of
+the recent literature has implicitly adopted a simple
+assumption: increasing communication improves
+collective reasoning.
+However, communication has two fundamentally
+different dimensions. The first is volume: how
+much information is exchanged between agents.
+The second is topology: who communicates with
+whom. Existing work has focused primarily on controlling communication volume through summarization, pruning, compression, or early stopping
+(Madaan et al., 2023; Yao et al., 2023). In contrast,
+the role of communication topology in collective
+LLM reasoning remains largely unexplored.
+This paper investigates a simple question: Does
+collective reasoning depend more on how much
+agents communicate, or on who communicates with
+whom?
+To study this question, we introduce an adaptive
+communication mechanism that learns sparse interaction patterns among agents under an information
+bottleneck objective. Rather than assuming a fixed
+fully connected debate graph, the system dynamically allocates communication bandwidth across
+agent pairs and selectively suppresses interactions
+that are unlikely to improve collective performance.
+This design allows us to independently examine the
+effects of communication sparsity and communication topology.
+Our study yields three main findings.
+
+1
+
+1. Communication topology is a stronger determinant of collective reasoning than communication volume. Through a controlled factorial analysis, we find that adaptive communication routing contributes substantially more
+to reasoning performance than communication
+sparsification alone. This result suggests that
+collective reasoning depends more strongly on
+
+Introduction
+
+Multi-agent language model systems have emerged
+as a powerful approach for improving reasoning
+performance. By allowing multiple agents to exchange intermediate solutions and iteratively revise
+their beliefs, debate-based systems consistently outperform single-agent inference across mathemati1
+
+043
+044
+045
+046
+047
+048
+049
+050
+051
+052
+053
+054
+055
+056
+057
+058
+059
+060
+061
+062
+063
+064
+065
+066
+067
+068
+069
+070
+071
+072
+073
+074
+075
+076
+077
+078
+079
+080
+081
+082
+
+communication structure than on communication quantity.
+
+rather than as a factor that may itself influence collective reasoning.
+
+131
+
+2. Successful collective reasoning is associated
+with asymmetric communication patterns.
+Across tasks, successful reasoning episodes exhibit significantly greater asymmetry in learned
+communication weights than failed episodes.
+This observation suggests that effective collaboration may involve temporary specialization
+of information flow rather than uniform information exchange among all agents.
+
+Communication efficiency in LLM societies.
+As multi-agent systems become more expensive, recent work has focused on reducing communication
+cost through summarization, message compression,
+memory selection, pruning, and early stopping
+strategies (Madaan et al., 2023; Yao et al., 2023).
+These approaches primarily target communication
+volume, seeking to reduce the amount of information exchanged while preserving performance.
+However, they generally assume a fixed communication structure and do not examine whether communication topology itself influences collective reasoning.
+
+133
+
+Learned communication in multi-agent systems. The idea of learning communication policies originates in multi-agent reinforcement learning (MARL). Prior work introduced differentiable
+communication channels (Sukhbaatar et al., 2016),
+targeted message passing (Das et al., 2019), and
+graph-based communication mechanisms (Jiang
+and Lu, 2018). Unlike classical MARL settings, however, LLM agents communicate through
+costly natural-language messages rather than lowdimensional continuous vectors. This distinction
+introduces a unique trade-off between communication cost and reasoning quality, motivating adaptive
+communication strategies for language-based agent
+systems.
+
+146
+
+083
+084
+085
+086
+087
+088
+089
+090
+091
+092
+093
+094
+095
+096
+097
+098
+099
+100
+101
+102
+103
+104
+105
+
+3. Communication requirements vary systematically across reasoning domains. The
+amount of communication required for successful collective reasoning differs dramatically across tasks. Mathematical reasoning
+often requires minimal information exchange,
+whereas multi-hop factual reasoning benefits
+from substantially higher bandwidth. These observations reveal a task-dependent communication spectrum and suggest that communication
+should be treated as an adaptive resource rather
+than a fixed design choice.
+
+115
+
+Together, these findings challenge the common
+assumption that increasing communication necessarily improves collective reasoning. Instead, they
+suggest that effective multi-agent systems depend
+on learning appropriate communication topologies
+that determine when, where, and how information
+should flow through a group. More broadly, our
+results indicate that communication topology may
+be a fundamental variable governing collective intelligence in language model societies.
+
+116
+
+2
+
+117
+
+Multi-agent reasoning with language models.
+Multi-agent debate has emerged as a powerful
+mechanism for improving LLM reasoning performance. Du et al. (2023) demonstrated that
+exchanging critiques across multiple model instances improves arithmetic and commonsense reasoning. Subsequent work explored adversarial debate (Liang et al., 2023), collaborative evaluation
+(Chan et al., 2023), self-correction, and agent societies. Despite architectural differences, most existing systems rely on densely connected communication structures in which every agent observes every
+other agent’s output. Consequently, communication is typically treated as a resource to be utilized
+
+106
+107
+108
+109
+110
+111
+112
+113
+114
+
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+
+Related Work
+
+2
+
+132
+
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+
+Information bottlenecks and reasoning. The
+Information Bottleneck principle (Tishby and Zaslavsky, 2015) proposes that useful representations
+should compress irrelevant information while preserving task-relevant content. This perspective has
+influenced research on neural representations, reasoning traces, and model compression. We adopt
+the Information Bottleneck as a lens for studying
+inter-agent communication, using communication
+constraints to investigate which information exchanges are necessary for successful collective reasoning.
+
+161
+
+Chain-of-thought and self-improvement. Reasoning improvements can also arise without communication. Chain-of-thought prompting (Wei
+et al., 2022) encourages intermediate reasoning
+steps, while self-consistency (Wang et al., 2023)
+aggregates multiple reasoning trajectories. Selfrefinement approaches further allow a model to
+critique and revise its own outputs (Madaan et al.,
+
+173
+
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+
+174
+175
+176
+177
+178
+179
+180
+
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+
+2023). These methods improve reasoning through
+additional computation within a single agent. Our
+focus is complementary: understanding how reasoning changes when information is distributed
+across multiple interacting agents.
+Positioning of this work. Existing research has
+largely examined debate protocols, communication
+efficiency, and learned communication policies as
+separate problems. As a result, a fundamental question remains unresolved: does collective reasoning
+depend more strongly on communication volume or
+on communication topology? This work addresses
+that question through a controlled study that independently manipulates communication sparsity
+and communication structure, allowing us to isolate
+their respective contributions to collective reasoning performance.
+
+3
+
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+
+Adaptive Communication for Collective
+Reasoning
+
+Our objective is to study the relative contributions
+of communication topology and communication
+volume to collective reasoning. To do so, we construct an adaptive communication framework that
+allows both factors to be manipulated independently. The framework consists of three components: (1) a communication topology controller
+that determines which agents exchange information, (2) a communication bottleneck that controls
+how much information is transmitted, and (3) a debate process in which agents iteratively revise their
+answers using received information.
+This design enables controlled experiments in
+which communication structure and communication bandwidth can be varied separately, allowing
+us to isolate their effects on collective reasoning
+performance.
+
+217
+
+3.1
+
+218
+
+S PARSE C OMM maintains a pool of N = 3 agents
+with distinct reasoning styles (analytical, step-bystep, and creative). At round 0, all agents independently generate answers and reasoning traces.
+During each subsequent round, a communication
+controller observes the current debate state, generates a weighted communication graph Wt , and
+determines whether additional communication is
+likely to improve collective performance.
+The communication graph governs both who
+communicates with whom (topology) and how
+much information is transmitted (volume). Agents
+
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+
+then update their answers using the received information. The final prediction is obtained via
+confidence-weighted majority voting over the finalround outputs.
+Importantly, the framework is designed as an experimental instrument for studying communication
+in multi-agent reasoning systems rather than as a
+task-specific optimization method.
+
+230
+
+4
+
+238
+
+Experimental Setup
+
+233
+234
+235
+236
+237
+
+239
+
+LLM backend. All agents use gpt-oss-120b
+deployed via Azure OpenAI (api version:
+2024-02-15-preview) with temperature 0 for deterministic evaluation.
+
+249
+
+Transfer evaluation. To test generalisation, we
+evaluate a pre-trained IB-C ONTROLLER (trained
+on one random seed) on the test set with 3 independent random seeds, reporting mean ± standard
+deviation. Seeds differ in dataset sampling order;
+controller weights are not re-trained between seeds
+(zero-shot transfer evaluation).
+
+240
+241
+242
+243
+244
+245
+246
+247
+248
+
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+
+Ablation design. A 2×2 factorial experiment on
+GSM8K varies: Factor A (sparsity, KL penalty on
+or off) and Factor B (PPO topology learning on or
+off; off corresponds to a fixed ring topology). The
+four arms (A00 , A01 , A10 , A11 ) are fitted by OLS
+to decompose main effects and their interaction.
+
+266
+
+5
+
+Results
+
+272
+
+5.1
+
+Communication Efficiency Across
+Reasoning Tasks
+
+Table 1 summarizes performance across all evaluation datasets. Unless otherwise stated, all results
+3
+
+232
+
+Datasets. We evaluate on three benchmarks spanning three reasoning regimes: (i) AQuA-RAT
+(Ling et al., 2017), 762-question multiple-choice
+algebraic reasoning; (ii) GSM8K (Cobbe et al.,
+2021), elementary math word problems; and
+(iii) HotpotQA (Yang et al., 2018), two-hop factual retrieval. Training uses 100 samples per dataset
+(from official train splits); evaluation uses between
+100 and 900 test samples depending on baseline
+(see Table 1).
+
+Baselines. No Communication runs three independent agents and takes the weighted majority
+vote; token cost is zero. Multi-Agent Debate (Du
+et al., 2023) uses identical agents with W = 1 − I
+(all weights set to 1, full bidirectional communication) for T rounds.
+
+System Overview
+
+231
+
+267
+268
+269
+270
+271
+
+273
+274
+275
+276
+
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+
+are reported as mean ± standard deviation across
+three independent random seeds.
+We evaluate two questions:
+1. How much communication can be removed
+without substantially degrading collective reasoning?
+2. How do communication requirements vary
+across reasoning domains?
+
+Across all three domains, communication can be
+reduced substantially without catastrophic performance degradation. More importantly, the optimal
+communication budget varies dramatically across
+tasks, revealing a spectrum of communication requirements in collective reasoning systems.
+
+329
+
+5.2
+
+330
+
+Factorial Analysis of Communication
+Topology and Volume
+
+To isolate the contributions of communication
+topology and communication volume, we perform
+a controlled 2 × 2 factorial study on GSM8K.
+Factor A controls communication sparsification
+through the Information Bottleneck objective. Factor B controls adaptive topology learning through
+PPO-based routing.
+Table 2 reports the four experimental conditions.
+The factorial decomposition yields
+
+AQuA-RAT. AQuA-RAT
+is
+the
+most
+communication-efficient domain.
+Adaptive
+communication achieves 86.22 ± 0.39% accuracy
+while reducing average communication from 789.3
+tokens under unrestricted debate to 438.2 ± 8.7
+tokens.
+Interestingly, the No-Communication baseline
+already achieves 82.68% accuracy, suggesting that
+many algebraic reasoning problems can be solved
+independently. Communication therefore acts primarily as an error-correction mechanism rather
+than a channel for transferring essential information.
+Overall, adaptive communication retains nearly
+all of the performance benefit of debate while reducing communication cost by 44.5%.
+
+324
+325
+326
+327
+328
+
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+
+β̂topology = +0.06,
+β̂sparsity = +0.03,
+
+341
+
+β̂interaction = −0.04.
+The topology effect is approximately twice as
+large as the sparsity effect. Learning who communicates with whom therefore contributes more to
+reasoning performance than simply reducing communication volume.
+The negative interaction term indicates partial
+redundancy between the two mechanisms. Both
+adaptive routing and sparsification reduce noisy information exchange, but topology learning remains
+the dominant contributor to performance improvements.
+Taken together, these findings support the central hypothesis of this work: collective reasoning
+depends not only on how much information is exchanged, but also on the structure through which
+information flows.
+
+HotpotQA. HotpotQA exhibits a substantially
+different communication profile. Adaptive communication achieves 31.67 ± 4.26% accuracy while
+reducing average communication from 2914.1 tokens to 473.2 ± 22.7 tokens, corresponding to an
+83.8% reduction in communication cost.
+Unlike AQuA-RAT, aggressive communication
+reduction leads to measurable performance degradation, indicating that multi-hop factual reasoning
+depends more heavily on information exchange between agents. These findings suggest that communication requirements are strongly task-dependent
+and cannot be captured by a single fixed communication budget.
+GSM8K. On GSM8K, adaptive communication
+achieves 54.11 ± 1.92% accuracy while transmitting 494.3 ± 11.8 tokens on average.
+Despite operating under substantial communication constraints, the controller consistently converges to sparse communication structures across
+all seeds. This suggests that only a subset of agent
+interactions contribute meaningfully to collective
+mathematical reasoning.
+
+6
+
+Analysis
+
+6.1
+
+Communication Requirements Differ
+Across Tasks
+
+A central observation of this study is that communication requirements vary dramatically across
+reasoning domains. Appendix Figure 1 reveals
+an order-of-magnitude difference in the amount of
+communication required for successful collective
+reasoning.
+Among the evaluated datasets, AQuA-RAT is
+the most compressible. Correct solutions are as4
+
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+
+Table 1: Main evaluation results averaged across three independent seeds. Communication cost is measured as the
+average number of inter-agent tokens transmitted per problem instance.
+Dataset
+
+Method
+
+Accuracy (%)
+
+Avg. Tokens
+
+Token Reduction
+
+AQuA-RAT
+
+No Communication
+Multi-Agent Debate
+Adaptive Communication
+
+82.68
+87.01
+86.22 ± 0.39
+
+0.0
+789.3
+438.2 ± 8.7
+
+—
+0%
+44.5%
+
+HotpotQA
+
+No Communication
+Multi-Agent Debate
+Adaptive Communication
+
+30.00
+34.00
+31.67 ± 4.26
+
+0.0
+2914.1
+473.2 ± 22.7
+
+—
+0%
+83.8%
+
+GSM8K
+
+No Communication
+Multi-Agent Debate
+Adaptive Communication
+
+—
+—
+54.11 ± 1.92
+
+0.0
+—
+494.3 ± 11.8
+
+—
+—
+—
+
+Table 2: Factorial ablation study on GSM8K.
+Configuration
+Fixed Ring
+Fixed Ring + Sparsity
+Adaptive Topology
+Adaptive Topology + Sparsity
+
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+
+Accuracy (%)
+
+Avg. Tokens
+
+60.0
+63.0
+66.0
+65.0
+
+—
+1779.6
+507.7
+496.7
+
+ticularly pronounced on mathematical reasoning
+tasks. For GSM8K, correct solutions exhibit approximately 1.83× greater asymmetry than incorrect solutions, while AQuA-RAT exhibits a ratio of
+1.70×.
+
+400
+401
+402
+403
+
+Table 3: Topological asymmetry conditioned on reasoning outcome. Values correspond to the variance of
+incoming communication weights in the final communication graph.
+
+sociated with a mean compression ratio of approximately 0.015, indicating that agents transmit
+only a small fraction of their generated reasoning
+while largely preserving performance. In contrast,
+GSM8K requires substantially more communication, with average compression ratios near 0.53.
+HotpotQA occupies the opposite end of the spectrum, where successful reasoning requires preserving a much larger fraction of transmitted information.
+These findings suggest that communication
+should not be treated as a fixed resource. Instead,
+different reasoning tasks appear to possess distinct
+communication requirements, implying that effective multi-agent systems must adapt communication budgets to the underlying structure of the task.
+6.2
+
+399
+
+Topological Asymmetry Predicts
+Successful Reasoning
+
+To understand how communication structure relates
+to reasoning performance, we measure the variance
+of incoming communication weights in the final
+communication graph. Higher variance indicates
+a more asymmetric topology in which attention is
+concentrated on a subset of agents, whereas lower
+variance indicates a more uniform communication
+structure.
+Table 3 reports the results averaged across three
+evaluation seeds. Across all datasets, successful reasoning episodes exhibit higher topological
+asymmetry than failed episodes. The effect is par-
+
+5
+
+Dataset
+
+Correct
+
+Incorrect
+
+Ratio
+
+HotpotQA
+GSM8K
+AQuA-RAT
+
+0.0001
+0.0021
+0.0633
+
+0.0001
+0.0011
+0.0372
+
+1.10×
+1.83×
+1.70×
+
+The consistency of this pattern suggests that
+successful collective reasoning is associated with
+asymmetric information flow rather than uniformly
+distributed communication. This observation provides an empirical explanation for the factorial results in Section 5.2: learning communication topology may be beneficial because it allows the system
+to dynamically concentrate information on the most
+influential reasoning pathways.
+
+412
+
+6.3
+
+When More Communication Hurts
+
+413
+
+More communication is not always beneficial. To
+investigate this phenomenon, we analyze GSM8K
+instances in which agents initially disagreed and
+compare successful and unsuccessful resolution
+trajectories.
+Successful interactions exhibit a mean compression ratio of r̄ = 0.597, whereas failed interactions
+exhibit a significantly higher mean compression ratio of r̄ = 0.674 (Welch’s t = −2.53, p = 0.015).
+In other words, failed reasoning episodes transmit approximately 13% more information than successful ones.
+
+414
+
+404
+405
+406
+407
+408
+409
+410
+411
+
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+
+438
+
+Answer entropy provides complementary evidence. Correctly resolved interactions exhibit
+substantially lower answer entropy (0.91) than
+failed interactions (1.49), indicating that successful groups converge toward a coherent consensus
+while unsuccessful groups continue exchanging
+conflicting information.
+Together, these results challenge the common
+assumption that increasing communication necessarily improves collective reasoning. Instead,
+excessive communication may amplify noisy or
+misleading reasoning trajectories, reducing group
+performance.
+
+439
+
+6.4
+
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+
+440
+441
+442
+443
+444
+
+Communication Topology Contributes
+More Than Communication Volume
+
+The factorial study provides a direct comparison
+between communication topology and communication volume.
+The decomposition yields
+β̂topology = +0.06,
+β̂sparsity = +0.03,
+
+445
+
+β̂interaction = −0.04.
+
+460
+
+The topology effect is approximately twice as
+large as the sparsity effect. Thus, learning who
+communicates with whom contributes more to performance than simply reducing communication volume.
+The negative interaction term indicates partial
+redundancy between the two mechanisms. Both
+topology learning and sparsification suppress noisy
+communication, but the larger topology coefficient
+suggests that communication structure is the dominant factor governing collective performance.
+This result directly supports the central hypothesis of the paper and provides quantitative evidence
+that communication topology constitutes an independent dimension of collective reasoning.
+
+461
+
+6.5
+
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+
+462
+463
+464
+465
+466
+467
+468
+469
+470
+
+Partial Communication Emerges
+Universally
+
+Across all datasets and all three evaluation seeds,
+the learned controller overwhelmingly favors partial communication. Active edges consistently operate in the intermediate communication regime,
+while neither complete communication nor complete suppression emerges as a preferred strategy.
+This behavior is noteworthy because unrestricted
+debate corresponds to transmitting every generated
+
+token, whereas no-communication baselines eliminate information exchange entirely. The learned
+controller converges to neither extreme.
+Instead, the system consistently adopts selective
+information sharing, suggesting that effective collective reasoning relies on transmitting a carefully
+chosen subset of information rather than maximizing or minimizing communication.
+Furthermore, communication density and compression ratio exhibit a strong positive correlation
+(r = 0.917, p < 10−40 ), indicating that topology
+and bandwidth are tightly coupled. When the controller increases connectivity, it simultaneously allocates additional communication capacity to those
+connections. This supports the view that communication structure and communication volume should
+be studied jointly rather than as independent design
+choices.
+
+488
+
+7
+
+489
+
+Limitations
+
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+
+While our results provide evidence that communication topology is an important factor in collective
+LLM reasoning, several limitations remain.
+
+490
+
+Scale of training. The communication controllers are trained using relatively small amounts
+of task-specific experience. Although the learned
+policies transfer across evaluation seeds and consistently recover sparse communication structures,
+larger-scale training may reveal additional communication regimes or more robust policies. Future work should investigate whether the observed
+topological effects persist under substantially larger
+training budgets.
+
+493
+
+Model-family diversity. All experiments use the
+same underlying language model backend. Consequently, our conclusions isolate the effect of communication structure within a single model family
+but do not establish whether identical communication patterns emerge across architectures. Evaluating topology learning on open-weight and frontier
+models would strengthen the generality of the findings.
+
+503
+
+Limited agent population size. Our study focuses on three-agent systems. While this setting is
+representative of many contemporary debate frameworks, larger agent societies may exhibit qualitatively different communication dynamics, including hierarchical organization, specialization, or
+coalition formation. Understanding how communication topology scales with group size remains an
+6
+
+471
+
+491
+492
+
+494
+495
+496
+497
+498
+499
+500
+501
+502
+
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+
+520
+
+important open question.
+
+521
+
+Task coverage. We evaluate mathematical reasoning, arithmetic word problems, and multi-hop
+factual question answering. These tasks span distinct reasoning regimes, but they do not cover domains such as coding, scientific reasoning, planning, or long-horizon decision making. The communication patterns identified here may not transfer
+unchanged to these settings.
+
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+
+Causal interpretation of topology. The factorial
+analysis indicates that adaptive routing contributes
+more strongly than communication sparsification in
+our experimental setting. However, the observed relationship remains empirical rather than theoretical.
+Establishing formal principles linking communication topology to collective reasoning performance
+remains an open research challenge.
+
+552
+
+Evaluation methodology. Our analysis focuses
+primarily on aggregate task performance, communication cost, and graph-level communication
+statistics. Although these measurements reveal consistent patterns, they do not fully characterize the
+semantic content transmitted between agents. Future work could combine topology analysis with
+mechanistic investigations of information flow to
+better understand why particular communication
+structures emerge.
+Despite these limitations, the results consistently
+support a common conclusion across datasets and
+seeds: communication structure is not merely an
+implementation detail of multi-agent reasoning systems, but an independent variable that substantially
+influences collective performance.
+
+553
+
+8
+
+554
+
+This paper investigated a fundamental question in
+collective language-model reasoning: does performance depend more strongly on how much
+agents communicate, or on who communicates
+with whom?
+To study this question, we introduced an adaptive
+communication mechanism that jointly learns communication topology and communication sparsity
+within multi-agent debate systems. Across mathematical, factual, and multi-hop reasoning tasks, the
+resulting communication policies consistently reduced communication cost while maintaining competitive reasoning performance. On AQuA-RAT,
+communication was reduced by up to 94.8
+
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+
+Conclusion
+
+7
+
+More importantly, the experiments reveal three
+broader insights about collective reasoning. First,
+communication topology exerts a larger influence
+on performance than communication volume: factorial analysis shows that adaptive routing contributes approximately twice the performance gain
+of communication sparsification alone. Second,
+successful reasoning episodes are associated with
+asymmetric communication structures, suggesting
+that effective collaboration emerges through temporary specialization rather than uniform information exchange. Third, communication requirements
+vary dramatically across tasks, revealing a spectrum of reasoning compressibility ranging from
+near-silent coordination in mathematical problem
+solving to substantially higher bandwidth requirements in multi-hop factual retrieval.
+Taken together, these findings suggest that communication should not be viewed solely as a resource to be minimized. Instead, communication structure itself appears to be a fundamental
+component of collective intelligence in languagemodel societies. As multi-agent systems continue
+to scale, understanding how information flows
+through groups may prove as important as understanding the capabilities of the individual agents
+themselves.
+
+568
+
+References
+
+595
+
+Chi-Min Chan, Weize Chen, Yusheng Su, Jianxuan Yu,
+Wei Xue, Shanghang Zhang, Jie Fu, and Zhiyuan Liu.
+2023. ChatEval: Towards better LLM-based evaluators through multi-agent debate. arXiv preprint
+arXiv:2308.07201.
+
+596
+597
+598
+599
+600
+
+Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian,
+Mark Chen, Heewoo Jun, Lukasz Kaiser, Matthias
+Plappert, Jerry Tworek, Jacob Hilton, Reiichiro
+Nakano, Christopher Hesse, and John Schulman.
+2021. Training verifiers to solve math word problems. arXiv preprint arXiv:2110.14168.
+
+601
+602
+603
+604
+605
+606
+
+Abhishek Das, Theophile Gervet, Joshua Romoff,
+Dhruv Batra, Devi Parikh, Michael Rabbat, and
+Joelle Pineau. 2019. TarMAC: Targeted multi-agent
+communication. In Proceedings of the 36th International Conference on Machine Learning.
+
+607
+608
+609
+610
+611
+
+Yilun Du, Shuang Li, Antonio Torralba, Joshua B.
+Tenenbaum, and Igor Mordatch. 2023. Improving
+factuality and reasoning in language models through
+multiagent debate. arXiv preprint arXiv:2305.14325.
+
+612
+613
+614
+615
+
+Jiechuan Jiang and Zongqing Lu. 2018. Learning attentional communication for multi-agent cooperation.
+In Advances in Neural Information Processing Systems.
+
+616
+617
+618
+619
+
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+
+620
+621
+622
+623
+624
+
+Tian Liang, Zhiwei He, Wenxiang Jiao, Xing Wang,
+Yan Wang, Rui Wang, Yujiu Yang, Zhaopeng Tu, and
+Shuming Shi. 2023. Encouraging divergent thinking
+in large language models through multi-agent debate.
+arXiv preprint arXiv:2305.19118.
+
+652
+653
+654
+655
+656
+
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten
+Bosma, Brian Ichter, Fei Xia, Ed H. Chi, Quoc V. Le,
+and Denny Zhou. 2022. Chain-of-thought prompting elicits reasoning in large language models. In
+Advances in Neural Information Processing Systems.
+
+657
+658
+659
+660
+661
+662
+
+Zhilin Yang, Peng Qi, Saizheng Zhang, Yoshua Bengio, William W. Cohen, Ruslan Salakhutdinov, and
+Christopher D. Manning. 2018. HotpotQA: A dataset
+for diverse, explainable multi-hop question answering. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing.
+
+663
+664
+665
+666
+667
+
+Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran,
+Thomas L. Griffiths, Yuan Cao, and Karthik
+Narasimhan. 2023. Tree of thoughts: Deliberate
+problem solving with large language models. In Advances in Neural Information Processing Systems.
+
+668
+
+A
+
+669
+671
+
+Figure 1 places all evaluated system points in the
+accuracy–token space, illustrating the efficiency
+frontier.
+
+672
+
+B
+
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+
+670
+
+Accuracy (%)
+
+646
+647
+648
+649
+650
+651
+
+S
+PARSE C OMM (AQuA)
+−94.8%
+NoCom
+(AQuA)
+Wang Ling, Dani Yogatama, Chris Dyer, and Phil BlunDebate (AQuA)
+S PARSE C OMM-Tr80(AQuA)
+som. 2017. Program induction by rationale generation: Learning to solve and explain algebraic word
+problems. In Proceedings of the 55th Annual Meeting of the Association for Computational Linguistics.
+60
+Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler
+Hallinan, Luyu Gao, Sarah Wiegreffe, Uri Alon,
+Nouha Dziri, Shrimai Prabhumoye, Yiming Yang,
+S PARSE C OMM
+40
+Shashank Gupta, Bodhisattwa Prasad Majumder,
+Debate (HQ)
+Debate
+Katherine Hermann, Sean Welleck, Amir YazdanS PARSE C OMM (HQ)
+No-Comm−84.0%
+bakhsh, and Peter Clark. 2023. Self-refine: Iterative
+NoCom (HQ) S PARSE C OMM Transfer
+refinement with self-feedback. In Advances in Neu20
+ral Information Processing Systems.
+0
+1,000
+2,000
+3,000
+Sainbayar Sukhbaatar, Arthur Szlam, and Rob Fergus.
+Average Communication Tokens
+2016. Learning multiagent communication with
+backpropagation. In Advances in Neural InformaFigure 1: Accuracy vs. average inter-agent communication Processing Systems.
+tion tokens. The top-left quadrant (high accuracy, low
+Naftali Tishby and Noga Zaslavsky. 2015. Deep learntokens) is the target zone. S PARSE C OMM (blue circles)
+ing and the information bottleneck principle. In Prooccupies this quadrant on AQuA while Debate (orange
+ceedings of the 2015 IEEE Information Theory Worksquares) is stranded at high token cost. On HotpotQA,
+shop.
+both S PARSE C OMM and Debate perform modestly; the
+key difference is Exact Match (0.19 vs. 0.0), which this
+Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc V.
+plot cannot capture.
+Le, Ed H. Chi, Sharan Narang, Aakanksha Chowdhery, and Denny Zhou. 2023. Self-consistency improves chain of thought reasoning in language models. In Proceedings of the Eleventh International
+Conference on Learning Representations.
+
+Table 4: Hyperparameters used across all experiments.
+
+Pareto Frontier Visualisation
+
+Hyperparameters
+8
+
+Parameter
+
+Value
+
+Agents N
+Communication rounds T
+Controller hidden dim
+Controller learning rate
+Training samples (per dataset)
+Controller epochs
+PPO clip ε
+PPO inner epochs
+GAE λ
+Discount γ
+Entropy coefficient
+λI (GSM8K)
+λI (HotpotQA)
+λI (AQuA)
+λK
+γℓ
+Sparsity prior p0
+Sentence encoder
+LLM
+Max tokens per agent call
+
+3
+3 (GSM8K, HotpotQA); 4 (AQuA)
+64
+10−3
+100
+5
+0.2
+3
+0.95
+0.99
+0.01
+0.30
+0.25
+0.20
+0.08
+0.10
+0.10
+all-MiniLM-L6-v2
+gpt-oss-120b (Azure)
+512 (GSM8K), 1024 (AQuA, HotpotQA)
+
+

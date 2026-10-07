@@ -1,0 +1,1607 @@
+\documentclass[11pt]{article}
+\usepackage[review]{acl}
+\usepackage{times}
+\usepackage{latexsym}
+\usepackage{microtype}
+\usepackage{inconsolata}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{xspace}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{url}
+\emergencystretch=2em
+\raggedbottom
+
+% ── macros ───────────────────────────────────────────────────────────────────
+\newcommand{\sys}{\textsc{SparseComm}\xspace}
+\newcommand{\Vol}{\operatorname{Vol}}
+\newcommand{\Volt}{\widetilde{\Vol}}
+\DeclareMathOperator{\Bern}{Bern}
+\DeclareMathOperator*{\clip}{clip}
+\newcommand{\onenormoff}[1]{\left\lVert #1 \right\rVert_{1,\mathrm{off}}}
+
+
+\newtheorem{proposition}{Proposition}
+
+% =============================================================================
+\title{Routing or Rationing?\\
+       Decomposing Communication Control in Multi-Agent Language Models}
+
+% Authors hidden in [review] mode.
+% \author{Saurab Mishra$^1$ \quad Kripabandhu Ghosh$^2$ \\
+%   $^1$IISER Thiruvananthapuram \quad $^2$IISER Kolkata \\
+%   \texttt{saurab@iisertvm.ac.in}}
+
+\begin{document}
+\maketitle
+
+% =============================================================================
+\begin{abstract}
+Multi-agent language-model systems can improve reasoning through communication, but exchanging full reasoning traces between agents introduces substantial token overhead. Understanding how to reduce this cost is complicated because communication depends on both \emph{which agents communicate} and \emph{how much information they exchange}.
+
+We use \sys, a reinforcement-learning-based communication controller, as a tool
+to study this interaction across GSM8K, AQuA-RAT, and closed-book HotpotQA.
+The controller learns sparse routing, message retention, and adaptive stopping.
+Across the three benchmarks, sparse communication substantially reduces
+inter-agent token usage while maintaining performance close to fully connected
+debate.
+
+We then examine what drives these savings. A factorial analysis shows that
+routing and message volume are strongly coupled, so routing interventions alone
+do not isolate a routing effect. We therefore compare communication supports
+under common transmission constraints and use a component-isolation diagnostic.
+In the tested three-agent GSM8K setting, the controller-induced top-2 routing
+matches the static out-star support under matched depth and realized volume,
+while adaptive stopping reduces communication substantially. Across the three
+benchmarks, \sys substantially reduces inter-agent token usage while remaining
+within the prespecified five-point non-inferiority margin relative to debate.
+\end{abstract}
+% =============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Multi-agent language-model (LLM) systems coordinate by exchanging text.
+Debate and collaboration can improve mathematical and factual reasoning
+\citep{du2024improving,liang-etal-2024-encouraging}, software engineering
+\citep{hong2024metagpt,qian-etal-2024-chatdev}, and open-ended collaboration
+\citep{wu2024autogen,li2023camel,zhuge2024gptswarm}. This coordination,
+however, comes with substantial communication cost. In a fully connected
+protocol, agents repeatedly exchange reasoning traces with their peers, so
+communication grows with both the number of channels and the number of rounds.
+Because these messages are variable-length, the cost depends not only on which
+agents communicate, but also on how much content each channel carries.
+
+We distinguish these two decisions as \emph{routing} and \emph{rationing}.
+Routing determines which directed communication channels participate, while
+rationing determines how much content is transmitted on an active channel.
+Recent communication-efficient methods prune agents or messages
+\citep{zhang2025cut,wang-etal-2025-agentdropout}, while topology-learning
+methods optimize communication structure
+\citep{zhang2025gdesigner,shen-etal-2025-understanding,li2026assemble}.
+These approaches can reduce communication substantially, but their reported
+effects are generally properties of the resulting communication policy as a
+whole. In particular, unless realized communication volume is explicitly
+controlled, changing a topology also changes the amount of text transmitted:
+removing a channel removes a variable-length message whose realized size is
+determined by the model. A comparison that changes the support therefore need
+not isolate a topology-only effect.
+
+This paper studies that attribution problem. We use \sys as an experimental
+instrument that provides controllable routing, message retention, and adaptive
+stopping, allowing us to vary communication structure and transmitted volume
+within a common multi-agent reasoning pipeline. Across GSM8K, AQuA-RAT, and
+closed-book HotpotQA, \sys substantially reduces inter-agent transmitted-token
+volume while maintaining accuracy close to fully connected debate. The purpose
+of this result is not to establish a new state-of-the-art communication policy,
+but to provide a controllable setting in which the factors underlying such
+savings can be examined.
+
+We first ask whether routing and rationing can be separated with a standard
+$2\times2$ intervention. They cannot in our setting. Switching routing alone
+changes realized communication much more than switching the message rule,
+showing that the routing contrast also changes the amount of information
+available to other agents. Thus, the factorial contrast measures a total
+effect rather than a routing-only effect. We formalize this interaction between
+support and realized communication volume in Props.~\ref{prop:proj}--\ref{prop:nonid}
+and use the resulting volume measurements to make the confounding explicit.
+
+We then study communication supports under a shared transmission budget.
+Rather than selecting a small set of candidate graphs, we exhaustively enumerate
+all 15 directed two-edge supports for $N=3$ under a common per-edge transmission
+ceiling and a shared transmission procedure
+(Props.~\ref{prop:face}--\ref{prop:cap}). We compare these static supports with
+the learned controller on the corresponding sparse support and evaluate five
+independent PPO realizations. We then use a component-isolation control to
+separate controller-induced routing from adaptive stopping under matched depth
+and realized communication.
+
+\paragraph{Contributions.}
+\begin{enumerate}[leftmargin=1.4em,itemsep=1pt,topsep=2pt]
+\item We formalize the distinction between communication routing and rationing
+      and show why topology interventions in variable-length LLM communication
+      can simultaneously intervene on transmitted token volume
+      (Props.~\ref{prop:proj}--\ref{prop:nonid}).
+\item We provide an empirical diagnostic demonstrating that routing and
+      communication volume are strongly coupled in a multi-agent LLM system,
+      making an unconstrained routing $\times$ rationing factorial insufficient
+      for isolating a routing-only effect.
+\item We introduce a budget-controlled, exhaustive analysis of all 15 directed
+      two-edge supports and a component-isolation control separating
+      controller-induced routing from adaptive stopping under matched
+      communication.
+\item We use \sys as a controllable experimental instrument for this analysis
+      and characterize both its communication savings and the conditions under
+      which sparse communication provides limited benefit.
+\end{enumerate}
+% =============================================================================
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig1_identification.pdf}
+\caption{The paper in one figure. \textbf{(a)} Why the factorial does not
+identify a routing effect (P2b): switching only routing moves realized volume
+from 366 to 109 tokens per question, the message rule alone from 366 to 344.
+\textbf{(b)} The exhaustive P4 comparison on 150 matched GSM8K questions per
+evaluation: all 15 directed two-edge supports use the same per-edge transmission
+ceiling, while the learned policy is higher than the static-support mean at both
+budgets. \textbf{(c)} The matched role-permutation control: analytical, creative,
+and step-by-step roles are permuted while the out-star root is swapped between
+agents 0 and 2; every observed root contrast is at most $0.67$ points.}
+\label{fig:main}
+\end{figure}
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Collective reasoning by debate.}
+Multi-agent debate improves reasoning by letting agents critique intermediate
+solutions
+\citep{du2024improving,liang-etal-2024-encouraging,chan2023chatevalbetterllmbasedevaluators},
+and the same idea drives frameworks for autonomous collaboration and software
+engineering
+\citep{wu2024autogen,li2023camel,hong2024metagpt,qian-etal-2024-chatdev,chen2023agentverse,gao2024agentscopeflexiblerobustmultiagent}.
+These systems fix the protocol in advance and broadcast widely, so communication
+cost is a consequence of the design rather than a variable in it: they are the
+expensive reference point, not a target for attribution.
+
+\paragraph{Reducing cost, and learning the graph.}
+A second line treats communication as a budget to spend carefully, through
+message pruning, agent dropout and early stopping
+\citep{zhang2025cut,wang-etal-2025-agentdropout}; a third optimizes the graph
+itself
+\citep{zhang2025gdesigner,li2026assemble,zhuge2024gptswarm,shen-etal-2025-understanding},
+extending an older multi-agent RL literature on gated and targeted communication
+\citep{sukhbaatar2016learningmultiagentcommunicationbackpropagation,foerster2016learning,das2019tarmac,singh2018individualized,jiang2018learningattentionalcommunicationmultiagent}.
+Both deliver large savings; what remains open is which component delivers them.
+Pruning an agent removes its edges and its messages together, so the reduction is
+reported for the pipeline, and Prop.~\ref{prop:nonid} says a factorial version of
+these designs would not separate the two either. The MARL work is the closest formal antecedent,
+since it also learns continuous communication weights, but there a message is
+typically a fixed-width vector, so a gate value changes what is sent without
+changing how much and a topology contrast is volume-controlled by construction.
+LLM agents break that property: messages have variable length, so a gate edit
+changes the transmitted token count by an amount nobody chose.
+\S\ref{sec:rq3} measures how large it is.
+
+\paragraph{What we add.}
+We ask what a component-wise intervention on such a structure can identify,
+answer that in the negative for the natural factorial design
+(\S\ref{sec:factorial}), and then use budget-controlled and component-isolated
+experiments to characterize the resulting communication behavior
+(\S\ref{sec:fixedbudget}). G-Designer \citep{zhang2025gdesigner} and
+ARG-Designer \citep{li2026assemble} share our interest in the graph but read
+their graph comparisons as topology effects.
+Appendix~\ref{app:positioning} positions \sys by reported mechanism; we have not
+run these systems, so it is not a performance comparison.
+
+% =============================================================================
+\section{What a Component Intervention Identifies}
+\label{sec:identification}
+
+We state the estimands before introducing any system, because the estimand is
+what distinguishes the experiments we run from those the literature runs. The
+ambient space is $\mathbb{R}^{\mathcal{O}}$ with
+$\mathcal{O}=\{(i,j):i\neq j\}$; proofs are in Appendix~\ref{app:proofs}.
+Separate an allowed support
+$\mathbf{A}\in\{0,1\}^{N\times N}$ from a conditional allocation
+$\mathbf{B}\in\mathbb{R}_{\ge0}^{N\times N}$, with $A_{ii}=B_{ii}=0$, so that
+\begin{equation}
+\mathbf{M}=\mathbf{A}\odot\mathbf{B},\quad
+\Vol(\mathbf{A},\mathbf{B})=\sum_{i\neq j}A_{ij}B_{ij}.
+\label{eq:B}
+\end{equation}
+This is intervention bookkeeping, not a thresholded description of the runtime
+controller, which uses continuous intensities (\S\ref{sec:channel}); its role is
+to let the two factors be manipulated separately while every reported cost
+remains the tokenizer-counted $\Volt$ of Eq.~\ref{eq:vol}.
+
+\begin{proposition}[Routing contracts volume]
+\label{prop:proj}
+$\mathcal{P}_{\mathbf A}(\mathbf B)=\mathbf A\odot\mathbf B$ is the orthogonal
+projection onto the coordinate subspace of the selected support, and
+$\Vol(\mathbf{A},\mathbf{B})\le\onenormoff{\mathbf{B}}$, with equality iff
+$\operatorname{supp}(\mathbf B)$ lies inside that support.
+\end{proposition}
+
+\noindent Changing routing therefore changes realized volume unless the mass
+it opens exactly offsets the mass it closes, and nothing in a factorial design
+places a pair of supports on that measure-zero set.
+
+Let $Y_q(c,t)$ be the outcome on question $q$ in the arm with message rule $c$
+and routing policy $t$, let $V_q(c,t)=\Volt$ be its realized volume, and let
+$Y_q(c,t,v)$ be the outcome under routing policy $t$ with volume set to $v$.
+
+
+For fixed message rule $c$ the factorial contrast decomposes as
+$\beta_T(c)=\Delta_{\mathrm{route}}(c)+\Delta_{\mathrm{volume}}(c)$, the natural
+direct and indirect effects of $T$ with mediator $V$
+(Prop.~\ref{prop:nonid}). Randomizing $T$ identifies the sum; isolating
+$\Delta_{\mathrm{route}}(c)$ needs an intervention that sets $V$, or cross-world
+assumptions untestable from these data. Whether the mediated term matters is
+empirical, and \S\ref{sec:rq3} answers it: switching $T$ at $c=0$ moves realized
+volume by a factor of $3.4$. That is the whole reason this section exists.
+
+Fixing the transmitted mass removes it. The set of allocations with
+$\sum_{i\neq j}M_{ij}=\bar V$ is a scaled simplex, each support selects a face
+of it, and randomizing routing across those faces with the non-routing
+mechanisms held fixed makes $V$ constant, so $\Delta_{\mathrm{volume}}$ vanishes
+and the contrast is the controlled routing effect at budget $\bar V$
+(Prop.~\ref{prop:face}).
+
+
+Exact mass matching is unattainable with integer token counts and messages that
+terminate before their allocation. What we can enforce is a common \emph{cap},
+and Prop.~\ref{prop:cap} says what that costs: for two arms sharing cap
+$\bar V$ but realizing mean volumes $v_t,v_{t'}$, the observed difference is the
+controlled effect at the common reference volume plus a residual $R$ with
+$|R|\le\omega_c(\mathcal V)$, the variation of the volume--outcome response over
+$\mathcal V=[\min(v_t,v_{t'}),\max(v_t,v_{t'})]$. Exact matching collapses
+$\mathcal V$ to a point and recovers Prop.~\ref{prop:face}. This is the estimand
+our experiment delivers.
+
+
+No finite experiment identifies $\omega_c$ at arbitrarily fine resolution. What
+our design provides is its magnitude over a \emph{doubling} of the cap, which
+bounds nothing formally but is the right scale for judging a residual imbalance
+of a few percent; \S\ref{sec:fixedbudget} uses it as a sensitivity check.
+
+% =============================================================================
+\section{\sys}
+\label{sec:method}
+
+\subsection{A continuously weighted channel}
+\label{sec:channel}
+
+$N$ agents reason for at most $T$ rounds after an independent round $r=0$. Let
+$\ell$ denote token length and $m_i^{(r)}$ agent $i$'s trace at round $r$. A
+continuous communication matrix $\mathbf{W}_r\in[0,1]^{N\times N}$ with
+$W^{(r)}_{ii}=0$ controls both the participation of directed channel $i\to j$
+and the strength of semantic retention on it. With $\kappa$ the sentence-level filter,
+\begin{equation}
+\widetilde m^{(r)}_{ij}
+=\kappa\!\left(m_i^{(r)},W^{(r)}_{ij}\right),\quad
+\Volt_r=\sum_{i\neq j}\ell\!\left(\widetilde m^{(r)}_{ij}\right).
+\label{eq:vol}
+\end{equation}
+Every reported communication cost is the tokenizer-counted $\Volt$.
+
+\subsection{Controller}
+\label{sec:controller}
+
+A shared actor--critic observes a 20-dimensional collective state for $N=3$
+combining normalized answer entropy, pairwise reasoning overlap, answer
+diversity, reasoning-length variation, consensus strength, agent confidences, the
+previous communication matrix, normalized round index, unique-answer fraction and
+a scalar accuracy feature $s_{\mathrm{acc}}$; per-component dimensions are in
+Appendix~\ref{app:repro}.
+
+$s_{\mathrm{acc}}$ is the controller's running accuracy over the \emph{training}
+split, updated during controller training only; at evaluation it is frozen at
+its final training value and passed as a constant, so no evaluation-set label
+enters the controller state.
+
+Rather than selecting a discrete topology, the actor produces continuous edge
+intensities. Factors $H_s,H_d\in\mathbb{R}^{N\times2}$ define
+\begin{equation}
+\mathbf{W}^{(r)}=\sigma\!\left(H_sH_d^\top+0.5\right),
+\qquad W^{(r)}_{ii}=0 ,
+\label{eq:weights}
+\end{equation}
+where $\sigma$ is the logistic function and the bias shifts the initial policy
+toward moderate participation, so early episodes exchange enough text for the
+cost penalty to act on.
+
+Edge intensity also controls retention. Each trace is split into sentences, each
+is scored against the sender's current-round answer with
+\texttt{all-MiniLM-L6-v2}, and sentences are retained stochastically. Writing
+$w_{ij}=W^{(r)}_{ij}$, sentence $k$ is kept with probability
+\begin{equation}
+p_k=\clip\!\left(w_{ij}\bar{s}_k,\;0,\;1\right),
+\label{eq:semantic_filter}
+\end{equation}
+where $\bar{s}_k$ is the mean-normalized similarity of sentence $k$ to that
+answer. Cosine similarity $s_k$ is first mapped to $[0,1]$ by
+$s_k'=(s_k+1)/2$, then normalized by the trace mean,
+\begin{equation}
+\bar{s}_k=\frac{s_k'}{\tfrac{1}{K}\sum_{j}s_j'+\varepsilon},
+\qquad \varepsilon=10^{-9},
+\label{eq:normsim}
+\end{equation}
+so $\bar{s}_k$ is centred on $1$ and may exceed it, which is why the clip in
+Eq.~\ref{eq:semantic_filter} is required. For a single-sentence trace or a trace
+whose similarities are equal, every $\bar{s}_k\approx1$ and all sentences share
+the retention probability $\clip(w_{ij},0,1)$; $\varepsilon$ prevents division
+by zero. Depth is adaptive: a learned halt signal is combined disjunctively with
+a confidence score (Appendix~\ref{app:algorithm}).
+
+\subsection{Reward and optimization}
+\label{sec:reward}
+
+The controller is trained by maximizing the standard clipped PPO surrogate with
+value and entropy terms \citep{schulman2017ppo}. The actor parameterizes a
+diagonal Gaussian over
+$\mathbf{a}_r=[\mathrm{vec}(H_s),\mathrm{vec}(H_d),\mathrm{vec}(Q),z_r]$; at
+inference $\mathbf a_r=\boldsymbol\mu_r$,
+$W_{ij}^{(r)}=\sigma((H_sH_d^\top)_{ij}+0.5)$ for $i\ne j$, and
+$\mathrm{Halt}^{(r)}=\mathbb{I}(z_r>0)$. Appendix~\ref{app:penalties} gives the
+surrogate in full. The full action parameterization is given in
+Appendix~\ref{app:hyperparameters}. The per-round reward is
+\begin{equation}
+\begin{aligned}
+r_r ={}& (1.5\,a_q-0.5)\,\mathbb{I}_{\mathrm{final}}
+ -\lambda_{\mathrm{info}}C^{(r)}_{\mathrm{info}}\\
+ &-\lambda_{\mathrm{KL}}D^{(r)}_{\mathrm{route}}
+  -\gamma_{\mathrm{persist}}C^{(r)}_{\mathrm{persist}}\\
+ &-0.1\,r\,\mathbb{I}_{\mathrm{final}} ,
+\end{aligned}
+\label{eq:reward}
+\end{equation}
+where $a_q\in\{0,1\}$ is per-question correctness, so the terminal term is $+1$
+for a correct final answer and $-0.5$ otherwise; we write $\widehat{\mathrm{Acc}}$
+for dataset-level percentage accuracy. The persistence penalty
+$C^{(r)}_{\mathrm{persist}}$ and the routing penalty $D^{(r)}_{\mathrm{route}}$
+average over the $N(N{-}1)$ off-diagonal edges and are defined in
+Appendix~\ref{app:penalties}; the first charges an edge for high intensity in
+consecutive rounds, so it measures edge-intensity persistence rather than
+repeated content or graph cycles. The communication penalty is the
+realized-to-full ratio
+$C^{(r)}_{\mathrm{info}}=\Volt_r/\max(\Vol_{\mathrm{full}}^{(r)},1)$, where
+$\Vol_{\mathrm{full}}^{(r)}$ is the volume round $r$ would carry if every
+open channel sent its sender's full unfiltered message. \subsection{Consensus}
+\label{sec:consensus}
+
+Three agents carry fixed analytical, step-by-step and creative role prompts,
+following work on diverse debate
+\citep{du2024improving,liang-etal-2024-encouraging,liu2025breaking}. We study
+$N=3$ because the six directed non-self edges make controlled support
+comparisons tractable. Larger-agent learned controllers are outside the scope
+of this study.
+
+All methods share one aggregator: the MAP candidate under a symmetric error
+model over the distinct normalized answers $\mathcal{Y}_q$, with agent-wise
+Platt-calibrated correctness probabilities \citep{platt1999probabilistic}, the
+symmetric special case of latent-truth aggregation with rater-specific error
+rates \citep{dawid1979maximum}. Appendix~\ref{app:consensus} gives
+Eq.~\ref{eq:consensus}, its degenerate branch and the calibration split.
+
+% =============================================================================
+\section{Experimental Setup}
+\label{sec:experiments}
+
+\subsection{Tasks, correctness and metrics}
+\label{sec:tasks}
+
+We use AQuA-RAT \citep{ling-etal-2017-program}, GSM8K
+\citep{cobbe2021trainingverifierssolvemath} and HotpotQA
+\citep{yang-etal-2018-hotpotqa}, AQuA-RAT is evaluated by normalized option
+accuracy, GSM8K by normalized numeric answer matching, and HotpotQA by
+token-level $F_1$ after normalization, counting a prediction as correct when
+$F_1\ge0.5$; exact match is additionally recorded. (Appendix~\ref{app:repro}).
+
+HotpotQA is run \emph{closed book}: agents see the question but no retrieved
+passages or gold supporting facts.
+
+Communication tokens count transmitted inter-agent message tokens ($\Volt$);
+generation and total tokens are in Appendix~\ref{app:motifs}. Edge-intensity
+entropy normalizes intensities over the six directed non-self edges, which are
+participation weights rather than probabilities over a discrete topology, so we
+read it only as a concentration summary.
+
+\subsection{Models and baselines}
+
+All agents use \texttt{gpt-oss-120b}
+\citep{openai2025gptoss120bgptoss20bmodel} at temperature $0$, top-$p=1.0$ and a
+512-token generation cap. \textbf{NoComm} runs the three agents independently
+with chain-of-thought prompts and aggregates with Eq.~\ref{eq:consensus}, a
+calibrated multi-agent self-consistency baseline
+\citep{wei2022chain,wang2023selfconsistencyimproveschainthought}. \textbf{MAD}
+broadcasts over the complete graph every round and stops early on unanimity
+\citep{du2024improving,liang-etal-2024-encouraging}. All methods share the
+backbone, the cap of three post-initial rounds, the aggregator and the
+calibration.
+
+We did not re-run the systems of Table~\ref{tab:positioning}, so we make no
+state-of-the-art claim. Token counts are not compute counts: the retention
+filter runs a 22M-parameter bi-encoder over every sentence of every trace, whose
+cost we did not measure, so the reported savings are savings in inter-agent LLM
+tokens and nothing more.
+
+\subsection{Evaluation protocols}
+\label{sec:protocols}
+
+Results use seven protocol labels, defined once in Table~\ref{tab:protocols} and
+cited in every caption so that differences in evaluation sets and uncertainty
+estimates remain explicit.
+
+
+\paragraph{Paired analysis (P1b).}
+Three seed means have almost no resolution and discard the pairing induced by
+running every method on the same questions, so we take per-question records as
+the unit of analysis, with 95\% bias-corrected and accelerated bootstrap
+intervals over $B=10{,}000$ question resamples so the interval accounts for
+question-level clustering. Non-inferiority is assessed by a \emph{one-sided}
+test at margins $\delta\in\{3,5,10\}$ against $H_0:\Delta\le-\delta$; we report
+only this lower-margin null and so do not call the procedure TOST. The 5-point
+margin is primary. Pairing uses the inner intersection of normalized
+question strings across methods, yielding $n=551$ paired GSM8K, $254$ AQuA-RAT
+and $863$ HotpotQA records. The AQuA-RAT seed-level estimate
+($86.28-85.34=+0.94$) differs in sign from the paired estimate ($-0.39$) because
+the P1 evaluation sets are not the same across methods; the paired estimate is
+the right comparison on the common question set, and the disagreement is why we
+report both.
+
+\subsection{The $2\times2$ manipulation}
+\label{sec:factorial}
+
+Factor $T$ replaces a fixed support with the learned continuous intensity
+policy; factor $C$ replaces full messages with semantic filtering. Arm 00 is
+fixed support plus full messages, arm 01 learned plus full, arm 10 fixed plus
+filtered, arm 11 full \sys. Toggling one factor leaves the other's
+rule untouched, which makes the four cells a factorial design; by
+Proposition~\ref{prop:nonid} it does not make the routing contrast a
+volume-controlled one. P2 uses 100 questions at $n_{\mathrm{train}}=100$ and 50 thereafter; P2b uses 100
+and 150.
+
+\paragraph{The budget-controlled support comparison.}
+\label{sec:p4design}
+P4 imposes a common per-edge transmission ceiling. For support
+$\mathcal T$, the base ceiling is
+$B=\lfloor\bar V/|\mathcal T|\rfloor$; hence every directed edge in the
+two-edge support family receives at most 25 tokens when $\bar V=50$ and 50
+tokens when $\bar V=100$. A single truncation procedure is used across
+supports, and semantic sentence selection is disabled inside this transmission
+path. We exhaustively evaluate all 15 directed two-edge supports, compare the
+learned controller on the corresponding sparse support, and evaluate five
+independent PPO realizations. A matched control permutes role assignments and
+swaps the out-star root between agents 0 and 2. Because messages may terminate
+before reaching their ceiling, we report realized communication volume rather
+than assuming that every condition transmits its nominal allocation.
+
+\paragraph{Component-isolation control.}
+\label{sec:p5design}
+P5 evaluates 100 matched GSM8K questions with two factors: routing is either
+static $S_1=(0\!\to\!1,0\!\to\!2)$ or the controller-induced top-2 support;
+stopping is either fixed for three post-initial rounds or uses the original
+adaptive rule. At each round, the six off-diagonal controller intensities are
+ranked and the two highest-intensity directed edges are selected. The same
+transmission procedure and budget are used across conditions, so the routing
+comparison is evaluated at matched depth and realized volume.
+
+% =============================================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{How much communication can be removed?}
+\label{sec:rq1}
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lccccccrl}
+\toprule
+& \multicolumn{3}{c}{Accuracy \% (P1, seed mean $\pm$ s.d.)} & \multicolumn{3}{c}{Comm.\ tokens / question (P1)} & \multicolumn{2}{c}{Paired \sys\,--\,MAD (P1b)}\\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-9}
+Dataset & NoComm & MAD & \sys & MAD & \sys & Reduction & $n$ & $\hat\Delta$ (95\% CI) \quad NI $p$ at $\delta=5$ \\
+\midrule
+GSM8K     & 87.00\,{\scriptsize$\pm$0.67} & 96.22\,{\scriptsize$\pm$0.19} & 95.00\,{\scriptsize$\pm$0.88} & 530.8  & \textbf{52.2}  & 90.2\% & 551 & $-1.09$ $[-3.81,+1.27]$ \quad \textbf{.002} \\
+AQuA-RAT  & 79.52\,{\scriptsize$\pm$5.46} & 85.34\,{\scriptsize$\pm$2.33} & 86.28\,{\scriptsize$\pm$0.31} & 850.3  & \textbf{421.6} & 50.4\% & 254 & $-0.39$ $[-2.64,+0.39]$ \quad \textbf{$<$.001} \\
+HotpotQA  & 30.00\,{\scriptsize$\pm$2.33} & 34.00\,{\scriptsize$\pm$3.48} & 31.67\,{\scriptsize$\pm$4.26} & 2914.1 & \textbf{473.2} & 83.8\% & 863 & $-2.43$ $[-4.17,-1.04]$ \quad \textbf{.0012} \\
+\bottomrule
+\end{tabular}
+}
+\caption{Cost and accuracy. Left: \textbf{P1}, 400-sample controller, 300
+held-out examples per seed; reduction is $1-\text{\sys}/\text{MAD}$. Right:
+\textbf{P1b}, the primary accuracy analysis, pairing methods by question with
+95\% BCa bootstrap intervals over $B=10{,}000$ resamples and a one-sided
+non-inferiority test against $H_0:\Delta\le-5$; bold marks non-inferiority at
+$\alpha=0.05$. Seed columns are descriptive only. Margins
+$\delta\in\{3,10\}$ and the NoComm contrasts are in Table~\ref{tab:paired}.}
+\label{tab:main}
+\end{table*}
+
+\sys transmits far less on every benchmark (Table~\ref{tab:main}): 90.2\% fewer
+tokens than MAD on GSM8K, 50.4\% on AQuA-RAT, 83.8\% on closed-book HotpotQA.
+On GSM8K and AQuA-RAT the paired difference against debate is within roughly
+one point with intervals containing zero. All three pass non-inferiority at the 5-point margin
+($p\le0.002$); at 3 points only AQuA-RAT passes (Table~\ref{tab:paired}).
+
+Communication buys something on the math benchmarks: \sys gains $8.53$ points
+over the zero-communication ensemble on GSM8K $[+4.90,+11.80]$ and $3.94$ on
+AQuA-RAT $[+1.57,+6.69]$, while on closed-book HotpotQA the gain is $1.51$ with
+an interval covering zero. It also spends 473.2 tokens there, $9.1\times$ its GSM8K cost, at an
+edge-intensity entropy of 2.5840 bits against the six-edge maximum
+$\log_2 6\approx2.5850$: nine times the spend to route almost uniformly, which is
+what a controller does with nothing to select on.
+
+\subsection{The factorial estimates a total effect}
+\label{sec:rq3}
+
+
+Controllers trained on 100, 200, 300 and 400 examples are separate models,
+differing in PPO seed, initialization and subset draw as well as data size, so
+the four checkpoints are four models, not a convergence curve.
+
+\paragraph{Accuracy.} We fit the saturated linear probability model
+$Y_q=\beta_0+\beta_C C_q+\beta_T T_q+\beta_{CT}C_qT_q+\epsilon_q$ with CR1
+standard errors clustered by question \citep{cameron2015practitioner}, factors
+dummy-coded so $\beta_0$ is the arm-00 cell mean (Table~\ref{tab:ols},
+Fig.~\ref{fig:scale}). No coefficient is distinguishable from zero: the largest estimate is the
+interaction at 200 samples, $+0.140$ with unadjusted $p=0.035$, which becomes
+$p=0.416$ after Holm correction over twelve tests \citep{holm1979simple}, and
+eleven of twelve 95\% intervals contain zero. The intervals are wide, the widest
+half-width about 16 points. With 80\% power only for main effects of 11.5--16.5
+points, this design is uninformative about smaller component contributions rather
+than evidence that none exist.
+
+\paragraph{Volume.} The per-cell logs (Table~\ref{tab:volume},
+Fig.~\ref{fig:main}a) are the informative half. Holding the message rule at full transmission and switching
+only routing, arm 00 sends 366 tokens and arm 01 sends 109, a factor of $3.4$.
+Holding routing fixed and switching only the message rule, 366 becomes 344, a
+factor of $1.06$. The routing intervention is not volume-neutral, and it is by
+far the larger of the two volume interventions. The two factors are also not
+additive on volume: read from the other row of the same table, routing moves
+$344$ to $59$, a factor of $5.8$, and the message rule moves $109$ to $59$, a
+factor of $1.85$. The message rule is close to inert on volume only when routing
+is held fixed, so even the volume accounting the factorial produces is
+arm-dependent, which sharpens rather than softens the identification problem.
+
+This is the empirical content of Prop.~\ref{prop:nonid} for our system. The
+routing manipulation also removes 257 tokens per question, so any accuracy
+contrast across those arms is a total effect. We do not attach that figure to a
+particular P2 coefficient, since the coefficients and the volumes come from
+different question pools (Table~\ref{tab:protocols}). The factorial therefore
+identifies a total effect rather than a routing-only effect; P5 provides the
+corresponding component-isolation control.
+
+\subsection{Adaptive communication under a common transmission constraint}
+\label{sec:fixedbudget}
+
+\begin{table*}[t]
+\centering
+\small
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{$\bar V=50$} & \multicolumn{2}{c}{$\bar V=100$} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Condition & Accuracy (\%) & Realized $\Volt$ & Accuracy (\%) & Realized $\Volt$ \\
+\midrule
+NoComm & 78.67 {\scriptsize[71.4, 84.5]} & 0.00
+       & 78.67 {\scriptsize[71.4, 84.5]} & 0.00 \\
+\midrule
+Complete & 78.67 {\scriptsize[71.4, 84.5]} & 50.00
+         & 75.33 {\scriptsize[67.9, 81.5]} & 100.00 \\
+Star & 80.00 {\scriptsize[72.9, 85.6]} & 50.00
+     & 76.00 {\scriptsize[68.6, 82.1]} & 100.00 \\
+Static 15-support mean & $75.78\pm2.43$ & 22.50
+                       & $79.11\pm2.74$ & 44.70 \\
+Static S1 (out-star) & 73.33 {\scriptsize[65.7, 79.8]} & 22.70
+                     & 76.67 {\scriptsize[69.3, 82.7]} & 45.30 \\
+Learned PPO, 5 realizations & $\mathbf{91.87\pm1.81}$ & \textbf{15.10}
+                            & $\mathbf{92.00\pm1.33}$ & \textbf{31.50} \\
+Learned PPO peak & \textbf{95.33} {\scriptsize[90.7, 97.7]} & 49.65
+                 & \textbf{92.67} {\scriptsize[87.3, 95.9]} & 95.10 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Protocol P4.} Budget-controlled support comparison on GSM8K.
+Static rows and each PPO realization use matched questions. The 15-support
+row reports mean $\pm$ s.d. across the exhaustive static support space; the
+five-realization row reports mean $\pm$ s.d. across independently trained PPO
+controllers. Bracketed intervals are 95\% Wilson intervals for individual
+150-question evaluations. Realized $\Volt$ is tokenizer-counted inter-agent
+transmission per question. S1 is $0\!\to\!1,0\!\to\!2$.}
+\label{tab:fixedbudget}
+\end{table*}
+
+The 15 static supports remain comparatively clustered: mean accuracy is
+$75.78\%\pm2.43\%$ at $\bar V=50$ and $79.11\%\pm2.74\%$ at $\bar V=100$
+(Appendix~\ref{app:exhaustive}). Across five PPO realizations, the learned policy
+reaches $91.87\%\pm1.81\%$ and $92.00\%\pm1.33\%$, respectively
+(Appendix~\ref{app:multiseed}).
+
+The same-support comparison shows that the full learned policy differs
+substantially from static S1, but also uses different realized communication
+volume and adaptive depth. P5 isolates these components on 100 matched GSM8K
+questions. Under fixed depth and matched realized volume, the controller-induced
+top-2 routing selects $S_1$ in all three communication rounds and matches static
+$S_1$ at 91.0\% accuracy and 46 tokens per question. Thus, in this setting,
+controller-induced top-2 routing provides no additional accuracy benefit beyond
+the static support.
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+Condition & Acc. (\%) & Realized $\Volt$ & Rounds \\
+\midrule
+Static $S_1$ + fixed & 91.0 & 46 & 3 \\
+Static $S_1$ + adaptive & 93.0 & 14 & 1 \\
+Top-2 + fixed & 91.0 & 46 & 3 \\
+Top-2 + adaptive & 93.0 & 14 & 1 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{P5.} Component-isolation control on 100 matched GSM8K
+questions. The routing comparison is matched in depth and realized volume;
+adaptive stopping reduces observed communication by 69.6\%.}
+\label{tab:p5}
+\end{table}
+
+With static $S_1$, adaptive stopping reduces realized communication from 46 to
+14 tokens per question and executed rounds from 3 to 1, while the accuracy
+point estimate increases from 91\% to 93\%. The paired difference is $+2.0$
+points (95\% BCa CI $[-2.0,+5.0]$; McNemar $p=0.625$), so the accuracy
+difference is not statistically resolved. The same contrast is obtained under
+controller-induced routing (Appendix~\ref{app:p5}).
+
+\paragraph{Role permutation control.}
+We permute the analytical, creative, and step-by-step roles and swap the root
+between agents 0 and 2 within matched configurations. The maximum observed
+root-swap difference is $0.67$ percentage points, and exact McNemar tests give
+$p=1.000$ for all six matched comparisons
+(Appendix~\ref{app:rolecontrol}). Thus, the tested behavior is stable under the
+evaluated role/root reassignment.
+
+% =============================================================================
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Static support space.}
+Exhaustive enumeration shows that the 15 static two-edge supports remain
+comparatively clustered under the tested budgets. Neither the support classes
+nor individual static wirings exhibit a large systematic separation in this
+three-agent GSM8K setting.
+
+\paragraph{Adaptive communication control.}
+P4 shows that the full learned policy can outperform static sparse transmission
+under a common communication constraint. P5 further shows that its
+controller-induced top-2 routing coincides with static $S_1$ under fixed depth
+and matched realized volume, with identical accuracy in the tested setting.
+The observed communication reduction is therefore associated with adaptive
+control beyond static topology selection; in P5, stopping accounts for the
+observed reduction in executed rounds and transmitted tokens.
+
+\paragraph{Role and root placement.}
+Across the matched role permutations, changing the out-star root between agents
+0 and 2 changes accuracy by at most $0.67$ points, with $p=1.000$ in every exact
+McNemar test. This supports stability under the tested reassignment without
+implying universal invariance to roles or node positions.
+
+\paragraph{Task-dependent behavior.}
+Closed-book HotpotQA provides a contrasting operating regime. \sys reaches
+$31.67\%$ held-out accuracy,
+compared with $34.00\%$ for fully connected debate and $30.00\%$ without
+communication, while transmitting $83.8\%$ fewer inter-agent tokens than
+debate. The controller's round-1 edge-intensity distribution is also close
+to uniform on this benchmark. These results suggest that sparse routing
+provides less selective benefit when the agents do not exhibit strongly
+differentiated useful information, but this mechanism-level interpretation
+should be treated as a hypothesis rather than a general property of
+HotpotQA.
+
+\paragraph{Trade-offs and prior work.} MAD retains the highest point accuracy on
+GSM8K and HotpotQA; if tokens are free it remains the right choice.
+Communication-efficient systems \citep{zhang2025cut,wang-etal-2025-agentdropout}
+and topology learners \citep{zhang2025gdesigner,zhuge2024gptswarm,li2026assemble}
+report pipeline-level gains subject to the qualification
+Prop.~\ref{prop:nonid} makes precise and Table~\ref{tab:volume} measures: in an
+LLM system a graph edit is also a token edit.
+
+% =============================================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+Routing and rationing are distinct decisions because topology interventions in
+variable-length LLM communication also alter realized communication volume.
+Our factorial analysis makes this coupling explicit, while P4 shows that the
+full learned policy can outperform static sparse transmission under a common
+communication constraint. P5 further shows that, in the tested three-agent
+GSM8K setting, controller-induced top-2 routing coincides with the static
+out-star support under matched depth and realized volume and provides no
+additional accuracy benefit. Adaptive stopping yields the observed reduction in
+executed communication rounds and transmitted tokens. Together, the results
+support viewing efficient multi-agent communication as adaptive control of the
+communication process, rather than topology selection alone.
+
+% =============================================================================
+
+\section{Limitations}
+\label{sec:limitations}
+
+The empirical analysis focuses on three-agent systems, where the complete
+directed support space can be enumerated and controlled experimentally. The
+component-isolation control is evaluated on 100 GSM8K questions, and the
+budget-controlled support study uses two transmission budgets on GSM8K.
+Communication cost is reported as tokenizer-counted inter-agent transmitted
+tokens; end-to-end inference compute is outside this metric.
+
+% =============================================================================
+\bibliography{custom}
+
+\clearpage
+\appendix
+
+% -----------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------
+\section{Evaluation Protocols and Reproducibility}
+\label{app:repro}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3.5pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{clll}
+\toprule
+ & Evaluation set & Uncertainty & Used in \\
+\midrule
+P1  & 300 held-out $\times$ 3 seeds & seed s.d. & Tab.~\ref{tab:main} \\
+P1b & paired per-question records & BCa bootstrap & Tab.~\ref{tab:paired} \\
+P2  & matched factorial sensitivity & CR1 by question & Tab.~\ref{tab:ols} \\
+P2b & expanded factorial volume & descriptive means & Tab.~\ref{tab:volume} \\
+P3  & 150 GSM8K, 1 run & binomial & Tab.~\ref{tab:topo} \\
+P4  & 150 GSM8K; exhaustive supports / 5 PPO runs & Wilson / across-run s.d. & Tab.~\ref{tab:fixedbudget} \\
+P5  & 100 GSM8K; $2\times2$ matched control & BCa bootstrap / McNemar & Tab.~\ref{tab:p5} \\
+\bottomrule
+\end{tabular}
+}
+\caption{Evaluation protocols. P1b is the primary accuracy analysis and pairs
+methods by question; P1 is the descriptive seed-level summary. P2 uses 100
+matched questions at the 100-sample checkpoint and 50 at the others, all four
+arms answering the same questions. P2b uses 100 questions at
+$n_{\mathrm{train}}=100$ and 150 thereafter for the factorial-volume analysis.
+P4 evaluates all 15 directed two-edge supports under common per-edge ceilings;
+P5 uses 150 matched GSM8K questions to isolate routing and stopping under a
+common transmission procedure.
+Numbers from different protocols are not comparable: GSM8K communication cost
+for the same controller is 52.2 tokens under P1, 58.9 under P2 and 51.1 under
+P3.}
+\label{tab:protocols}
+\end{table}
+
+Code, prompts and analysis scripts are available at
+\url{https://anonymous.4open.science/r/sparsecomm-ACL2026}.
+
+Answers are normalized by taking the option letter for AQuA-RAT, the final
+numeric value after stripping separators and units for GSM8K, and lowercasing
+with article and punctuation removal for HotpotQA. Calibration is fitted once on
+a split disjoint from every controller-training and evaluation set. The
+budget-control harness truncates each message at its per-edge ceiling using a
+single routine shared by all arms. All fifteen directed two-edge supports are
+enumerated. Controller, optimization and inference settings are in
+Table~\ref{tab:hyperparameters}.
+
+The repository additionally contains the controller and pipeline
+implementation, per-question prediction records for every protocol, per-cell
+factorial traces including realized volume, the bootstrap, non-inferiority and
+clustered-inference analysis code, per-dataset $p_{\mathrm{base}}$ values, and
+the input projection map used for $N\neq3$.
+
+% -----------------------------------------------------------------------------
+\section{Proofs}
+\label{app:proofs}
+
+We restate Propositions~\ref{prop:nonid}--\ref{prop:cap} formally and prove all four.
+
+\begin{proposition}[Total-effect decomposition]
+\label{prop:nonid}
+For fixed message rule $c$,
+\[
+\beta_T(c)=\Delta_{\mathrm{route}}(c)+\Delta_{\mathrm{volume}}(c),
+\]
+the natural direct and indirect effects of $T$ with mediator $V$. Randomizing
+$T$ identifies the sum. Identifying $\Delta_{\mathrm{route}}(c)$ alone requires
+either an intervention that sets $V$ or cross-world independence assumptions
+untestable from these data.
+\end{proposition}
+
+\begin{proposition}[Fixed-mass comparison]
+\label{prop:face}
+Fix $\bar V>0$ and let $\Delta_{\bar V}=\{\mathbf{M}\in
+\mathbb{R}^{\mathcal{O}}_{\ge0}:\sum_{i\neq j}M_{ij}=\bar V\}$, a simplex scaled
+by $\bar V$. Each support selects a face of it. Randomizing routing across those
+faces while holding the non-routing mechanisms fixed makes $V$ constant across
+arms, so $\Delta_{\mathrm{volume}}$ vanishes and the contrast is the controlled
+routing effect at budget $\bar V$.
+\end{proposition}
+
+\begin{proposition}[Capped comparison and its residual]
+\label{prop:cap}
+Suppose two arms share a per-question cap $\bar V$ but realize mean volumes
+$v_t,v_{t'}\le\bar V$. Then
+\begin{align*}
+&\mathbb E[Y(c,t,v_t)]-\mathbb E[Y(c,t',v_{t'})]\\
+&\quad=\underbrace{\mathbb E[Y(c,t,v_{t'})]-\mathbb E[Y(c,t',v_{t'})]}
+        _{\text{controlled effect at }v_{t'}}+\;R,
+\end{align*}
+with $|R|\le\omega_c(\mathcal V)$, where
+$\omega_c(\mathcal V)=\sup_{v,v'\in\mathcal V}\lvert\mathbb E[Y(c,t,v)]-\mathbb
+E[Y(c,t,v')]\rvert$ is the variation of the volume--outcome response over
+$\mathcal V=[\min(v_t,v_{t'}),\max(v_t,v_{t'})]$. Exact matching collapses
+$\mathcal V$ to a point and recovers Proposition~\ref{prop:face}.
+\end{proposition}
+
+
+Throughout, the ambient space is $\mathbb{R}^{\mathcal{O}}$ with
+$\mathcal{O}=\{(i,j):i\neq j\}$ and $A_{ii}=B_{ii}=0$.
+
+\paragraph{Proposition~\ref{prop:proj}.}
+Let $\mathcal{T}=\{(i,j)\in\mathcal{O}:A_{ij}=1\}$ and
+$\mathcal{P}_{\mathbf A}(\mathbf B)=\mathbf A\odot\mathbf B$. Linearity follows
+from the Hadamard product. Since $\mathbf{A}$ is binary,
+$\mathbf{A}\odot\mathbf{A}=\mathbf{A}$, so
+$\mathcal{P}_{\mathbf{A}}^2=\mathcal{P}_{\mathbf{A}}$. For any
+$\mathbf{X},\mathbf{Y}\in\mathbb{R}^{\mathcal{O}}$,
+$\langle\mathcal{P}_{\mathbf{A}}\mathbf{X},\mathbf{Y}\rangle_{\mathrm{off}}
+=\sum_{i\neq j}A_{ij}X_{ij}Y_{ij}
+=\langle\mathbf{X},\mathcal{P}_{\mathbf{A}}\mathbf{Y}\rangle_{\mathrm{off}}$, so
+$\mathcal{P}_{\mathbf{A}}$ is self-adjoint. An idempotent self-adjoint operator
+is the orthogonal projection onto its range
+$V_{\mathcal T}=\{\mathbf X:X_{ij}=0\ \forall(i,j)\notin\mathcal T\}$, and the
+Pythagorean identity follows from
+$\mathbf{B}-\mathcal{P}_{\mathbf{A}}\mathbf{B}\perp V_{\mathcal{T}}$. For
+$\mathbf{B}\ge0$,
+$\onenormoff{\mathcal{P}_{\mathbf{A}}\mathbf{B}}=\sum_{(i,j)\in\mathcal{T}}B_{ij}
+\le\sum_{i\neq j}B_{ij}=\onenormoff{\mathbf{B}}$, with equality exactly when
+$B_{ij}=0$ for every $(i,j)\in\mathcal{O}\setminus\mathcal{T}$; the left
+equality is Eq.~\ref{eq:B}. $\square$
+
+\paragraph{Proposition~\ref{prop:nonid}.}
+Add and subtract $\mathbb{E}[Y(c,1,V(c,0))]$ in
+$\beta_T(c)=\mathbb{E}[Y(c,1,V(c,1))-Y(c,0,V(c,0))]$, giving
+$\Delta_{\mathrm{route}}(c)=\mathbb E[Y(c,1,V(c,0))-Y(c,0,V(c,0))]$ and
+$\Delta_{\mathrm{volume}}(c)=\mathbb E[Y(c,1,V(c,1))-Y(c,1,V(c,0))]$, the
+natural direct and indirect effects of $T$ with mediator $V$
+\citep{robins1992identifiability,pearl2001direct}. The design randomizes $T$,
+identifying the sum. Identifying the first term alone requires either an
+intervention setting $V$ or cross-world independence assumptions untestable from
+these data \citep{vanderweele2015explanation}. For the accompanying claim that
+routing moves volume, Eq.~\ref{eq:B} gives
+$\Vol'-\Vol=\sum_{\mathcal{T}'\setminus\mathcal{T}}B_{ij}
+-\sum_{\mathcal{T}\setminus\mathcal{T}'}B_{ij}$, which vanishes only when the two
+sums coincide. The fixed support and the learned policy are chosen without
+reference to $\mathbf{B}$, so nothing places the pair on that set;
+Table~\ref{tab:volume} confirms it does not. $\square$
+
+\paragraph{Proposition~\ref{prop:face}.}
+$\Delta_{\bar V}$ is the intersection of a hyperplane with the nonnegative
+orthant of $\mathbb{R}^{\mathcal{O}}$, hence a compact convex polytope, and is
+the standard simplex scaled by $\bar V$, of dimension $N(N{-}1)-1$. Zeroing the
+coordinates outside $\mathcal{T}$ is a supporting-hyperplane restriction, so
+$F_{\mathcal{T}}=\Delta_{\bar V}\cap V_{\mathcal{T}}$ is a face
+\citep{ziegler1995polytopes}, the scaled standard simplex on the $|\mathcal{T}|$
+active coordinates. Every point of every such face satisfies $\Vol=\bar V$, so
+$V$ is constant across arms and $\Delta_{\mathrm{volume}}$ vanishes. The
+contrast is then a controlled effect at $\bar V$ under randomization of $T$,
+consistency, and invariance of the non-routing mechanisms. $\square$
+
+\paragraph{Proposition~\ref{prop:cap}.}
+Write
+$\mathbb E[Y(c,t,v_t)]-\mathbb E[Y(c,t',v_{t'})]
+=\bigl(\mathbb E[Y(c,t,v_t)]-\mathbb E[Y(c,t,v_{t'})]\bigr)
++\bigl(\mathbb E[Y(c,t,v_{t'})]-\mathbb E[Y(c,t',v_{t'})]\bigr)$. The second
+bracket is the controlled effect at the common reference volume $v_{t'}$. The
+first is $R$, a difference of the same arm's response at two volumes both lying
+in $\mathcal V$, hence bounded in absolute value by $\omega_c(\mathcal V)$ by
+definition of the supremum. If $v_t=v_{t'}$ then $\mathcal V$ is a singleton,
+$\omega_c(\mathcal V)=0$, and $R=0$. $\square$
+
+\paragraph{Remark (two sources of shortfall).}
+Transmitted lengths are integers, so exact cap matching is unattainable in
+general. Rounding contributes a shortfall bounded by the number of active
+channels, at most one token each. Early message termination is unbounded by that
+argument: a message far shorter than its allocation can leave an arbitrarily
+larger gap, and only the reported realized volume constrains it. The two must
+not be conflated, and only the second is material at the magnitudes in
+Table~\ref{tab:fixedbudget}.
+
+% -----------------------------------------------------------------------------
+\section{Algorithm and Stopping Score}
+\label{app:algorithm}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}p{0.94\columnwidth}@{}}
+\toprule
+\textbf{Algorithm 1}\; \sys episode \\
+\midrule
+\textbf{Input:} question $x$, agents $1,\ldots,N$, max rounds $T$, frozen
+$s_{\mathrm{acc}}$\\
+1. Each agent produces $(m_i^{(0)},c_i^{(0)})$ independently.\\
+2. \textbf{for} $r=1,\ldots,T$:\\
+\quad 3. Build the 20-dimensional collective state from disagreement, overlap, diversity, confidence, history, progress and $s_{\mathrm{acc}}$.\\
+\quad 4. Emit $H_s,H_d,Q,z_r$; compute $\mathbf{W}_r$ (Eq.~\ref{eq:weights}). \\
+\quad 5. Score each sentence against the sender's current-round answer and retain stochastically (Eq.~\ref{eq:semantic_filter}).\\
+\quad 6. Each agent revises given its filtered messages.\\
+\quad 7. \textbf{if} ($z_r$ halts \textbf{or} $S>\log 19$): \textbf{break}.\\
+8. Aggregate with Eq.~\ref{eq:consensus}.\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+If $k$ of $N$ agents support the majority answer, let $p_{\mathrm{maj}}$ be the
+maximum calibrated confidence among them and $p_{\mathrm{base}}$ the
+dataset-dependent baseline. The implementation sets
+$p_{\mathrm{maj}}\leftarrow\max(p_{\mathrm{maj}},p_{\mathrm{base}})$, clips both
+to $[\delta,1-\delta]$ with $\delta=10^{-6}$, and computes
+\begin{equation}
+S
+=k\log\frac{p_{\mathrm{maj}}}{p_{\mathrm{base}}}
++(N-k)\log\frac{1-p_{\mathrm{maj}}}{1-p_{\mathrm{base}}}.
+\label{eq:stopping-llr}
+\end{equation}
+The clip removes the $\log 0$ boundary at $p_{\mathrm{maj}}=1$; when $k=N$ the
+second term is multiplied by zero and is not evaluated.
+
+$S$ is the binomial log-likelihood ratio comparing ``all $N$ support indicators
+are $\Bern(p_{\mathrm{maj}})$'' to ``all are $\Bern(p_{\mathrm{base}})$'' given
+$k$ successes, evaluated at the observed maximum supporter confidence. It is a
+decision score for halting, compared against the fixed threshold
+$\tau_{\mathrm{halt}}=\log 19$, and is enabled only after the first
+communication round. Each controller trains for five outer passes; PPO performs
+three inner epochs per update. Full settings are in
+Table~\ref{tab:hyperparameters}.
+
+% -----------------------------------------------------------------------------
+\section{Full Paired Accuracy Analysis}
+\label{app:paired}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrcccc}
+\toprule
+& & & & \multicolumn{3}{c}{One-sided NI $p$ at margin $\delta$}\\
+\cmidrule(lr){5-7}
+Dataset & Contrast & $n$ & $\hat\Delta$ (95\% CI) & 3 & 5 & 10\\
+\midrule
+GSM8K    & \sys\,--\,MAD    & 551 & $-1.09$ $[-3.81,+1.27]$ & .069 & \textbf{.002} & $<$.001\\
+         & \sys\,--\,NoComm & 551 & $+8.53$ $[+4.90,+11.80]$ & --- & --- & ---\\
+\midrule
+AQuA-RAT & \sys\,--\,MAD    & 254 & $-0.39$ $[-2.64,+0.39]$ & \textbf{.001} & \textbf{$<$.001} & $<$.001\\
+         & \sys\,--\,NoComm & 254 & $+3.94$ $[+1.57,+6.69]$ & --- & --- & ---\\
+\midrule
+HotpotQA & \sys\,--\,MAD    & 863 & $-2.43$ $[-4.17,-1.04]$ & .247 & \textbf{.001} & $<$.0012\\
+         & \sys\,--\,NoComm & 863 & $+1.51$ $[-0.35,+3.24]$ & --- & --- & ---\\
+\bottomrule
+\end{tabular}
+}
+\caption{\textbf{Protocol P1b.} Paired per-question accuracy differences in
+percentage points, 95\% BCa bootstrap intervals over $B=10{,}000$ question
+resamples, and one-sided non-inferiority $p$-values against
+$H_0:\Delta\le-\delta$. Bold marks non-inferiority at $\alpha=0.05$; the 5-point
+margin is primary. Only the lower-margin null is tested, so these are
+non-inferiority rather than equivalence results.}
+\label{tab:paired}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Positioning by Reported Mechanism}
+\label{app:positioning}
+
+\begin{table}[t]
+\centering
+\small
+\setlength{\tabcolsep}{3.2pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+ & Learned & Msg. & Adaptive & Separate \\
+ & routing & compr. & depth & switches \\
+\midrule
+MAD \citep{du2024improving}          & --        & --        & \checkmark & -- \\
+GPTSwarm \citep{zhuge2024gptswarm}    & \checkmark & --        & --        & -- \\
+G-Designer \citep{zhang2025gdesigner} & \checkmark & --        & --        & -- \\
+ARG-Designer \citep{li2026assemble}   & \checkmark & --        & --        & -- \\
+AgentPrune \citep{zhang2025cut}       & \checkmark & \checkmark & --       & -- \\
+AgentDropout \citep{wang-etal-2025-agentdropout} & \checkmark & -- & \checkmark & -- \\
+\midrule
+\sys (ours)                           & \checkmark & \checkmark & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+}
+\caption{Positioning by primary mechanism as described in each cited paper;
+not a performance comparison. ``Separate switches'' means routing and message
+size can be manipulated as independently togglable factors. It does \emph{not}
+mean the resulting contrasts identify component effects: \S\ref{sec:factorial}
+shows that in our own system they do not, which is the point of the column
+rather than a credit to it. }
+\label{tab:positioning}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Consensus Aggregator}
+\label{app:consensus}
+
+Let $\mathcal{Y}_q$ be the distinct normalized final answers on question $q$,
+$K_q=|\mathcal{Y}_q|$, and $\theta_i$ agent $i$'s Platt-calibrated probability of
+being correct, clipped to $[\delta,1-\delta]$ with $\delta=10^{-6}$ so the
+logarithms are finite. Under a symmetric error model with a uniform prior over
+$\mathcal{Y}_q$,
+\begin{equation}
+\log p(y\mid a_{1:N})\propto\!\!\sum_{i:a_i=y}\!\!\log\theta_i
+\;+\!\!\sum_{i:a_i\neq y}\!\!\log\frac{1-\theta_i}{K_q-1},
+\label{eq:consensus}
+\end{equation}
+and the prediction is the MAP candidate. Writing the sums over disjoint index
+sets makes the unanimous case well defined: when $K_q=1$ the second sum is empty
+and the $K_q-1$ denominator is never evaluated.
+
+% -----------------------------------------------------------------------------
+\section{Reward Penalty Terms}
+\label{app:penalties}
+
+The controller maximizes the clipped PPO surrogate \citep{schulman2017ppo},
+\begin{equation}
+\begin{aligned}
+\mathcal{L}(\theta)={}&
+\mathbb{E}\!\left[\min\!\left(\rho_r\hat A_r,\;\bar\rho_r\hat A_r\right)\right]\\
+&-c_v\mathcal{L}_v+c_e\mathcal{H},
+\end{aligned}
+\label{eq:ppo}
+\end{equation}
+where $\bar\rho_r=\clip(\rho_r,1-\epsilon,1+\epsilon)$, $\rho_r$ is the
+probability ratio under the sampled action, $\hat A_r$ a GAE advantage,
+$\mathcal{L}_v$ the value loss and $\mathcal{H}$ the policy entropy. The actor's
+diagonal Gaussian has scale $\sigma_a$ with $\log\sigma_a$ clipped to
+$[-2,0.5]$, so $\log\pi_\theta(\mathbf a_r\mid s_r)$ is the sum of the
+coordinate-wise Gaussian log-densities.
+
+The persistence and routing penalties of Eq.~\ref{eq:reward} average over the
+$N(N{-}1)$ off-diagonal edges:
+\begin{equation}
+C^{(r)}_{\mathrm{persist}}
+  =\frac{1}{N(N{-}1)}\sum_{i\neq j}W^{(r)}_{ij}W^{(r-1)}_{ij},
+\label{eq:persist}
+\end{equation}
+with $C^{(0)}_{\mathrm{persist}}=0$, and
+\begin{equation}
+\begin{aligned}
+D^{(r)}_{\mathrm{route}}
+  =\frac{1}{N(N{-}1)}\sum_{i\neq j}
+  D_{\mathrm{KL}}\bigl(&\Bern(W^{(r)}_{ij})\\[-2pt]
+  &\,\|\,\Bern(p_0)\bigr),
+\end{aligned}
+\label{eq:kl}
+\end{equation}
+with sparse prior $p_0=0.1$. Eq.~\ref{eq:persist} charges an edge for high
+intensity in consecutive rounds. It is a penalty on edge-intensity persistence,
+not on repeated content or on graph cycles, and is named accordingly.
+
+% -----------------------------------------------------------------------------
+
+% -----------------------------------------------------------------------------
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{llrr}
+\toprule
+Arm & Routing / messages & $\Volt$ & $\Vol_{\mathrm{full}}$ \\
+\midrule
+00 & fixed / full        & 366 & 653 \\
+01 & learned / full      & 109 & 176 \\
+10 & fixed / filtered    & 344 & 609 \\
+11 & learned / filtered  & \phantom{0}59 & 187 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Protocol P2b.} Mean realized and full-trace volume per question
+(tokens), expanded 150-question pool, 400-sample controller. Arms 00/01 differ
+only in routing; 00/10 only in the message rule. $\Vol_{\mathrm{full}}$ sums the sender's full unfiltered
+message length over every directed off-diagonal channel of every communication
+round that actually executes before halting; round 0 is excluded. A full-message
+arm transmits its complete message on each executed round, so
+$\Volt<\Vol_{\mathrm{full}}$ there reflects early halting removing later
+rounds from the trace, not compression. }
+\label{tab:volume}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Per-Scale Factorial Estimates}
+\label{app:per-scale-ols}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llrrrr}
+\toprule
+$n_{\text{train}}$ & Effect & $\hat\beta$ & CR1 SE & $p$ & $p_{\text{Holm}}$ \\
+\midrule
+\multirow{4}{*}{100}
+ & Intercept    & 0.5800 & 0.0498 & $<$0.001 & --- \\
+ & Compression  & 0.0500 & 0.0559 & 0.3736 & 1.0000 \\
+ & Routing      & 0.0800 & 0.0583 & 0.1729 & 1.0000 \\
+ & Interaction  & -0.0600 & 0.0792 & 0.4505 & 1.0000 \\
+\midrule
+\multirow{4}{*}{200}
+ & Intercept    & 0.9800 & 0.0202 & $<$0.001 & --- \\
+ & Compression  & -0.0800 & 0.0485 & 0.1056 & 1.0000 \\
+ & Routing      & -0.0600 & 0.0447 & 0.1856 & 1.0000 \\
+ & Interaction  & 0.1400 & 0.0644 & 0.0347 & 0.4161 \\
+\midrule
+\multirow{4}{*}{300}
+ & Intercept    & 0.9600 & 0.0282 & $<$0.001 & --- \\
+ & Compression  & -0.0400 & 0.0495 & 0.4232 & 1.0000 \\
+ & Routing      & -0.0200 & 0.0454 & 0.6617 & 1.0000 \\
+ & Interaction  & 0.0200 & 0.0788 & 0.8007 & 1.0000 \\
+\midrule
+\multirow{4}{*}{400}
+ & Intercept    & 0.9200 & 0.0391 & $<$0.001 & --- \\
+ & Compression  & 0.0400 & 0.0495 & 0.4232 & 1.0000 \\
+ & Routing      & 0.0400 & 0.0403 & 0.3259 & 1.0000 \\
+ & Interaction  & -0.1000 & 0.0594 & 0.0984 & 1.0000 \\
+\bottomrule
+\end{tabular}
+}
+\caption{\textbf{Protocol P2.} Saturated $2\times2$ fits on GSM8K, one per
+training scale, dummy-coded so the intercept is the arm-00 cell mean. All four
+arms answer the same questions: 100 questions and 400 observations at
+$n_{\text{train}}=100$, 50 and 200 at the others; $t$-tests use $G-1$ degrees of
+freedom. Holm correction is over the twelve non-intercept tests. Reconstructed
+cell means put arm 11 above arm 00 by 7.0 points at $n_{\text{train}}=100$,
+equal at 200, and below by 4.0 and 2.0 at 300 and 400.}
+\label{tab:ols}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{figures/scale_forest.pdf}
+\caption{\textbf{Protocol P2.} \textbf{(a)} Matched-question accuracy of the
+four arms across training scales and arm-11 transmitted tokens. \textbf{(b)}
+Factorial estimates with 95\% question-clustered intervals; eleven of twelve
+cover zero and the twelfth does not survive Holm correction.}
+\label{fig:scale}
+\end{figure}
+
+% -----------------------------------------------------------------------------
+\section{Exhaustive Two-Edge Support Enumeration}
+\label{app:exhaustive}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{2.4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{cllcc}
+\toprule
+ID & Support & Class & $\bar V{=}50$ & $\bar V{=}100$ \\
+\midrule
+S01 & $0\!\to\!1,\;0\!\to\!2$ & Out-star
+    & 73.33 {\scriptsize[65.7, 79.8]} & 76.67 {\scriptsize[69.3, 82.7]} \\
+S02 & $0\!\to\!1,\;1\!\to\!0$ & Reciprocal dyad
+    & 76.67 {\scriptsize[69.3, 82.7]} & 80.67 {\scriptsize[73.6, 86.2]} \\
+S03 & $0\!\to\!1,\;1\!\to\!2$ & Relay path
+    & 78.00 {\scriptsize[70.7, 83.9]} & 82.00 {\scriptsize[75.1, 87.3]} \\
+S04 & $0\!\to\!1,\;2\!\to\!0$ & Relay path
+    & 73.33 {\scriptsize[65.7, 79.8]} & 76.00 {\scriptsize[68.6, 82.1]} \\
+S05 & $0\!\to\!1,\;2\!\to\!1$ & In-star
+    & 73.33 {\scriptsize[65.7, 79.8]} & 75.33 {\scriptsize[67.9, 81.5]} \\
+S06 & $0\!\to\!2,\;1\!\to\!0$ & Relay path
+    & 76.67 {\scriptsize[69.3, 82.7]} & 82.00 {\scriptsize[75.1, 87.3]} \\
+S07 & $0\!\to\!2,\;1\!\to\!2$ & In-star
+    & 78.67 {\scriptsize[71.4, 84.5]} & 82.00 {\scriptsize[75.1, 87.3]} \\
+S08 & $0\!\to\!2,\;2\!\to\!0$ & Reciprocal dyad
+    & 73.33 {\scriptsize[65.7, 79.8]} & 77.33 {\scriptsize[70.0, 83.3]} \\
+S09 & $0\!\to\!2,\;2\!\to\!1$ & Relay path
+    & 73.33 {\scriptsize[65.7, 79.8]} & 77.33 {\scriptsize[70.0, 83.3]} \\
+S10 & $1\!\to\!0,\;1\!\to\!2$ & Out-star
+    & 80.00 {\scriptsize[72.9, 85.6]} & 82.67 {\scriptsize[75.8, 87.9]} \\
+S11 & $1\!\to\!0,\;2\!\to\!0$ & In-star
+    & 75.33 {\scriptsize[67.9, 81.5]} & 78.00 {\scriptsize[70.7, 83.9]} \\
+S12 & $1\!\to\!0,\;2\!\to\!1$ & Relay path
+    & 74.00 {\scriptsize[66.4, 80.4]} & 77.33 {\scriptsize[70.0, 83.3]} \\
+S13 & $1\!\to\!2,\;2\!\to\!0$ & Relay path
+    & 78.67 {\scriptsize[71.4, 84.5]} & 82.67 {\scriptsize[75.8, 87.9]} \\
+S14 & $1\!\to\!2,\;2\!\to\!1$ & Reciprocal dyad
+    & 78.67 {\scriptsize[71.4, 84.5]} & 81.33 {\scriptsize[74.3, 86.8]} \\
+S15 & $2\!\to\!0,\;2\!\to\!1$ & Out-star
+    & 73.33 {\scriptsize[65.7, 79.8]} & 75.33 {\scriptsize[67.9, 81.5]} \\
+\bottomrule
+\end{tabular}
+}
+\caption{\textbf{Protocol P4.} Exhaustive enumeration of the 15 directed
+two-edge supports on three agents. Entries are accuracy percentages with 95\%
+Wilson intervals over 150 matched GSM8K questions. S01 is the sparse support
+used for the same-support static comparison.}
+\label{tab:exhaustive}
+\end{table}
+
+S01 realizes 22.7 and 45.3 transmitted tokens at $\bar V=50$ and 100; the
+corresponding means across all 15 supports are 22.50 and 44.70 tokens.
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcc}
+\toprule
+Support class & $\bar V=50$ & $\bar V=100$ \\
+\midrule
+Out-stars       & $75.56\pm3.14$ & $78.22\pm3.19$ \\
+In-stars        & $75.78\pm2.19$ & $78.44\pm2.74$ \\
+Reciprocal dyads& $76.22\pm2.19$ & $79.78\pm1.76$ \\
+Relay paths     & $75.67\pm2.30$ & $79.56\pm2.92$ \\
+\midrule
+Overall         & $75.78\pm2.43$ & $79.11\pm2.74$ \\
+\bottomrule
+\end{tabular}
+\caption{Descriptive mean accuracy $\pm$ s.d. across static supports, grouped
+by support class.}
+\label{tab:supportclasses}
+\end{table}
+
+% -----------------------------------------------------------------------------
+\section{Multi-Seed PPO Robustness}
+\label{app:multiseed}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lcc}
+\toprule
+Controller realization & $\bar V=50$ & $\bar V=100$ \\
+\midrule
+Seed 1 & 90.67 & 92.67 \\
+Seed 2 & 90.00 & 92.00 \\
+Seed 3 & 90.67 & 90.00 \\
+Seed 4 & 94.67 & 94.00 \\
+Seed 5 & 93.33 & 91.33 \\
+\midrule
+Mean $\pm$ s.d. & $91.87\pm1.81$ & $92.00\pm1.33$ \\
+\bottomrule
+\end{tabular}
+\caption{Accuracy (\%) across five independently trained PPO controller
+realizations on the 150-question P4 evaluation set.}
+\label{tab:multiseed}
+\end{table}
+
+Performance is consistent across independent controller realizations. Their
+aggregate realized communication volumes are 15.10 tokens at $\bar V=50$ and
+31.50 tokens at $\bar V=100$.
+
+% -----------------------------------------------------------------------------
+\section{P4 Volume Audit}
+\label{app:p4audit}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcc}
+\toprule
+Condition & $\bar V=50$ & $\bar V=100$ \\
+\midrule
+Complete & 50.00 / 1.000 & 100.00 / 1.000 \\
+Star & 50.00 / 1.000 & 100.00 / 1.000 \\
+Static 15-support mean & 22.50 / 0.908 & 44.70 / 0.894 \\
+Learned PPO, 5-realization mean & 15.10 / 0.302 & 31.50 / 0.315 \\
+Learned support S1 & 49.65 / 0.993 & 95.10 / 0.951 \\
+\bottomrule
+\end{tabular}
+}
+\caption{P4 communication-volume audit. Each cell reports mean realized
+tokenizer-counted transmission per question followed by the corresponding
+realized-to-nominal statistic recorded by the P4 harness.}
+\label{tab:p4audit}
+\end{table}
+
+For the learned-support S1 condition, the realized shortfall is 0.35 tokens at
+$\bar V=50$ and 4.90 tokens at $\bar V=100$. Using the empirical sensitivity
+slope of 0.067 percentage points per token gives residual magnitudes of about
+0.02 and 0.33 points, respectively. This is a sensitivity calculation
+consistent with Proposition~\ref{prop:cap}, not a formal proof that volume
+mismatch cannot explain any observed difference.
+
+% -----------------------------------------------------------------------------
+\section{Role and Root Controls}
+\label{app:rolecontrol}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+Config. & Root & Root role & $\bar V$ & Acc. & $\Delta_{0-2}$ & McNemar $p$ \\
+\midrule
+A & 0 & Analytical & 50 & 76.67 & \multirow{2}{*}{0.00} & \multirow{2}{*}{1.000} \\
+A & 2 & Creative   & 50 & 76.67 & & \\
+B & 0 & Creative   & 50 & 82.00 & \multirow{2}{*}{0.00} & \multirow{2}{*}{1.000} \\
+B & 2 & Analytical & 50 & 82.00 & & \\
+C & 0 & Step-by-step & 50 & 83.33 & \multirow{2}{*}{$-0.67$} & \multirow{2}{*}{1.000} \\
+C & 2 & Analytical   & 50 & 84.00 & & \\
+\midrule
+A & 0 & Analytical & 100 & 76.67 & \multirow{2}{*}{$-0.67$} & \multirow{2}{*}{1.000} \\
+A & 2 & Creative   & 100 & 77.33 & & \\
+B & 0 & Creative   & 100 & 82.00 & \multirow{2}{*}{$-0.67$} & \multirow{2}{*}{1.000} \\
+B & 2 & Analytical & 100 & 82.67 & & \\
+C & 0 & Step-by-step & 100 & 84.00 & \multirow{2}{*}{0.00} & \multirow{2}{*}{1.000} \\
+C & 2 & Analytical   & 100 & 84.00 & & \\
+\bottomrule
+\end{tabular}
+}
+\caption{Role/root controls on 150 matched GSM8K questions. Root swaps are
+within fixed role assignments; $\Delta_{0-2}$ is root-0 minus root-2 accuracy.}
+\label{tab:rolecontrol}
+\end{table}
+
+Across the six matched root swaps, the maximum difference is $0.67$ percentage
+points and every exact McNemar test gives $p=1.000$. The tested behavior is
+therefore stable under these role/root reassignments.
+
+% -----------------------------------------------------------------------------
+\section{P5 Component-Isolation Control}
+\label{app:p5}
+
+P5 uses 100 matched GSM8K questions and the pretrained 400-example controller.
+The same round-0 responses are used across conditions. Routing is either the
+static out-star support $S_1=(0\!\to\!1,0\!\to\!2)$ or the top-two edges obtained
+by ranking the six continuous controller intensities. Stopping is either fixed
+for three post-initial rounds or uses the original stopping rule.
+
+The 50-token budget is allocated across the three post-initial rounds as
+$[16,17,17]$ tokens. Each round's allocation is divided over its two active
+edges, giving per-edge ceilings of 8 or 9 tokens. All conditions use the same
+transmission procedure; the adaptive conditions stop after the first executed
+communication round.
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+Condition & Acc. (\%) [Wilson 95\% CI] & $\Volt$ & Rounds \\
+\midrule
+Static $S_1$ + fixed & 91.0 [83.8, 95.2] & 46 & 3 \\
+Static $S_1$ + adaptive & 93.0 [86.3, 96.6] & 14 & 1 \\
+Top-2 + fixed & 91.0 [83.8, 95.2] & 46 & 3 \\
+Top-2 + adaptive & 93.0 [86.3, 96.6] & 14 & 1 \\
+\bottomrule
+\end{tabular}
+}
+\par\medskip
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Routing & $\Delta$ (pp) & BCa 95\% CI & McNemar $p$ & $n_{01}$ & $n_{10}$ \\
+\midrule
+Static $S_1$ & $+2.0$ & $[-2.0,+5.0]$ & 0.625 & 3 & 1 \\
+Top-2 & $+2.0$ & $[-2.0,+5.0]$ & 0.625 & 3 & 1 \\
+\bottomrule
+\end{tabular}
+}
+\caption{\textbf{P5.} Full component-isolation results on 100 matched GSM8K
+questions. Upper: condition accuracies with 95\% Wilson intervals, realized
+tokens per question, and executed communication rounds. Lower: paired adaptive
+minus fixed accuracy contrasts in percentage points (pp), with BCa intervals
+and exact McNemar tests. $n_{01}$ counts questions incorrect under fixed stopping
+but correct under adaptive stopping; $n_{10}$ counts the reverse.}
+\label{tab:p5full}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{ccc}
+\toprule
+Forced round & $S_1$ selections / questions & Frequency \\
+\midrule
+1 & 100/100 & 1.000 \\
+2 & 100/100 & 1.000 \\
+3 & 100/100 & 1.000 \\
+\bottomrule
+\end{tabular}
+\caption{Controller-induced top-2 support under fixed three-round stopping.}
+\label{tab:p5routing}
+\end{table}
+
+Across all 300 forced communication rounds, the controller-induced top-2
+support was $S_1=(0\!\to\!1,0\!\to\!2)$, yielding a routing-selection frequency
+of 1.000 in the tested trajectory.
+
+Four questions are discordant between fixed and adaptive stopping; the paired
+accuracy contrast is reported in Table~\ref{tab:p5}.
+
+% -----------------------------------------------------------------------------
+\section{Learned Policy Against Fixed Motifs}
+\label{app:motifs}
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccc}
+\toprule
+Topology & Accuracy & Comm. & Gen. & Total \\
+\midrule
+Fully connected & 98.67\,{\scriptsize$\pm$1.8} & 304.8 & 3828.0 & 4132.8 \\
+Small world     & 96.00\,{\scriptsize$\pm$3.1} & 292.9 & 3810.8 & 4103.7 \\
+Ring            & 95.33\,{\scriptsize$\pm$3.4} & 337.0 & 4050.8 & 4387.7 \\
+Learned (ours)  & 95.33\,{\scriptsize$\pm$3.4} & \textbf{51.1} & 2384.6 & \textbf{2435.7} \\
+Star            & 94.67\,{\scriptsize$\pm$3.6} & 203.9 & 3776.1 & 3980.0 \\
+Random          & 94.67\,{\scriptsize$\pm$3.6} & 191.4 & 3574.9 & 3766.3 \\
+Scale-free      & 92.67\,{\scriptsize$\pm$4.2} & 192.6 & 3612.7 & 3805.2 \\
+\bottomrule
+\end{tabular}
+\caption{\textbf{Protocol P3.} 150 GSM8K questions, 400-sample controller,
+normal-approximation binomial intervals. Not comparable to
+Table~\ref{tab:main} or Table~\ref{tab:fixedbudget}. The learned row also
+changes compression, halting and generation length, so this is a system
+comparison, not a topology comparison. ``Small world'' and ``scale-free'' name
+the Watts--Strogatz \citep{watts1998collective} and Barab\'asi--Albert
+\citep{barabasi1999emergence} routines; at $N=3$ these are labels for how the
+edge set was drawn. }
+\label{tab:topo}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{figures/cost_accuracy.pdf}
+\caption{Cost against accuracy. \textbf{(a)} Protocol P1: \sys sits far to the
+left of MAD on every benchmark; error bars are seed standard deviations and
+NoComm is drawn at the left edge since it transmits nothing. \textbf{(b)}
+Protocol P3: the learned policy against the six fixed motifs of
+Table~\ref{tab:topo} on 150 GSM8K questions, with binomial intervals. Among the
+motifs, which share message and stopping rules, cost and accuracy rise together
+($\rho_s=0.73$, $p=0.10$, $n=6$), which is why no topology effect can be read
+off this panel.}
+\label{fig:cost}
+\end{figure}
+
+The learned policy matches Ring's accuracy with 84.8\% fewer communication
+tokens and 44.5\% fewer total tokens, but it also compresses and halts, so the
+saving cannot be assigned to routing. Among the six fixed motifs, which do share
+message and stopping rules, cost and accuracy are positively rank-correlated
+($\rho_s=0.73$, $p=0.10$, $n=6$). Six points cannot order these, and the
+correlation runs in the direction that makes cheap motifs look worse, which is
+why no topology effect can be read off this table.
+
+% -----------------------------------------------------------------------------
+\section{Descriptive Routing Statistics}
+\label{app:descriptive}
+
+These are descriptive statistics on logged graphs, chosen after inspecting
+traces, so they generate hypotheses rather than test them. Round-1
+edge-intensity entropy falls from 2.4119 bits at training epoch 1 to 2.3641 at
+epoch 5, so divergence from uniform grows from 0.1731 to 0.2209 bits; on
+HotpotQA it sits 0.0010 bits from uniform. Channels $0\to1$ and $0\to2$ exceed
+intensity $0.5$ on all reported GSM8K and AQuA-RAT samples while the rest exceed
+it on 72--74\%: a persistent weighted backbone with task-dependent additions,
+and the support the P4 learned arm uses. Stopping tracks the
+outcome: correct samples halt after 0.796 post-initial rounds against 1.992 for
+incorrect ones.
+
+\begin{table}[H]
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+Dataset & Analytical & Step-by-step & Creative \\
+\midrule
+GSM8K    & \textbf{97.89} & 2.11 & 0.00 \\
+AQuA-RAT & 27.69 & 13.85 & \textbf{58.46} \\
+HotpotQA & 0.00 & \textbf{100.00} & 0.00 \\
+\bottomrule
+\end{tabular}
+\caption{Percentage of samples in which each agent has the largest total
+outgoing intensity $\sum_{j\neq i}W^{(r)}_{ij}$ at round $r=1$. Roles are fixed
+by prompting. Percentages are over $N_{\mathrm{valid}}=1{,}185$ valid non-unanimous round-1 sample steps across the evaluation streams.}
+\label{tab:leadership}
+\end{table}
+
+Lexical Jaccard overlap between agents' final traces is 0.5392 under \sys,
+0.6128 under NoComm and 0.7564 under MAD, so agents end up less alike in surface
+form when they exchange less text; whether their reasoning differs is not
+something Jaccard overlap can tell us. Of the channels leaving an agent whose
+final answer turns out wrong, 32.00\% carry intensity below 0.05 and their mean
+intensity is 0.4323. Wrongness is labelled after the fact and two thirds of
+those edges are not suppressed, so this is an association between low intensity
+and incorrect sources, not error prevention. On stopping, 46.4\% of correct
+samples halt immediately; across all samples \sys uses 1.103 post-initial rounds
+against 1.800 for MAD, and 2.0 against 3.0 among samples without immediate
+agreement.
+
+% -----------------------------------------------------------------------------
+\section{Hyperparameters}
+\label{app:hyperparameters}
+
+\begin{table}[H]
+\centering
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{ll}
+\toprule
+Outer controller-training passes & 5 \\
+PPO inner epochs per update & 3 \\
+PPO clipping $\epsilon$ & 0.2 \\
+Batch size & 16 \\
+GAE $\lambda$ / discount $\gamma$ & 0.95 / 0.99 \\
+Entropy coefficient $c_e$ & 0.01 \\
+Actor/critic hidden dimension & 64 \\
+Collective-state dimension ($N=3$) & 20 \\
+Edge-factor rank & 2 \\
+Edge-intensity bias & 0.5 \\
+Gaussian log-scale clip $\log\sigma_a$ & $[-2,0.5]$ \\
+Optimizer / learning rate & AdamW / $10^{-3}$ \\
+Gradient norm clipping & 1.0 \\
+$\lambda_{\mathrm{info}}$ / $\lambda_{\mathrm{KL}}$ / $\gamma_{\mathrm{persist}}$ & 0.3 / 0.01 / 0.1 \\
+Routing prior $p_0$ & 0.1 \\
+Halting threshold $\tau_{\mathrm{halt}}$ & $\log 19$ \\
+Probability clip $\delta$ & $10^{-6}$ \\
+Max post-initial rounds $T$ & 3 \\
+Bootstrap replicates $B$ & 10{,}000 \\
+Action dimension & 61 \\
+$Q$ matrix dimensions & $3\times16$ \\
+\bottomrule
+\end{tabular}
+}
+\caption{Controller, optimization and inference settings.}
+\label{tab:hyperparameters}
+\end{table}
+
+The 61-dimensional action comprises $\mathrm{vec}(H_s)$ (6),
+$\mathrm{vec}(H_d)$ (6), $\mathrm{vec}(Q)$ (48), and $z_r$ (1).
+
+% -----------------------------------------------------------------------------
+\section{Per-Epoch Training Accuracy}
+\label{app:epoch-curves}
+
+Figure~\ref{fig:epoch-summary} summarizes training accuracy across the four
+pretraining dataset sizes.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{figures/scaling_stability_full_unified.png}
+\caption{Pretraining accuracy across dataset sizes for GSM8K, AQuA-RAT, and
+HotpotQA. Points show mean training-set accuracy over the five outer passes and
+error bars show one standard deviation across passes rather than evaluation
+seeds. These are the values $s_{\mathrm{acc}}$ is frozen at for evaluation.}
+\label{fig:epoch-summary}
+\end{figure}
+
+On closed-book HotpotQA, \sys reaches $31.67\%$ accuracy versus $34.00\%$ for
+MAD and $30.00\%$ for NoComm while using $83.8\%$ fewer inter-agent tokens than
+MAD. The paired gap is $-2.43$ points $[-4.17,-1.04]$, non-inferior at the
+primary 5-point margin but not an accuracy gain.
+
+
+\end{document}

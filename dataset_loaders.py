@@ -14,59 +14,19 @@ from utils import setup_logging
 logger = setup_logging()
 
 
+class DatasetIntegrityError(Exception):
+    """Raised when a dataset cannot be loaded from its authoritative source.
+    Synthetic/toy fallbacks are strictly prohibited.
+    """
+    pass
+
+
 def _generate_synthetic_samples(n_train: int, n_test: int, seed: int = 42) -> Tuple[List[dict], List[dict]]:
-    """
-    Generate synthetic GSM8K-style math word problems for testing.
-    Returns strictly disjoint train and test sets.
-    """
-    rng = random.Random(seed)
-    templates = [
-        {
-            "template": "{name} has {a} apples. {name2} gives {name} {b} more apples. How many apples does {name} have now?",
-            "answer_fn": lambda a, b: a + b,
-        },
-        {
-            "template": "A store has {a} shirts. Each shirt costs ${b}. How much do all the shirts cost?",
-            "answer_fn": lambda a, b: a * b,
-        },
-        {
-            "template": "{name} reads {a} pages per day. How many pages does {name} read in {b} days?",
-            "answer_fn": lambda a, b: a * b,
-        },
-        {
-            "template": "There are {a} students in a class. Each student has {b} pencils. If the teacher adds {c} more pencils to the total, how many pencils are there?",
-            "answer_fn": lambda a, b, c=0: a * b + c,
-        },
-        {
-            "template": "{name} has ${a}. {name} spends ${b} on lunch and ${c} on a book. How much money does {name} have left?",
-            "answer_fn": lambda a, b, c=0: a - b - c,
-        },
-    ]
-    names = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace"]
-
-    def make_sample():
-        t = rng.choice(templates)
-        a = rng.randint(5, 50)
-        b = rng.randint(2, 20)
-        c = rng.randint(1, 10)
-        name_pool = rng.sample(names, 3)
-        question = t["template"].format(name=name_pool[0], name2=name_pool[1], name3=name_pool[2], a=a, b=b, c=c)
-        try:
-            answer = t["answer_fn"](a, b, c)
-        except TypeError:
-            answer = t["answer_fn"](a, b)
-        return {"question": question, "answer": str(int(answer))}
-
-    # Generate total unique samples (simplistic unique by question string)
-    seen = set()
-    all_samples = []
-    while len(all_samples) < n_train + n_test:
-        s = make_sample()
-        if s["question"] not in seen:
-            seen.add(s["question"])
-            all_samples.append(s)
-
-    return all_samples[:n_train], all_samples[n_train:n_train+n_test]
+    """Strictly disabled to enforce fail-closed dataset integrity."""
+    raise DatasetIntegrityError(
+        "CRITICAL: Synthetic/toy data generation is strictly prohibited by non-negotiable integrity rules. "
+        "The experiment must run on real benchmark data or fail closed."
+    )
 
 
 def load_gsm8k(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[List[dict], List[dict]]:
@@ -100,12 +60,12 @@ def load_gsm8k(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[Lis
         logger.info(f"Loaded {len(train_samples)} train and {len(test_samples)} test GSM8K samples")
         return train_samples, test_samples
     except Exception as e:
-        logger.warning(f"Could not load GSM8K from HuggingFace: {e}")
-        return _generate_synthetic_samples(n_train, n_test, seed)
+        logger.error(f"DATASET_INTEGRITY_ERROR: Could not load real GSM8K: {e}")
+        raise DatasetIntegrityError(f"DATASET_INTEGRITY_ERROR: Could not load real GSM8K: {e}") from e
 
 
 def load_hotpotqa(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[List[dict], List[dict]]:
-    """Load HotpotQA. Uses 'train' split for training, 'validation' split for testing."""
+    """Load HotpotQA closed-book. Uses 'train' split for training, 'validation' split for testing."""
     try:
         from datasets import load_dataset
         ds_train = load_dataset("hotpot_qa", "fullwiki", split="train")
@@ -127,8 +87,59 @@ def load_hotpotqa(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[
         logger.info(f"Loaded {len(train_samples)} train and {len(test_samples)} test HotpotQA samples")
         return train_samples, test_samples
     except Exception as e:
-        logger.warning(f"Could not load HotpotQA from HuggingFace: {e}")
-        return _generate_synthetic_samples(n_train, n_test, seed)
+        logger.error(f"DATASET_INTEGRITY_ERROR: Could not load real HotpotQA: {e}")
+        raise DatasetIntegrityError(f"DATASET_INTEGRITY_ERROR: Could not load real HotpotQA: {e}") from e
+
+
+def load_open_book_hotpotqa(
+    n_train: int = 30, n_test: int = 50, seed: int = 42
+) -> Tuple[List[dict], List[dict]]:
+    """Load Open-Book Web HotpotQA with real Wikipedia retrieval context and gold supporting facts.
+    Uses 'train' split for training and 'validation' split for testing.
+    Fail-closed: raises DatasetIntegrityError on any failure.
+    """
+    try:
+        from datasets import load_dataset
+        ds_train = load_dataset("hotpot_qa", "fullwiki", split="train")
+        ds_test = load_dataset("hotpot_qa", "fullwiki", split="validation")
+        
+        rng = random.Random(seed)
+        
+        def process_split(ds, n):
+            indices = list(range(len(ds)))
+            rng.shuffle(indices)
+            samples = []
+            for idx in indices[:n]:
+                item = ds[idx]
+                titles = item["context"]["title"]
+                sentences_list = item["context"]["sentences"]
+                articles = [
+                    {
+                        "title": t,
+                        "sentences": s,
+                        "text": " ".join(s),
+                    }
+                    for t, s in zip(titles, sentences_list)
+                ]
+                samples.append({
+                    "id": item["id"],
+                    "question": item["question"],
+                    "answer": item["answer"],
+                    "type": item["type"],
+                    "level": item["level"],
+                    "supporting_facts": item["supporting_facts"],
+                    "context": item["context"],
+                    "articles": articles,
+                })
+            return samples
+            
+        train_samples = process_split(ds_train, n_train)
+        test_samples = process_split(ds_test, n_test)
+        logger.info(f"Loaded {len(train_samples)} train and {len(test_samples)} test Open-Book HotpotQA samples")
+        return train_samples, test_samples
+    except Exception as e:
+        logger.error(f"DATASET_INTEGRITY_ERROR: Could not load real Open-Book HotpotQA: {e}")
+        raise DatasetIntegrityError(f"DATASET_INTEGRITY_ERROR: Could not load real Open-Book HotpotQA: {e}") from e
 
 
 def load_aqua(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[List[dict], List[dict]]:
@@ -160,8 +171,8 @@ def load_aqua(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[List
         logger.info(f"Loaded {len(train_samples)} train and {len(test_samples)} test AQuA MATH samples directly from Github")
         return train_samples, test_samples
     except Exception as e:
-        logger.warning(f"Could not load AQuA MATH directly: {e}")
-        return _generate_synthetic_samples(n_train, n_test, seed)
+        logger.error(f"DATASET_INTEGRITY_ERROR: Could not load real AQuA MATH: {e}")
+        raise DatasetIntegrityError(f"DATASET_INTEGRITY_ERROR: Could not load real AQuA MATH: {e}") from e
 
 
 def load_truthfulqa(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[List[dict], List[dict]]:
@@ -206,8 +217,8 @@ def load_truthfulqa(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tupl
         logger.info(f"Loaded {len(train_samples)} train and {len(test_samples)} test TruthfulQA samples (hard-partitioned, zero overlap)")
         return train_samples, test_samples
     except Exception as e:
-        logger.warning(f"Could not load TruthfulQA: {e}")
-        return _generate_synthetic_samples(n_train, n_test, seed)
+        logger.error(f"DATASET_INTEGRITY_ERROR: Could not load real TruthfulQA: {e}")
+        raise DatasetIntegrityError(f"DATASET_INTEGRITY_ERROR: Could not load real TruthfulQA: {e}") from e
 
 
 def load_mbpp(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[List[dict], List[dict]]:
@@ -235,8 +246,8 @@ def load_mbpp(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[List
         logger.info(f"Loaded {len(train_samples)} train and {len(test_samples)} test MBPP samples")
         return train_samples, test_samples
     except Exception as e:
-        logger.warning(f"Could not load MBPP: {e}")
-        return _generate_synthetic_samples(n_train, n_test, seed)
+        logger.error(f"DATASET_INTEGRITY_ERROR: Could not load real MBPP: {e}")
+        raise DatasetIntegrityError(f"DATASET_INTEGRITY_ERROR: Could not load real MBPP: {e}") from e
 
 
 def evaluate_answer(predicted: str, gold: str, dataset_type: str = "gsm8k") -> bool:
@@ -325,6 +336,8 @@ def load_dataset_by_name(name: str, n_train: int = 30, n_test: int = 50, seed: i
     name = name.lower()
     if name == "gsm8k":
         return load_gsm8k(n_train, n_test, seed)
+    elif name in ("open_book_hotpotqa", "hotpotqa_web", "web_hotpotqa", "hotpot_qa_web"):
+        return load_open_book_hotpotqa(n_train, n_test, seed)
     elif name in ("hotpotqa", "hotpot_qa"):
         return load_hotpotqa(n_train, n_test, seed)
     elif name == "aqua":
@@ -334,4 +347,4 @@ def load_dataset_by_name(name: str, n_train: int = 30, n_test: int = 50, seed: i
     elif name == "mbpp" or name == "code":
         return load_mbpp(n_train, n_test, seed)
     else:
-        raise ValueError(f"Unknown dataset: {name}. Use 'gsm8k', 'hotpotqa', 'math', 'truthfulqa', or 'mbpp'.")
+        raise ValueError(f"Unknown dataset: {name}. Use 'gsm8k', 'hotpotqa', 'open_book_hotpotqa', 'aqua', 'truthfulqa', or 'mbpp'.")

@@ -1,0 +1,172 @@
+{
+  "suite_name": "WWW 2027 Web Multi-Agent Communication Suite",
+  "dataset": "Open-Book HotpotQA (fullwiki)",
+  "n_samples": 100,
+  "seed": 42,
+  "phases_executed": [
+    "W1",
+    "W2",
+    "W3",
+    "W4"
+  ],
+  "elapsed_seconds": 10546.31,
+  "results": {
+    "W1": {
+      "n_samples": 100,
+      "NoComm": {
+        "exact_match": 0.53,
+        "f1_score": 0.4679437229437229,
+        "avg_comm_tokens": 0.0,
+        "avg_gen_tokens": 2518.08,
+        "avg_rounds": 0.0,
+        "avg_latency_seconds": 2.88655
+      },
+      "MAD": {
+        "exact_match": 0.57,
+        "f1_score": 0.4986267066267065,
+        "avg_comm_tokens": 296.98,
+        "avg_gen_tokens": 10294.74,
+        "avg_rounds": 3.0,
+        "avg_latency_seconds": 10.16985
+      },
+      "SPARSECOMM": {
+        "exact_match": 0.5,
+        "f1_score": 0.44511038961038957,
+        "avg_comm_tokens": 44.94,
+        "avg_gen_tokens": 7242.38,
+        "avg_rounds": 3.0,
+        "avg_latency_seconds": 6.670939999999998,
+        "token_reduction_vs_mad": 0.848676678564213,
+        "latency_reduction_vs_mad": 0.34404735566404643
+      },
+      "elapsed_seconds": 1973.81
+    },
+    "W2": {
+      "n_samples": 100,
+      "Full_Transmission": {
+        "exact_match": 0.54,
+        "f1_score": 0.486520646020646,
+        "avg_comm_tokens": 75.65,
+        "avg_latency_seconds": 4.58255
+      },
+      "Semantic_Rationing": {
+        "exact_match": 0.54,
+        "f1_score": 0.4806873126873126,
+        "avg_comm_tokens": 66.25,
+        "avg_latency_seconds": 4.49657,
+        "delta_f1_vs_full": -0.0058333333333334125
+      },
+      "Random_Truncation": {
+        "exact_match": 0.52,
+        "f1_score": 0.45985397935397926,
+        "avg_comm_tokens": 66.86,
+        "avg_latency_seconds": 4.4515199999999995,
+        "delta_f1_vs_full": -0.026666666666666727
+      },
+      "semantic_advantage_vs_random_f1": 0.020833333333333315,
+      "elapsed_seconds": 1358.42
+    },
+    "W3": {
+      "n_samples": 100,
+      "Clean_Fixed": {
+        "exact_match": 0.54,
+        "f1_score": 0.49322324342324336,
+        "avg_comm_tokens": 88.87,
+        "avg_rounds": 3.0,
+        "avg_latency_seconds": 14.15761
+      },
+      "Clean_Adaptive": {
+        "exact_match": 0.48,
+        "f1_score": 0.44469597069597067,
+        "avg_comm_tokens": 90.97,
+        "avg_rounds": 3.0,
+        "avg_latency_seconds": 6.231169999999999,
+        "early_exit_rate": 0.0
+      },
+      "Noisy_Fixed": {
+        "exact_match": 0.59,
+        "f1_score": 0.5483288933288932,
+        "avg_comm_tokens": 95.68,
+        "avg_rounds": 3.0,
+        "avg_latency_seconds": 18.413880000000002
+      },
+      "Noisy_Adaptive": {
+        "exact_match": 0.6,
+        "f1_score": 0.5386925296925297,
+        "avg_comm_tokens": 96.24,
+        "avg_rounds": 3.0,
+        "avg_latency_seconds": 10.91869,
+        "early_exit_rate": 0.0
+      },
+      "elapsed_seconds": 4972.7
+    },
+    "W4": {
+      "metrics": {
+        "n_samples": 100,
+        "controls": {
+          "token_budget_per_round": 100,
+          "stopping_depth_rounds": 2,
+          "same_frozen_information_pool": true,
+          "same_prompts_and_model": true
+        },
+        "Static_Role": {
+          "exact_match": 0.53,
+          "f1_score": 0.47237962037962034,
+          "avg_comm_tokens": 66.05,
+          "avg_latency_seconds": 4.327380000000001
+        },
+        "Learned_SparseComm": {
+          "exact_match": 0.51,
+          "f1_score": 0.4522290980624314,
+          "avg_comm_tokens": 29.96,
+          "avg_latency_seconds": 4.46731
+        },
+        "Random_Routing": {
+          "exact_match": 0.54,
+          "f1_score": 0.46932467532467526,
+          "avg_comm_tokens": 57.81,
+          "avg_latency_seconds": 3.90986
+        },
+        "Complete_Broadcast": {
+          "exact_match": 0.56,
+          "f1_score": 0.495520646020646,
+          "avg_comm_tokens": 103.98,
+          "avg_latency_seconds": 9.65987
+        },
+        "elapsed_seconds": 2240.86
+      },
+      "analysis": {
+        "verdict": "NOT SUPPORTED (Result B: Communication volume and content dominate; routing topology has no detectable marginal effect)",
+        "n_samples": 100,
+        "comparisons": {
+          "Learned_vs_Static": {
+            "mean_diff_f1": -0.02015052231718898,
+            "ci_95": [
+              -0.0654799535341202,
+              0.02387233584316917
+            ],
+            "p_value": 0.368
+          },
+          "Learned_vs_Random": {
+            "mean_diff_f1": -0.01709557726224393,
+            "ci_95": [
+              -0.05582496438746439,
+              0.016071089404422735
+            ],
+            "p_value": 0.3566
+          },
+          "Static_vs_Random": {
+            "mean_diff_f1": 0.0030549450549450484,
+            "ci_95": [
+              -0.04172362637362639,
+              0.04541043956043955
+            ],
+            "p_value": 0.8644
+          }
+        }
+      }
+    }
+  },
+  "completed_at": "2026-10-07 16:56:27",
+  "status": "ALL_COMPLETED"
+}

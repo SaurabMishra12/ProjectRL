@@ -27,6 +27,7 @@ class LLMResponse:
     answer: str
     token_count: int
     confidence: float  # 0-1 estimated confidence
+    latency_ms: float = 0.0
 
 
 
@@ -88,13 +89,14 @@ class LLMBackend(ABC):
             return ans
 
         # Look for "Answer: X" pattern (after boxed check)
-        match = re.search(r'[Aa]nswer:\s*(.+?)(?:\n|$)', text)
+        match = re.search(r'(?:\*\*|\b)[Aa]nswer:\*{0,2}\s*(.+?)(?:\n|$)', text)
         if match:
             ans = match.group(1).strip().rstrip(".")
+            ans = re.sub(r'^\*+|\*+$', '', ans).strip().strip("*_`'\"").strip()
             # Strip any remaining \boxed{} wrapper inside Answer: line
             boxed_inline = re.search(r'\\boxed\{([^}]+)\}', ans)
             if boxed_inline:
-                ans = boxed_inline.group(1).strip()
+                ans = boxed_inline.group(1).strip().strip("*_`'\"").strip()
             if dataset_type == "gsm8k":
                 nums = re.findall(r'-?\d+\.?\d*', ans)
                 if nums:
@@ -131,7 +133,7 @@ class LLMBackend(ABC):
                 nums = re.findall(r'-?\d+\.?\d*', last)
                 if nums:
                     return nums[-1]
-            return last
+            return re.sub(r'^\*+|\*+$', '', last).strip().strip("*_`'\"").strip()
         return ""
 
     def _estimate_confidence(self, text: str) -> float:

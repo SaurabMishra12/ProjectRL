@@ -112,7 +112,8 @@ ax.spines['right'].set_visible(False)
 ax.spines['left'].set_color('#CBD5E1')
 ax.spines['bottom'].set_color('#CBD5E1')
 ax.spines['left'].set_linewidth(0.8)
-ax.spines['bottom'].set_linewidth(0.8)
+ax.spines['bottom'].set_linewidth(0.8)\
+
 
 # Tick parameters
 ax.tick_params(axis='both', which='both', color='#94A3B8', length=3.5, width=0.8)

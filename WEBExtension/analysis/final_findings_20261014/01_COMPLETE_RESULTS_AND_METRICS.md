@@ -1,6 +1,6 @@
 # 1. Complete results and metric register
 
-Snapshot generated 2026-10-14T17:51:19.720260+00:00. Scope: completed frozen WEBExtension E1–E5, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Each experiment uses the same 300 held-out question identities; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
+Snapshot generated 2026-10-14T17:52:34.756444+00:00. Scope: completed frozen WEBExtension E1–E5, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Each experiment uses the same 300 held-out question identities; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
 
 Run identifiers: `run_f6aa61bac2c3dfae`, `controller_study_a0b3768357484b45`, split `controller_splits_2e025f8ae3d9815e`. Input hashes and final artifact hashes are in `final_manifest.json`.
 

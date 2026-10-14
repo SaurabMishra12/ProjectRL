@@ -1,6 +1,9 @@
 # 1. Complete results and metric register
 
-Snapshot generated 2026-10-14T17:52:34.756444+00:00. Scope: completed frozen WEBExtension E1–E5, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Each experiment uses the same 300 held-out question identities; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
+**E3 record update — 15 October 2026:** E3-v2 is the current content-intervention record. Original E3 is retained as `E3_original` / historical 256-token answer-and-citation slicing, with 298/300 identical pairs. E3-v2 is a distinct protocol: 300 screened IDs, 299 eligible distinct exact-128-token evidence-bank pairs, and one explicit no-document case. These are the same question identities, not 299 additional independent test questions. It is an exploratory follow-up after original held-out results were inspected. The pre-update bundle is preserved separately.
+
+
+Snapshot generated 2026-10-14T21:16:36.088149+00:00. Scope: completed frozen WEBExtension E1–E5 plus corrected exploratory E3-v2, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Original experiments use the same 300 held-out identities; E3-v2 screens all 300 and pairs 299 eligible evidence-bearing questions; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
 
 Run identifiers: `run_f6aa61bac2c3dfae`, `controller_study_a0b3768357484b45`, split `controller_splits_2e025f8ae3d9815e`. Input hashes and final artifact hashes are in `final_manifest.json`.
 
@@ -37,8 +40,8 @@ R means every agent sees the same BM25 top-six candidate articles. P means those
 | E2 | R_CCW | 300 | 32.839 | 28.015 | 37.7255 | 24 | 19.5153 | 29.1421 | 145.163 | 6 |
 | E2 | R_CW | 300 | 32.7325 | 27.965 | 37.5447 | 24.3333 | 19.8222 | 29.4935 | 145.163 | 6 |
 | E2 | R_NoComm | 300 | 31.7477 | 26.9969 | 36.6054 | 22.6667 | 18.292 | 27.7325 | 0 | 3 |
-| E3 | R_crop | 300 | 31.4904 | 26.7383 | 36.3405 | 23.3333 | 18.9028 | 28.4381 | 47.2767 | 4 |
-| E3 | R_prefix | 300 | 31.6354 | 26.8561 | 36.4433 | 23.3333 | 18.9028 | 28.4381 | 47.2767 | 4 |
+| E3_original | R_crop | 300 | 31.4904 | 26.7383 | 36.3405 | 23.3333 | 18.9028 | 28.4381 | 47.2767 | 4 |
+| E3_original | R_prefix | 300 | 31.6354 | 26.8561 | 36.4433 | 23.3333 | 18.9028 | 28.4381 | 47.2767 | 4 |
 | E4 | P_final | 300 | 10.7717 | 7.66574 | 14.1489 | 7.66667 | 5.16276 | 11.241 | 216.31 | 12 |
 | E4 | P_stopped | 300 | 10.7717 | 7.66574 | 14.1489 | 7.66667 | 5.16276 | 11.241 | 200.627 | 11.82 |
 | E5 | P_Broadcast | 300 | 14.992 | 11.2729 | 18.9022 | 11.3333 | 8.22445 | 15.4199 | 132.873 | 6 |
@@ -61,6 +64,10 @@ R means every agent sees the same BM25 top-six candidate articles. P means those
 | E5 | R_NoComm | 300 | 32.314 | 27.4669 | 37.2197 | 23 | 18.5972 | 28.0855 | 0 | 3 |
 | E5 | R_SelfUpdate | 300 | 31.8446 | 27.0474 | 36.7541 | 22.6667 | 18.292 | 27.7325 | 0 | 6 |
 | E5 | R_Static | 300 | 31.3085 | 26.6714 | 36.1364 | 22.6667 | 18.292 | 27.7325 | 95.28 | 5 |
+| E3_v2 | R_NoComm_receiver | 299 | 32.5662 | 27.7988 | 37.4962 | 23.0769 | 18.6609 | 28.1759 | 0 | 3 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 31.5324 | 26.6209 | 36.428 | 23.4114 | 18.9676 | 28.5296 | 0 | 4 |
+| E3_v2 | R_crop | 299 | 33.0283 | 27.999 | 37.952 | 24.0803 | 19.5823 | 29.2358 | 128 | 4 |
+| E3_v2 | R_prefix | 299 | 31.233 | 26.4269 | 36.13 | 22.408 | 18.0488 | 27.4673 | 128 | 4 |
 
 F1 summary intervals use 5,000 question-bootstrap resamples (seed 42); EM uses a Wilson interval. A per-arm interval is not a paired contrast test. Below, canonical completed contrast reports use 10,000 resamples and 10,000 Monte Carlo sign randomizations, with the (1+k)/(B+1) p-value correction. These p-values are not exact enumeration. Original family-specific Holm corrections are preserved.
 
@@ -78,6 +85,46 @@ F1 summary intervals use 5,000 question-bootstrap resamples (seed 42); EM uses a
 | E2 |  | answer F1 | R_CW - R_CCW | 300 | -0.106524 | [-1.4761482730232731, 1.147305934805935] | 0.880112 | NA (unknown) | 10 | 6 | 284 |
 | E3 |  | answer F1 | R_prefix - R_crop | 300 | 0.145022 | [-0.13636363636363635, 0.5714285714285714] | 1 | NA (unknown) | 1 | 1 | 298 |
 | E4 |  | answer F1 | P_stopped - P_final | 300 | 0 | [0.0, 0.0] | 1 | NA (unknown) | 0 | 0 | 300 |
+
+## Current E3-v2: complete results, resources and eligibility
+
+| experiment | condition | n | scope | F1 | F1_CI_low | F1_CI_high | EM | EM_Wilson_low | EM_Wilson_high | payload_tokens_known_mean | payload_tokens_missing_n | support_available_recall_known_mean | support_available_recall_missing_n | all_support_available_known_mean | all_support_available_missing_n | split_support_across_nodes_known_mean | split_support_across_nodes_missing_n | answer_support_recall_known_mean | answer_support_recall_missing_n | answer_support_precision_known_mean | answer_support_precision_missing_n | invalid_citation_count_known_mean | invalid_citation_count_missing_n | provider_refusal_count_known_mean | provider_refusal_count_missing_n | input_tokens_known_mean | input_tokens_missing_n | input_tokens_all_question_mean | output_tokens_known_mean | output_tokens_missing_n | output_tokens_all_question_mean | usage_complete_known_mean | usage_complete_missing_n | logical_calls_known_mean | logical_calls_missing_n | cache_reads_this_execution_known_mean | cache_reads_this_execution_missing_n | provider_refusal_calls_known_mean | provider_refusal_calls_missing_n | support_label_f1_known_mean | support_label_f1_missing_n | support_label_em_known_mean | support_label_em_missing_n | label_joint_f1_known_mean | label_joint_f1_missing_n | label_joint_em_known_mean | label_joint_em_missing_n | new_support_facts_delivered_known_mean | new_support_facts_delivered_missing_n | provider_refusal_question_known_mean | provider_refusal_question_missing_n | noanswer_known_mean | noanswer_missing_n | explicit_empty_abstention_known_mean | explicit_empty_abstention_missing_n |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| E3_v2 | R_NoComm_receiver | 299 | EXPLORATORY_299_ELIGIBLE_OF_300 | 32.5662 | 27.7988 | 37.4962 | 23.0769 | 18.6609 | 28.1759 | 0 | 0 | 0.536789 | 0 | 0.254181 | 0 | 0 | 0 | 0.239353 | 0 | 0.379997 | 0 | 0 | 0 | 0.00668896 | 0 | 4087.49 | 0 | 4087.49 | 847.916 | 1 | NA (unknown) | 0.996656 | 0 | 3 | 0 | 0.090301 | 0 | 0.0167224 | 0 | 28.2121 | 0 | 8.02676 | 0 | 20.9099 | 0 | 4.68227 | 0 | 0 | 0 | 0.00668896 | 0 | 0.505017 | 0 | 0.00668896 | 0 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | EXPLORATORY_299_ELIGIBLE_OF_300 | 31.5324 | 26.6209 | 36.428 | 23.4114 | 18.9676 | 28.5296 | 0 | 0 | 0.536789 | 0 | 0.254181 | 0 | 0 | 0 | 0.246488 | 0 | 0.382943 | 0 | 0 | 0 | 0.0100334 | 0 | 5452.7 | 0 | 5452.7 | 1117.55 | 1 | NA (unknown) | 0.996656 | 0 | 4 | 0 | 0.120401 | 0 | 0.0267559 | 0 | 28.7434 | 0 | 7.69231 | 0 | 20.9543 | 0 | 5.01672 | 0 | 0 | 0 | 0.0100334 | 0 | 0.505017 | 0 | 0.0100334 | 0 |
+| E3_v2 | R_crop | 299 | EXPLORATORY_299_ELIGIBLE_OF_300 | 33.0283 | 27.999 | 37.952 | 24.0803 | 19.5823 | 29.2358 | 128 | 0 | 0.536789 | 0 | 0.254181 | 0 | 0 | 0 | 0.23796 | 0 | 0.380992 | 0 | 0.00668896 | 0 | 0.0100334 | 0 | 5597.11 | 0 | 5597.11 | 1136.08 | 3 | NA (unknown) | 0.989967 | 0 | 4 | 0 | 0.09699 | 0 | 0.0267559 | 0 | 28.1518 | 0 | 8.02676 | 0 | 20.5864 | 0 | 5.01672 | 0 | 0 | 0 | 0.0100334 | 0 | 0.494983 | 0 | 0.0100334 | 0 |
+| E3_v2 | R_prefix | 299 | EXPLORATORY_299_ELIGIBLE_OF_300 | 31.233 | 26.4269 | 36.13 | 22.408 | 18.0488 | 27.4673 | 128 | 0 | 0.536789 | 0 | 0.254181 | 0 | 0 | 0 | 0.232664 | 0 | 0.350534 | 0 | 0 | 0 | 0.0100334 | 0 | 5596.61 | 0 | 5596.61 | 1121.33 | 3 | NA (unknown) | 0.989967 | 0 | 4 | 0 | 0.0936455 | 0 | 0.0267559 | 0 | 26.8549 | 0 | 8.69565 | 0 | 20.0599 | 0 | 5.68562 | 0 | 0 | 0 | 0.0100334 | 0 | 0.521739 | 0 | 0.0100334 | 0 |
+
+| experiment | contrast | metric | scope | n | effect | ci95 | randomization_p | helped | harmed | unchanged |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| E3_v2 | R_prefix - R_crop | f1 | EXPLORATORY_PRIMARY_F1_SECONDARY_DESCRIPTIVE | 299 | -1.79539 | [-4.197328083964913, 0.47078098088328013] | 0.140186 | 8 | 18 | 273 |
+| E3_v2 | R_prefix - R_crop | em | EXPLORATORY_PRIMARY_F1_SECONDARY_DESCRIPTIVE | 299 | -1.67224 | [-4.013377926421405, 0.6688963210702341] | 0.273873 | 4 | 9 | 286 |
+| E3_v2 | R_prefix - R_crop | answer_support_recall | EXPLORATORY_PRIMARY_F1_SECONDARY_DESCRIPTIVE | 299 | -0.00529543 | [-0.023690078037904124, 0.013935340022296542] | 0.610139 | 14 | 22 | 263 |
+
+Primary contrast is receiver F1, prefix minus crop; EM/support are descriptive secondary endpoints. Both arms update receiver 1 once and transmit exactly 128 tokens over edge 0→1. Four logical calls include three reused initial outputs, while only the receiver call is physically new. Baseline anchors are restricted to the same 299 eligible IDs. The no-document question is retained in `E3_v2_eligibility.csv`, without a fabricated treatment or outcome. All 299 pairs are distinct.
+
+| pipeline | successes | reported_input_tokens | successful_inputs_missing | reported_output_tokens_lower_bound | successful_outputs_missing | original_unresolved_attempts | attempts |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| E3_v2 | 598 | 902605 | 0 | 166539 | 6 | 0 | 601 |
+
+The corrected run has 598 saved receiver responses from 601 attempts, with three explicit HTTP429 rejections and no uncertain attempts. Six refusals remain abstentions (three per treatment). All successful input usage is known; six output-usage values are unknown, so 166,539 reported output tokens is a lower bound. No currency bill or monetary savings is inferred. Global cost tables now include these attempts exactly once. Original initials, cached anchors and failed startup are not charged again by this analysis.
+
+| session | status | wall_seconds |
+| --- | --- | --- |
+| 20261014T202932.625121+0000_12365b8e | PREINFERENCE_SMOKE_TEST_PASS | 4.24844 |
+| 20261014T203012.719096+0000_000b1e52 | FAILED | 189.377 |
+| 20261014T203619.665115+0000_e979d54c | FAILED | 301.253 |
+| 20261014T204341.609097+0000_eb4cadd9 | FAILED | 334.296 |
+| 20261014T205338.159776+0000_861a4570 | COMPLETE | 210.924 |
+| 20261014T205536.012821+0000_20589f53 | FAILED | 0.226755 |
+
+[Every E3-v2 nested numeric field](tables/E3_v2_all_raw_numeric_fields.csv) · [Payloads, answers and captured timings](tables/E3_v2_payloads_answers_timings.csv) · [Physical attempts](tables/E3_v2_physical_attempts.csv)
+
+
+![E3-v2 receiver answer F1 with marginal uncertainty; paired inference is in the contrast table.](figures/65_E3_v2_quality.png)
+
+E3-v2 receiver answer F1 with marginal uncertainty; paired inference is in the contrast table.
+
 
 ## E5 canonical whole-policy effects: all F1 and utility contrasts
 
@@ -199,19 +246,20 @@ Exact IDs, normalized questions and normalized candidate titles have no measured
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | controlled | 6134 | 5960203 | 0 | 1582163 | 29 | 8 | 6153 |
 | controller | 10019 | 10130139 | 0 | 2640066 | 37 | 5 | 10037 |
+| E3_v2 | 598 | 902605 | 0 | 166539 | 6 | 0 | 601 |
 
 | field | value |
 | --- | --- |
 | scope | All original attempt IDs in WEBExtension/artifacts, including archived caps, pilots and preserved prior study; ledger copies de-duplicated by attempt ID |
-| unique_attempts | 17967 |
-| outcomes.success | 17926 |
-| outcomes.rejected | 27 |
+| unique_attempts | 18568 |
+| outcomes.success | 18524 |
+| outcomes.rejected | 30 |
 | outcomes.uncertain | 14 |
-| reported_input_tokens_lower_bound | 17715215 |
-| reported_output_tokens_lower_bound | 4663365 |
-| attempts_missing_input_usage | 41 |
-| attempts_missing_output_usage | 108 |
-| refusals | 133 |
+| reported_input_tokens_lower_bound | 18617820 |
+| reported_output_tokens_lower_bound | 4829904 |
+| attempts_missing_input_usage | 44 |
+| attempts_missing_output_usage | 117 |
+| refusals | 139 |
 | monetary_cost | NA (unknown) |
 | reason | No verified deployment price; missing/refusal/error usage remains unknown, not zero |
 
@@ -283,8 +331,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
@@ -307,6 +355,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E5 | R_Static | 300 | 300 | 0 | 0.253333 | 0.435647 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.254181 | 0.43613 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.254181 | 0.43613 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.254181 | 0.43613 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.254181 | 0.43613 | 76 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 
 ### answer_support_precision
 
@@ -323,8 +375,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.400278 | 0.46524 | 120.083 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.392722 | 0.46188 | 117.817 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.386786 | 0.459577 | 116.036 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0.370556 | 0.464459 | 111.167 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.370556 | 0.464459 | 111.167 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.370556 | 0.464459 | 111.167 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.370556 | 0.464459 | 111.167 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.0959444 | 0.273347 | 28.7833 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.0952778 | 0.271033 | 28.5833 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.153833 | 0.341191 | 46.15 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
@@ -347,6 +399,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.369907 | 0.451909 | 110.972 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.369008 | 0.454989 | 110.702 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 | E5 | R_Static | 300 | 300 | 0 | 0.37463 | 0.455266 | 112.389 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.379997 | 0.467098 | 113.619 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.382943 | 0.463278 | 114.5 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.380992 | 0.4623 | 113.917 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.350534 | 0.451417 | 104.81 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
 
 ### answer_support_recall
 
@@ -363,8 +419,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.268667 | 0.337474 | 80.6 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.268 | 0.341668 | 80.4 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.254944 | 0.327931 | 76.4833 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0.239278 | 0.327761 | 71.7833 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.239278 | 0.327761 | 71.7833 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.239278 | 0.327761 | 71.7833 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.239278 | 0.327761 | 71.7833 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.0755 | 0.213348 | 22.65 | 0 | 0 | 0 | 0 | 0 | 0.5 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.0755 | 0.213348 | 22.65 | 0 | 0 | 0 | 0 | 0 | 0.5 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.109111 | 0.24756 | 32.7333 | 0 | 0 | 0 | 0 | 0 | 0.508333 | 1 |
@@ -387,6 +443,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.254667 | 0.332472 | 76.4 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.253833 | 0.334259 | 76.15 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
 | E5 | R_Static | 300 | 300 | 0 | 0.259389 | 0.338293 | 77.8167 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.239353 | 0.319496 | 71.5667 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.246488 | 0.32368 | 73.7 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.23796 | 0.315962 | 71.15 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.232664 | 0.323625 | 69.5667 | 0 | 0 | 0 | 0 | 0.5 | 1 | 1 |
 
 ### cache_reads_this_execution
 
@@ -403,8 +463,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 6 | 0 | 1800 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
 | E2 | R_CW | 300 | 300 | 0 | 6 | 0 | 1800 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
 | E2 | R_NoComm | 300 | 300 | 0 | 3 | 0 | 900 | 3 | 3 | 3 | 3 | 3 | 3 | 3 |
-| E3 | R_crop | 300 | 300 | 0 | 3.99333 | 0.081513 | 1198 | 3 | 4 | 4 | 4 | 4 | 4 | 4 |
-| E3 | R_prefix | 300 | 300 | 0 | 4 | 0 | 1200 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
+| E3_original | R_crop | 300 | 300 | 0 | 3.99333 | 0.081513 | 1198 | 3 | 4 | 4 | 4 | 4 | 4 | 4 |
+| E3_original | R_prefix | 300 | 300 | 0 | 4 | 0 | 1200 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
 | E4 | P_final | 300 | 300 | 0 | 11.31 | 1.38091 | 3393 | 6 | 8 | 11 | 12 | 12 | 12 | 12 |
 | E4 | P_stopped | 300 | 300 | 0 | 11.2033 | 1.66871 | 3361 | 3 | 7.95 | 11 | 12 | 12 | 12 | 12 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.0333333 | 0.390809 | 10 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
@@ -427,6 +487,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.0433333 | 0.349087 | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.0666667 | 0.568595 | 20 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | E5 | R_Static | 300 | 300 | 0 | 0.07 | 0.576954 | 21 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.090301 | 0.51345 | 27 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.120401 | 0.684599 | 36 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.09699 | 0.518734 | 29 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.0936455 | 0.516109 | 28 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 
 ### em
 
@@ -443,8 +507,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 24 | 42.7797 | 7200 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E2 | R_CW | 300 | 300 | 0 | 24.3333 | 42.9812 | 7300 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E2 | R_NoComm | 300 | 300 | 0 | 22.6667 | 41.9375 | 6800 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
-| E3 | R_crop | 300 | 300 | 0 | 23.3333 | 42.3659 | 7000 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
-| E3 | R_prefix | 300 | 300 | 0 | 23.3333 | 42.3659 | 7000 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_original | R_crop | 300 | 300 | 0 | 23.3333 | 42.3659 | 7000 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_original | R_prefix | 300 | 300 | 0 | 23.3333 | 42.3659 | 7000 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E4 | P_final | 300 | 300 | 0 | 7.66667 | 26.6506 | 2300 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E4 | P_stopped | 300 | 300 | 0 | 7.66667 | 26.6506 | 2300 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 11.3333 | 31.7529 | 3400 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
@@ -467,6 +531,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 23 | 42.1536 | 6900 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 22.6667 | 41.9375 | 6800 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E5 | R_Static | 300 | 300 | 0 | 22.6667 | 41.9375 | 6800 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 23.0769 | 42.2031 | 6900 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 23.4114 | 42.4153 | 7000 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 24.0803 | 42.8288 | 7200 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 22.408 | 41.7674 | 6700 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 
 ### explicit_empty_abstention
 
@@ -483,8 +551,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -507,6 +575,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E5 | R_Static | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.00668896 | 0.0816487 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 
 ### f1
 
@@ -523,8 +595,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 32.839 | 43.4603 | 9851.71 | 0 | 0 | 0 | 0 | 81.4286 | 100 | 100 |
 | E2 | R_CW | 300 | 300 | 0 | 32.7325 | 43.5472 | 9819.75 | 0 | 0 | 0 | 0 | 82.7273 | 100 | 100 |
 | E2 | R_NoComm | 300 | 300 | 0 | 31.7477 | 42.7223 | 9524.32 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
-| E3 | R_crop | 300 | 300 | 0 | 31.4904 | 43.1422 | 9447.11 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
-| E3 | R_prefix | 300 | 300 | 0 | 31.6354 | 43.1551 | 9490.62 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
+| E3_original | R_crop | 300 | 300 | 0 | 31.4904 | 43.1422 | 9447.11 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
+| E3_original | R_prefix | 300 | 300 | 0 | 31.6354 | 43.1551 | 9490.62 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
 | E4 | P_final | 300 | 300 | 0 | 10.7717 | 29.0131 | 3231.52 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E4 | P_stopped | 300 | 300 | 0 | 10.7717 | 29.0131 | 3231.52 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 14.992 | 33.8172 | 4497.6 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
@@ -547,6 +619,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 32.314 | 42.8917 | 9694.21 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 31.8446 | 43.0341 | 9553.38 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
 | E5 | R_Static | 300 | 300 | 0 | 31.3085 | 42.6688 | 9392.54 | 0 | 0 | 0 | 0 | 76.25 | 100 | 100 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 32.5662 | 42.9494 | 9737.29 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 31.5324 | 43.1349 | 9428.18 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 33.0283 | 43.4995 | 9875.47 | 0 | 0 | 0 | 0 | 82.8571 | 100 | 100 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 31.233 | 42.8077 | 9338.65 | 0 | 0 | 0 | 0 | 80 | 100 | 100 |
 
 ### input_tokens
 
@@ -563,8 +639,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 8320.47 | 2083.6 | 2.49614e+06 | 1125 | 5310.6 | 6964.5 | 8226 | 9423 | 11916.9 | 18282 |
 | E2 | R_CW | 300 | 300 | 0 | 8320.47 | 2083.6 | 2.49614e+06 | 1125 | 5310.6 | 6964.5 | 8226 | 9423 | 11916.9 | 18282 |
 | E2 | R_NoComm | 300 | 300 | 0 | 4075.69 | 1041.33 | 1.22271e+06 | 549 | 2498.85 | 3406.5 | 4029 | 4612.5 | 5896.35 | 8940 |
-| E3 | R_crop | 300 | 300 | 0 | 5489.5 | 1387.49 | 1.64685e+06 | 741 | 3448.8 | 4590.75 | 5419 | 6266 | 7919.2 | 12054 |
-| E3 | R_prefix | 300 | 300 | 0 | 5489.46 | 1387.51 | 1.64684e+06 | 741 | 3448.8 | 4590.75 | 5419 | 6266 | 7919.2 | 12054 |
+| E3_original | R_crop | 300 | 300 | 0 | 5489.5 | 1387.49 | 1.64685e+06 | 741 | 3448.8 | 4590.75 | 5419 | 6266 | 7919.2 | 12054 |
+| E3_original | R_prefix | 300 | 300 | 0 | 5489.46 | 1387.51 | 1.64684e+06 | 741 | 3448.8 | 4590.75 | 5419 | 6266 | 7919.2 | 12054 |
 | E4 | P_final | 300 | 300 | 0 | 7234.26 | 1387.42 | 2.17028e+06 | 2277 | 5186.9 | 6309 | 7137 | 8058.5 | 9482.4 | 13521 |
 | E4 | P_stopped | 300 | 300 | 0 | 7127.53 | 1524.82 | 2.13826e+06 | 891 | 5003.4 | 6205.75 | 7077.5 | 8045 | 9482.4 | 13521 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 3641.55 | 700.414 | 1.09246e+06 | 1149 | 2638.3 | 3178.5 | 3608 | 4072.5 | 4755.6 | 6771 |
@@ -587,6 +663,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 4076 | 1041.15 | 1.2228e+06 | 549 | 2498.85 | 3406.5 | 4029 | 4612.5 | 5896.35 | 8940 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 8159.83 | 2082.33 | 2.44795e+06 | 1101 | 5000.7 | 6821.25 | 8066.5 | 9308.25 | 11796.1 | 17880 |
 | E5 | R_Static | 300 | 300 | 0 | 6904.03 | 1733.42 | 2.07121e+06 | 933 | 4333.6 | 5788.5 | 6826.5 | 7848 | 9897.45 | 15168 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 4087.49 | 1022.81 | 1.22216e+06 | 1449 | 2499 | 3411 | 4035 | 4623 | 5897.7 | 8940 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 5452.7 | 1363.74 | 1.63036e+06 | 1933 | 3333 | 4549.5 | 5381 | 6191 | 7864.9 | 11920 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 5597.11 | 1363.07 | 1.67354e+06 | 2077 | 3477.9 | 4698.5 | 5525 | 6332.5 | 8008.6 | 12054 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 5596.61 | 1365.21 | 1.67339e+06 | 2073 | 3482.9 | 4690 | 5521 | 6334 | 8024.9 | 12064 |
 
 ### invalid_citation_count
 
@@ -603,8 +683,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.00333333 | 0.057735 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| E3 | R_prefix | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_original | R_crop | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E4 | P_final | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E4 | P_stopped | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -627,6 +707,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.00666667 | 0.11547 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E5 | R_Static | 300 | 300 | 0 | 0.00333333 | 0.057735 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.00668896 | 0.115663 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ### label_joint_em
 
@@ -643,8 +727,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 6.33333 | 24.3968 | 1900 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E2 | R_CW | 300 | 300 | 0 | 6.33333 | 24.3968 | 1900 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E2 | R_NoComm | 300 | 300 | 0 | 5.33333 | 22.5073 | 1600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
-| E3 | R_crop | 300 | 300 | 0 | 5.33333 | 22.5073 | 1600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
-| E3 | R_prefix | 300 | 300 | 0 | 5.33333 | 22.5073 | 1600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_original | R_crop | 300 | 300 | 0 | 5.33333 | 22.5073 | 1600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_original | R_prefix | 300 | 300 | 0 | 5.33333 | 22.5073 | 1600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E4 | P_final | 300 | 300 | 0 | 0.666667 | 8.1513 | 200 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.666667 | 8.1513 | 200 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 2 | 14.0234 | 600 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
@@ -667,6 +751,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 5.66667 | 23.1591 | 1700 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 4.66667 | 21.1276 | 1400 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
 | E5 | R_Static | 300 | 300 | 0 | 6.66667 | 24.9861 | 2000 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 4.68227 | 21.1613 | 1400 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 5.01672 | 21.8656 | 1500 | 0 | 0 | 0 | 0 | 0 | 10 | 100 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 5.01672 | 21.8656 | 1500 | 0 | 0 | 0 | 0 | 0 | 10 | 100 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 5.68562 | 23.1956 | 1700 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 
 ### label_joint_f1
 
@@ -683,8 +771,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 21.9904 | 32.5182 | 6597.12 | 0 | 0 | 0 | 0 | 44.697 | 100 | 100 |
 | E2 | R_CW | 300 | 300 | 0 | 21.911 | 32.5819 | 6573.29 | 0 | 0 | 0 | 0 | 50 | 100 | 100 |
 | E2 | R_NoComm | 300 | 300 | 0 | 20.9177 | 31.3717 | 6275.31 | 0 | 0 | 0 | 0 | 44.4444 | 100 | 100 |
-| E3 | R_crop | 300 | 300 | 0 | 21.2603 | 32.015 | 6378.08 | 0 | 0 | 0 | 0 | 45.8333 | 100 | 100 |
-| E3 | R_prefix | 300 | 300 | 0 | 21.2603 | 32.015 | 6378.08 | 0 | 0 | 0 | 0 | 45.8333 | 100 | 100 |
+| E3_original | R_crop | 300 | 300 | 0 | 21.2603 | 32.015 | 6378.08 | 0 | 0 | 0 | 0 | 45.8333 | 100 | 100 |
+| E3_original | R_prefix | 300 | 300 | 0 | 21.2603 | 32.015 | 6378.08 | 0 | 0 | 0 | 0 | 45.8333 | 100 | 100 |
 | E4 | P_final | 300 | 300 | 0 | 6.32237 | 18.9192 | 1896.71 | 0 | 0 | 0 | 0 | 0 | 50.0926 | 100 |
 | E4 | P_stopped | 300 | 300 | 0 | 6.30967 | 18.7808 | 1892.9 | 0 | 0 | 0 | 0 | 0 | 51.868 | 100 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 9.29634 | 23.1868 | 2788.9 | 0 | 0 | 0 | 0 | 0 | 66.6667 | 100 |
@@ -707,6 +795,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 21.1767 | 31.4434 | 6353.01 | 0 | 0 | 0 | 0 | 46.5909 | 100 | 100 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 21.1463 | 31.7045 | 6343.88 | 0 | 0 | 0 | 0 | 44.4444 | 85.7143 | 100 |
 | E5 | R_Static | 300 | 300 | 0 | 21.2475 | 32.4167 | 6374.26 | 0 | 0 | 0 | 0 | 50 | 100 | 100 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 20.9099 | 30.9913 | 6252.07 | 0 | 0 | 0 | 0 | 44.9495 | 80 | 100 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 20.9543 | 31.4496 | 6265.33 | 0 | 0 | 0 | 0 | 47.2222 | 82 | 100 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 20.5864 | 31.0771 | 6155.32 | 0 | 0 | 0 | 0 | 47.2222 | 82 | 100 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 20.0599 | 31.0801 | 5997.9 | 0 | 0 | 0 | 0 | 40 | 100 | 100 |
 
 ### logical_calls
 
@@ -723,8 +815,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 6 | 0 | 1800 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
 | E2 | R_CW | 300 | 300 | 0 | 6 | 0 | 1800 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
 | E2 | R_NoComm | 300 | 300 | 0 | 3 | 0 | 900 | 3 | 3 | 3 | 3 | 3 | 3 | 3 |
-| E3 | R_crop | 300 | 300 | 0 | 4 | 0 | 1200 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
-| E3 | R_prefix | 300 | 300 | 0 | 4 | 0 | 1200 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
+| E3_original | R_crop | 300 | 300 | 0 | 4 | 0 | 1200 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
+| E3_original | R_prefix | 300 | 300 | 0 | 4 | 0 | 1200 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
 | E4 | P_final | 300 | 300 | 0 | 12 | 0 | 3600 | 12 | 12 | 12 | 12 | 12 | 12 | 12 |
 | E4 | P_stopped | 300 | 300 | 0 | 11.82 | 1.08236 | 3546 | 3 | 12 | 12 | 12 | 12 | 12 | 12 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 6 | 0 | 1800 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
@@ -747,6 +839,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 3 | 0 | 900 | 3 | 3 | 3 | 3 | 3 | 3 | 3 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 6 | 0 | 1800 | 6 | 6 | 6 | 6 | 6 | 6 | 6 |
 | E5 | R_Static | 300 | 300 | 0 | 5 | 0 | 1500 | 5 | 5 | 5 | 5 | 5 | 5 | 5 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 3 | 0 | 897 | 3 | 3 | 3 | 3 | 3 | 3 | 3 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 4 | 0 | 1196 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 4 | 0 | 1196 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 4 | 0 | 1196 | 4 | 4 | 4 | 4 | 4 | 4 | 4 |
 
 ### new_support_facts_delivered
 
@@ -763,8 +859,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E2 | R_CW | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| E3 | R_crop | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| E3 | R_prefix | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_original | R_crop | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E4 | P_final | 300 | 300 | 0 | 0.603333 | 0.98449 | 181 | 0 | 0 | 0 | 0 | 1 | 2 | 6 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.576667 | 0.945393 | 173 | 0 | 0 | 0 | 0 | 1 | 2 | 6 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.853333 | 1.26378 | 256 | 0 | 0 | 0 | 0 | 2 | 4 | 6 |
@@ -787,6 +883,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E5 | R_Static | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ### noanswer
 
@@ -803,8 +903,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.5 | 0.500835 | 150 | 0 | 0 | 0 | 0.5 | 1 | 1 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.513333 | 0.500657 | 154 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.503333 | 0.500824 | 151 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0.523333 | 0.50029 | 157 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.523333 | 0.50029 | 157 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.523333 | 0.50029 | 157 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.523333 | 0.50029 | 157 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.826667 | 0.379168 | 248 | 0 | 0 | 1 | 1 | 1 | 1 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.826667 | 0.379168 | 248 | 0 | 0 | 1 | 1 | 1 | 1 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.78 | 0.414938 | 234 | 0 | 0 | 1 | 1 | 1 | 1 | 1 |
@@ -827,6 +927,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.503333 | 0.500824 | 151 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.513333 | 0.500657 | 154 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
 | E5 | R_Static | 300 | 300 | 0 | 0.516667 | 0.500557 | 155 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.505017 | 0.500813 | 151 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.505017 | 0.500813 | 151 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.494983 | 0.500813 | 148 | 0 | 0 | 0 | 0 | 1 | 1 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.521739 | 0.500365 | 156 | 0 | 0 | 0 | 1 | 1 | 1 | 1 |
 
 ### output_tokens
 
@@ -843,8 +947,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 299 | 1 | 1672.17 | 858.04 | 499978 | 497 | 804 | 1106 | 1431 | 1890 | 3381.4 | 5674 |
 | E2 | R_CW | 300 | 299 | 1 | 1673.19 | 867.158 | 500285 | 497 | 804 | 1110 | 1424 | 1925 | 3362.9 | 5816 |
 | E2 | R_NoComm | 300 | 299 | 1 | 845.88 | 506.613 | 252918 | 239 | 375.8 | 523 | 700 | 999 | 1738.8 | 3942 |
-| E3 | R_crop | 300 | 299 | 1 | 1118.23 | 619.593 | 334351 | 345 | 521.6 | 722 | 942 | 1319 | 2256.2 | 4326 |
-| E3 | R_prefix | 300 | 299 | 1 | 1118.95 | 621.411 | 334566 | 345 | 521.6 | 722 | 942 | 1319 | 2256.2 | 4326 |
+| E3_original | R_crop | 300 | 299 | 1 | 1118.23 | 619.593 | 334351 | 345 | 521.6 | 722 | 942 | 1319 | 2256.2 | 4326 |
+| E3_original | R_prefix | 300 | 299 | 1 | 1118.95 | 621.411 | 334566 | 345 | 521.6 | 722 | 942 | 1319 | 2256.2 | 4326 |
 | E4 | P_final | 300 | 295 | 5 | 2872.72 | 1199.57 | 847451 | 1013 | 1552.4 | 1992 | 2471 | 3429.5 | 5530.9 | 6950 |
 | E4 | P_stopped | 300 | 295 | 5 | 2817.98 | 1209.95 | 831304 | 498 | 1479.7 | 1985.5 | 2441 | 3371 | 5530.9 | 6950 |
 | E5 | P_Broadcast | 300 | 295 | 5 | 1445.71 | 649.466 | 426484 | 513 | 732.3 | 987 | 1269 | 1739 | 2694.3 | 4837 |
@@ -867,6 +971,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 299 | 1 | 856.739 | 483.296 | 256165 | 251 | 375.6 | 537 | 725 | 983 | 1908.9 | 3472 |
 | E5 | R_SelfUpdate | 300 | 299 | 1 | 1677.94 | 908.226 | 501703 | 500 | 751 | 1055.5 | 1453 | 1946 | 3617.5 | 5952 |
 | E5 | R_Static | 300 | 299 | 1 | 1410.21 | 711.437 | 421654 | 413 | 676.6 | 917.5 | 1230 | 1615 | 2849 | 4339 |
+| E3_v2 | R_NoComm_receiver | 299 | 298 | 1 | 847.916 | 506.238 | 252679 | 287 | 378.55 | 523.25 | 700.5 | 999.5 | 1739.7 | 3942 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 298 | 1 | 1117.55 | 623.525 | 333030 | 373 | 508.7 | 703.25 | 945.5 | 1287.5 | 2325.95 | 4233 |
+| E3_v2 | R_crop | 299 | 296 | 3 | 1136.08 | 663.948 | 336279 | 371 | 514 | 711 | 953.5 | 1321.5 | 2303.5 | 5415 |
+| E3_v2 | R_prefix | 299 | 296 | 3 | 1121.33 | 647.895 | 331914 | 389 | 515 | 694 | 930 | 1332 | 2287.25 | 4589 |
 
 ### payload_tokens
 
@@ -883,8 +991,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 145.163 | 145.791 | 43549 | 18 | 21 | 21 | 100.5 | 234.75 | 404.05 | 768 |
 | E2 | R_CW | 300 | 300 | 0 | 145.163 | 145.791 | 43549 | 18 | 21 | 21 | 100.5 | 234.75 | 404.05 | 768 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| E3 | R_crop | 300 | 300 | 0 | 47.2767 | 49.5277 | 14183 | 6 | 7 | 7 | 7 | 76.5 | 132.15 | 256 |
-| E3 | R_prefix | 300 | 300 | 0 | 47.2767 | 49.5277 | 14183 | 6 | 7 | 7 | 7 | 76.5 | 132.15 | 256 |
+| E3_original | R_crop | 300 | 300 | 0 | 47.2767 | 49.5277 | 14183 | 6 | 7 | 7 | 7 | 76.5 | 132.15 | 256 |
+| E3_original | R_prefix | 300 | 300 | 0 | 47.2767 | 49.5277 | 14183 | 6 | 7 | 7 | 7 | 76.5 | 132.15 | 256 |
 | E4 | P_final | 300 | 300 | 0 | 216.31 | 214.256 | 64893 | 56 | 63 | 63 | 119.5 | 299.25 | 663.2 | 1246 |
 | E4 | P_stopped | 300 | 300 | 0 | 200.627 | 195.317 | 60188 | 0 | 63 | 63 | 63 | 279.5 | 562 | 1246 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 132.873 | 133.879 | 39862 | 40 | 42 | 42 | 42 | 176.5 | 408.4 | 834 |
@@ -907,6 +1015,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E5 | R_Static | 300 | 300 | 0 | 95.28 | 99.0053 | 28584 | 12 | 14 | 14 | 14 | 157 | 270 | 512 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 128 | 0 | 38272 | 128 | 128 | 128 | 128 | 128 | 128 | 128 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 128 | 0 | 38272 | 128 | 128 | 128 | 128 | 128 | 128 | 128 |
 
 ### provider_refusal_calls
 
@@ -923,8 +1035,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.0466667 | 0.48159 | 14 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | E2 | R_CW | 300 | 300 | 0 | 0.0466667 | 0.48159 | 14 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.0166667 | 0.207845 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| E3 | R_crop | 300 | 300 | 0 | 0.0266667 | 0.293672 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.0266667 | 0.293672 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.0266667 | 0.293672 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.0266667 | 0.293672 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | E4 | P_final | 300 | 300 | 0 | 0.103333 | 0.857383 | 31 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.103333 | 0.857383 | 31 | 0 | 0 | 0 | 0 | 0 | 0 | 10 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.05 | 0.409951 | 15 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
@@ -947,6 +1059,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.02 | 0.244539 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.0433333 | 0.464228 | 13 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
 | E5 | R_Static | 300 | 300 | 0 | 0.04 | 0.42308 | 12 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.0167224 | 0.208191 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.0267559 | 0.29416 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.0267559 | 0.29416 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.0267559 | 0.29416 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 
 ### provider_refusal_count
 
@@ -963,8 +1079,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.03 | 0.298995 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | E2 | R_CW | 300 | 300 | 0 | 0.03 | 0.298995 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.0166667 | 0.207845 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| E3 | R_crop | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.03 | 0.263308 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.03 | 0.263308 | 9 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.0233333 | 0.222758 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
@@ -987,6 +1103,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.02 | 0.244539 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.0233333 | 0.237297 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
 | E5 | R_Static | 300 | 300 | 0 | 0.0266667 | 0.269935 | 8 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.00668896 | 0.0816487 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 
 ### provider_refusal_question
 
@@ -1003,8 +1123,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.0166667 | 0.128233 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.0166667 | 0.128233 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.0133333 | 0.114889 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
@@ -1027,6 +1147,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.00666667 | 0.081513 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 | E5 | R_Static | 300 | 300 | 0 | 0.01 | 0.099665 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.00668896 | 0.0816487 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.0100334 | 0.0998304 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
 
 ### split_support_across_nodes
 
@@ -1043,8 +1167,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E2 | R_CW | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| E3 | R_crop | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| E3 | R_prefix | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_original | R_crop | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E4 | P_final | 300 | 300 | 0 | 0.206667 | 0.405591 | 62 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.206667 | 0.405591 | 62 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.206667 | 0.405591 | 62 | 0 | 0 | 0 | 0 | 0 | 1 | 1 |
@@ -1067,6 +1191,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | E5 | R_Static | 300 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ### support_available_recall
 
@@ -1083,8 +1211,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
@@ -1107,6 +1235,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
 | E5 | R_Static | 300 | 300 | 0 | 0.535 | 0.342376 | 160.5 | 0 | 0 | 0.333333 | 0.5 | 1 | 1 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.536789 | 0.341542 | 160.5 | 0 | 0 | 0.416667 | 0.5 | 1 | 1 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.536789 | 0.341542 | 160.5 | 0 | 0 | 0.416667 | 0.5 | 1 | 1 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.536789 | 0.341542 | 160.5 | 0 | 0 | 0.416667 | 0.5 | 1 | 1 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.536789 | 0.341542 | 160.5 | 0 | 0 | 0.416667 | 0.5 | 1 | 1 | 1 |
 
 ### support_label_em
 
@@ -1123,8 +1255,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 9.66667 | 29.5997 | 2900 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E2 | R_CW | 300 | 300 | 0 | 10 | 30.0501 | 3000 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E2 | R_NoComm | 300 | 300 | 0 | 8.66667 | 28.1816 | 2600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
-| E3 | R_crop | 300 | 300 | 0 | 8.66667 | 28.1816 | 2600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
-| E3 | R_prefix | 300 | 300 | 0 | 8.66667 | 28.1816 | 2600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_original | R_crop | 300 | 300 | 0 | 8.66667 | 28.1816 | 2600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_original | R_prefix | 300 | 300 | 0 | 8.66667 | 28.1816 | 2600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E4 | P_final | 300 | 300 | 0 | 1.33333 | 11.4889 | 400 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
 | E4 | P_stopped | 300 | 300 | 0 | 1 | 9.9665 | 300 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 2.66667 | 16.1376 | 800 | 0 | 0 | 0 | 0 | 0 | 0 | 100 |
@@ -1147,6 +1279,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 9 | 28.666 | 2700 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 8 | 27.1746 | 2400 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 | E5 | R_Static | 300 | 300 | 0 | 10.3333 | 30.4902 | 3100 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 8.02676 | 27.2162 | 2400 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 7.69231 | 26.6916 | 2300 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 8.02676 | 27.2162 | 2400 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 8.69565 | 28.2244 | 2600 | 0 | 0 | 0 | 0 | 0 | 100 | 100 |
 
 ### support_label_f1
 
@@ -1163,8 +1299,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 30.9302 | 36.7444 | 9279.05 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
 | E2 | R_CW | 300 | 300 | 0 | 30.5775 | 36.7953 | 9173.25 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
 | E2 | R_NoComm | 300 | 300 | 0 | 29.4776 | 35.8243 | 8843.27 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
-| E3 | R_crop | 300 | 300 | 0 | 27.9778 | 36.1186 | 8393.33 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
-| E3 | R_prefix | 300 | 300 | 0 | 27.9778 | 36.1186 | 8393.33 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
+| E3_original | R_crop | 300 | 300 | 0 | 27.9778 | 36.1186 | 8393.33 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
+| E3_original | R_prefix | 300 | 300 | 0 | 27.9778 | 36.1186 | 8393.33 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
 | E4 | P_final | 300 | 300 | 0 | 7.93254 | 22.1258 | 2379.76 | 0 | 0 | 0 | 0 | 0 | 66.6667 | 100 |
 | E4 | P_stopped | 300 | 300 | 0 | 7.90079 | 21.9583 | 2370.24 | 0 | 0 | 0 | 0 | 0 | 66.6667 | 100 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 12.0437 | 26.5456 | 3613.1 | 0 | 0 | 0 | 0 | 0 | 67.0833 | 100 |
@@ -1187,6 +1323,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 28.8716 | 35.8878 | 8661.48 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 28.7593 | 35.9709 | 8627.79 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
 | E5 | R_Static | 300 | 300 | 0 | 29.5422 | 36.6477 | 8862.67 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 28.2121 | 35.6018 | 8435.41 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 28.7434 | 35.6175 | 8594.29 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 28.1518 | 35.1538 | 8417.38 | 0 | 0 | 0 | 0 | 66.6667 | 100 | 100 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 26.8549 | 35.4208 | 8029.61 | 0 | 0 | 0 | 0 | 50 | 100 | 100 |
 
 ### usage_complete
 
@@ -1203,8 +1343,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
 | E2 | R_CW | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
 | E2 | R_NoComm | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
-| E3 | R_crop | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
-| E3 | R_prefix | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| E3_original | R_crop | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| E3_original | R_prefix | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
 | E4 | P_final | 300 | 300 | 0 | 0.983333 | 0.128233 | 295 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
 | E4 | P_stopped | 300 | 300 | 0 | 0.983333 | 0.128233 | 295 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.983333 | 0.128233 | 295 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
@@ -1227,6 +1367,10 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E5 | R_NoComm | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
 | E5 | R_SelfUpdate | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
 | E5 | R_Static | 300 | 300 | 0 | 0.996667 | 0.057735 | 299 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| E3_v2 | R_NoComm_receiver | 299 | 299 | 0 | 0.996656 | 0.0578315 | 298 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| E3_v2 | R_SelfUpdate_receiver | 299 | 299 | 0 | 0.996656 | 0.0578315 | 298 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| E3_v2 | R_crop | 299 | 299 | 0 | 0.989967 | 0.0998304 | 296 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
+| E3_v2 | R_prefix | 299 | 299 | 0 | 0.989967 | 0.0998304 | 296 | 0 | 1 | 1 | 1 | 1 | 1 | 1 |
 
 ### utility_gain
 
@@ -1243,8 +1387,8 @@ The following includes all recorded scalar condition/cost fields and the recompu
 | E2 | R_CCW | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
 | E2 | R_CW | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
 | E2 | R_NoComm | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
-| E3 | R_crop | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
-| E3 | R_prefix | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
+| E3_original | R_crop | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
+| E3_original | R_prefix | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
 | E4 | P_final | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
 | E4 | P_stopped | 300 | 0 | 300 | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) | NA (unknown) |
 | E5 | P_Broadcast | 300 | 300 | 0 | 0.0293718 | 0.294331 | 8.81154 | -0.57 | -0.07 | -0.07 | -0.07 | -0.07 | 0.93 | 0.93 |
@@ -3833,6 +3977,16 @@ The following includes all recorded scalar condition/cost fields and the recompu
 ## Full-precision files and original paper numbers
 
 - [E2_E1_shared_outcome_audit.csv](tables/E2_E1_shared_outcome_audit.csv)
+- [E3_v2_all_raw_numeric_fields.csv](tables/E3_v2_all_raw_numeric_fields.csv)
+- [E3_v2_condition_summary.csv](tables/E3_v2_condition_summary.csv)
+- [E3_v2_eligibility.csv](tables/E3_v2_eligibility.csv)
+- [E3_v2_paired_effects.csv](tables/E3_v2_paired_effects.csv)
+- [E3_v2_paired_transitions.csv](tables/E3_v2_paired_transitions.csv)
+- [E3_v2_payloads_answers_timings.csv](tables/E3_v2_payloads_answers_timings.csv)
+- [E3_v2_physical_attempts.csv](tables/E3_v2_physical_attempts.csv)
+- [E3_v2_question_metrics.csv](tables/E3_v2_question_metrics.csv)
+- [E3_v2_session_timings.csv](tables/E3_v2_session_timings.csv)
+- [E3_v2_subgroups.csv](tables/E3_v2_subgroups.csv)
 - [E5_complete_action_adaptivity.csv](tables/E5_complete_action_adaptivity.csv)
 - [E5_complete_missing_data_bounds.csv](tables/E5_complete_missing_data_bounds.csv)
 - [E5_complete_quality_resource_tradeoffs.csv](tables/E5_complete_quality_resource_tradeoffs.csv)

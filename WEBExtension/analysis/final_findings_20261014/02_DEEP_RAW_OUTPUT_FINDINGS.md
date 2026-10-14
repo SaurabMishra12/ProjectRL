@@ -1,6 +1,9 @@
 # 2. Findings from the complete raw outputs
 
-Snapshot generated 2026-10-14T17:52:34.756444+00:00. Scope: completed frozen WEBExtension E1–E5, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Each experiment uses the same 300 held-out question identities; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
+**E3 record update — 15 October 2026:** E3-v2 is the current content-intervention record. Original E3 is retained as `E3_original` / historical 256-token answer-and-citation slicing, with 298/300 identical pairs. E3-v2 is a distinct protocol: 300 screened IDs, 299 eligible distinct exact-128-token evidence-bank pairs, and one explicit no-document case. These are the same question identities, not 299 additional independent test questions. It is an exploratory follow-up after original held-out results were inspected. The pre-update bundle is preserved separately.
+
+
+Snapshot generated 2026-10-14T21:16:36.088149+00:00. Scope: completed frozen WEBExtension E1–E5 plus corrected exploratory E3-v2, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Original experiments use the same 300 held-out identities; E3-v2 screens all 300 and pairs 299 eligible evidence-bearing questions; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
 
 Run identifiers: `run_f6aa61bac2c3dfae`, `controller_study_a0b3768357484b45`, split `controller_splits_2e025f8ae3d9815e`. Input hashes and final artifact hashes are in `final_manifest.json`.
 
@@ -122,7 +125,46 @@ We independently reconstructed the 53 observable features from saved initial res
 
 Of 1,800 learned/random paired evaluations, edge count and quota match in all 1,800. Actual recipient-call counts differ in 912 (50.6667%) and transmitted token totals differ in 254 (14.1111%). An in-star updates one recipient, whereas another two-edge graph may update two. Short messages also leave different unused quota. Consequently, the P Learned–MatchedRandom F1 difference +1.01577 (raw p=.0456954; Holm p=.502650) is not multiplicity-robust and cannot establish pure routing superiority. Even a significant result would need the actual resource mismatch disclosed.
 
-## E2 and E3 expose the limits of component attribution
+## Corrected E3-v2: intervention strength improved, quality advantage unresolved
+
+Prefix receiver F1 is 31.23295 and crop F1 is 33.02834. Prefix minus crop is −1.79539 points, CI [−4.19733,0.470781], p=.140186. Prefix yields higher F1 on 8 questions, crop on 18, and 273 are tied. Equal F1 is not necessarily the same answer. Normalized answer text changes on 36/299 pairs.
+
+Prefix retains 641 complete parseable facts, versus 500 for crop, yet has the lower F1 point estimate. This does not establish that fewer facts cause better answers or that random cropping is optimal: these are two treatment means and the paired accuracy CI crosses zero. Both recipients already see the full shared evidence; neither arm introduces otherwise inaccessible facts. Structured lines cut by token boundaries do not count as complete delivered facts. The intervention tests redundant evidence presentation, not entailment or novel-evidence handoff.
+
+The fixed receiver's saved NoComm F1 is 32.56618 and SelfUpdate F1 is 31.53239 on the same 299 questions. These provide context, not a new trained policy or a multiplicity-confirmed superiority claim. Six treatment refusals are counted in headline results. The one zero-document question is retained transparently but has no paired content treatment; this eligibility decision was frozen before E3-v2 generation.
+
+| variable | group | n | prefix_F1 | crop_F1 | prefix_minus_crop_F1 | CI95_low | CI95_high | status |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| type | bridge | 239 | 32.3841 | 35.0476 | -2.66355 | -5.32388 | -0.165005 | POST_HOC_DESCRIPTIVE_NO_MULTIPLICITY_CONFIRMED_CLAIM |
+| type | comparison | 60 | 26.6476 | 24.9848 | 1.66275 | -3.34118 | 8.32549 | POST_HOC_DESCRIPTIVE_NO_MULTIPLICITY_CONFIRMED_CLAIM |
+| stratum | Co-located-Gold | 14 | 81.1186 | 75.058 | 6.06061 | -3.06122 | 21.3667 | POST_HOC_DESCRIPTIVE_NO_MULTIPLICITY_CONFIRMED_CLAIM |
+| stratum | Disjoint-Gold | 62 | 72.9256 | 74.5116 | -1.58602 | -6.32873 | 3.5602 | POST_HOC_DESCRIPTIVE_NO_MULTIPLICITY_CONFIRMED_CLAIM |
+| stratum | Retrieval-Missing-Gold | 223 | 16.5094 | 18.8562 | -2.34681 | -5.076 | 0.323581 | POST_HOC_DESCRIPTIVE_NO_MULTIPLICITY_CONFIRMED_CLAIM |
+
+Subgroups are post-hoc descriptive; the gold-location classification describes the same question’s original P assignment, while E3-v2 itself uses R. They are not P-regime treatment results. Do not select favorable subgroups to replace the pooled endpoint.
+
+
+![Paired F1 changes: 8 favor prefix, 18 favor crop, 273 ties.](figures/66_E3_v2_transitions.png)
+
+Paired F1 changes: 8 favor prefix, 18 favor crop, 273 ties.
+
+![Complete structured evidence facts survive differently despite equal token counts.](figures/67_E3_v2_complete_facts.png)
+
+Complete structured evidence facts survive differently despite equal token counts.
+
+### Actual changed-answer cases
+
+- `5ac05310554299012d1db5e7` — Question: What is the name of the murder victim that worked in a restaurant, in which Mark Fuhrman was the detective? Gold: **Ron Goldman**; prefix: **noanswer** (F1 0); crop: **Ron Goldman** (F1 100).
+- `5ab6087a554299110f2199be` — Question: Do both Korematsu v. United States and Chaplinsky v. New Hampshire cases regard the rights of U. S. citizens? Gold: **yes**; prefix: **noanswer** (F1 0); crop: **Yes** (F1 100).
+- `5ae76dfd5542997b22f6a755` — Question: A series of ministerial meetings and agreements between European countries and includes The Swedish higher education system is called what? Gold: **Bologna Process**; prefix: **Swedish Higher Education Act** (F1 0); crop: **Bologna Process** (F1 100).
+- `5a7dc2185542990b8f503a7b` — Question: Which county is Jollyville, Texas located in that had a population of 1,024,266 as of the 2010 census? Gold: **Travis County**; prefix: **noanswer** (F1 0); crop: **Travis County** (F1 100).
+- `5a8e8bed5542990e94052b47` — Question: What United Kingdom Prime Minister was succeeded in the 1990s by the Leader of the Conservative Party? Gold: **Margaret Thatcher**; prefix: **noanswer** (F1 0); crop: **Margaret Thatcher** (F1 100).
+- `5a75d8dc5542992db94736f0` — Question: Andrea Camplone is a football coach in which 22-team competition? Gold: **Serie B**; prefix: **noanswer** (F1 0); crop: **Serie B** (F1 100).
+
+Cases are selected descriptively by absolute F1 change, not used to select questions or estimate the treatment effect. Exact payloads are in the casebook and full payload table.
+
+
+## E2 and historical E3 expose the limits of component attribution
 
 E2 reverses one-step cyclic destinations while preserving the exact sender payloads, edge count and receiver calls in shared evidence. The CW–CCW difference is −0.106522 F1 points with a CI spanning zero. This is a valid narrow destination-allocation contrast, not evidence that all graph structures are interchangeable. E2 shares E1's R answers, payloads and provider call keys; it is a reanalysis of overlapping experimental data, not independent replication.
 

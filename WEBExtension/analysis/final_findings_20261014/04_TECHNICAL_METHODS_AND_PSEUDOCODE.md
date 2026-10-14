@@ -1,6 +1,9 @@
 # 4. Technical methods, pseudocode and reproducibility
 
-Snapshot generated 2026-10-14T17:52:34.756444+00:00. Scope: completed frozen WEBExtension E1–E5, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Each experiment uses the same 300 held-out question identities; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
+**E3 record update — 15 October 2026:** E3-v2 is the current content-intervention record. Original E3 is retained as `E3_original` / historical 256-token answer-and-citation slicing, with 298/300 identical pairs. E3-v2 is a distinct protocol: 300 screened IDs, 299 eligible distinct exact-128-token evidence-bank pairs, and one explicit no-document case. These are the same question identities, not 299 additional independent test questions. It is an exploratory follow-up after original held-out results were inspected. The pre-update bundle is preserved separately.
+
+
+Snapshot generated 2026-10-14T21:16:36.088149+00:00. Scope: completed frozen WEBExtension E1–E5 plus corrected exploratory E3-v2, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Original experiments use the same 300 held-out identities; E3-v2 screens all 300 and pairs 299 eligible evidence-bearing questions; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
 
 Run identifiers: `run_f6aa61bac2c3dfae`, `controller_study_a0b3768357484b45`, split `controller_splits_2e025f8ae3d9815e`. Input hashes and final artifact hashes are in `final_manifest.json`.
 
@@ -163,7 +166,42 @@ FOR q:
 
 Both cycles are isomorphic graph motifs; the tested effect is destination assignment relative to roles/content, not general motif superiority. Updated outputs are not propagated to another node in the same round.
 
-## E3: content selection at exact token count
+## Current E3-v2: executed protocol and pseudocode
+
+Run: `e3_corrected_b5c4ff9db9b9b2bc`. Model, roles, initial answers, BM25 pool and receiver evidence are reused from the original frozen study. Sender 0 and receiver 1 remain fixed in R. The source bank contains every sender-visible Wikipedia sentence in retrieval rank and original sentence order; it does not depend on gold answers or successful generated citations. Cap 128 and all slices/eligibility/order are frozen before new inference. Seeded non-prefix candidates must be valid exact-token substrings and differ from the prefix; no padding is used. The source-empty ID `5a8cfee555429941ae14df5c` receives no fabricated message.
+
+```text
+verify original run completion and all scientific input hashes
+load the same 300 gold-free inputs and saved R initial states
+for each question:
+    bank = all sentences actually visible to sender 0 in frozen order
+    if no bank:
+        freeze NO_SENDER_EVIDENCE_AVAILABLE; retain screened record
+    else:
+        prefix = valid first 128 exact tokenizer tokens
+        crop = seeded nonidentical valid contiguous 128-token slice
+        assert exact_count(prefix) = exact_count(crop) = 128
+        freeze bank hash, slices, offsets and randomized arm order
+for each unfinished screened question:
+    for arm in frozen order, if eligible:
+        reuse valid saved exact-request response if available
+        otherwise persist request and dispatch real Azure completion
+        persist raw HTTP body before parsing; count refusal as abstention
+        update only receiver 1 with same own evidence and previous answer
+    attach saved receiver NoComm and SelfUpdate anchors
+    score after generation; fsync record and timings
+verify 300 unique screened IDs, 299 distinct equal-token pairs and checksums
+paired primary = mean(receiver_F1_prefix - receiver_F1_crop), n=299
+bootstrap/sign-randomization draws=10000, seed=23
+report all results and uncertainty; secondary EM/support are descriptive
+```
+
+Operational recovery resumed only unfinished questions after three explicit 429 rejections. Successful cached responses were reused; there are no unresolved attempts and no uncertain-cost replacements in this corrected run. A no-inference startup failure caused by a lazy-module import was corrected operationally; its evidence remains saved. Science sources and payloads are bound by the final run's manifest. Reports use saved outputs only, and token/frame counts do not imply exactly matched generated-token costs or latency.
+
+Reproduce this report update offline with `HF_HUB_OFFLINE=1 python WEBExtension/analysis/final_findings_20261014/write_reports.py`, followed by `verify_bundle.py`. The generator calls `integrate_e3_v2.prepare_tables()` and `update_reports()`; neither creates a provider client or invokes inference. Frozen generation code is copied to `sources/e3_corrected.py` for audit, not execution by this analysis.
+
+
+## Original E3 (historical): content selection at exact token count
 
 Purpose: compare prefix and randomized contiguous token crop from sender 0 to receiver 1, with R evidence shared. Endpoint is receiver 1's answer, not the ensemble vote. Logical cost is three initial calls plus the one receiver update.
 

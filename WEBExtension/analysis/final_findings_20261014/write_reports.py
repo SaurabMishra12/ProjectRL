@@ -4,6 +4,8 @@ from pathlib import Path
 from datetime import datetime,timezone
 import pandas as pd,numpy as np
 O=Path(__file__).resolve().parent;R=O.parents[1];A=json.loads((R/'artifacts/active_machine_runs.json').read_text());C=Path(A['controller_study']);B=Path(A['controlled_run']);SPLIT=Path(A['controller_split_dir'])
+from integrate_e3_v2 import prepare_tables,update_reports
+e3_v2_analysis=prepare_tables()
 a=json.loads((O/'audit_metrics.json').read_text());S=pd.read_csv(O/'tables/condition_summary.csv');F=pd.read_csv(O/'tables/all_condition_question_metrics.csv');M=pd.read_csv(O/'tables/E5_complete_seed_averages.csv');e5=json.loads((C/'reports/E5_statistics.json').read_text());plan=json.loads((C/'manifest.json').read_text());now=datetime.now(timezone.utc).isoformat()
 def num(v):
  if v is None or (isinstance(v,(float,np.floating)) and not np.isfinite(v)):return 'NA (unknown)'
@@ -517,6 +519,7 @@ python WEBExtension/analysis/final_findings_20261014/write_reports.py
 These scripts regenerate derived reports in this new folder and construct no provider client. They require the preserved dataset, checkpoints, tokenizer cache and source manifests. Run in the listed order; preserve or copy the report folder before a future regeneration if you need immutable versions. The original experiment sources/results and the older 129-question publication audit are not edited. The supplied paper extraction is included in `sources/current_paper_extracted.txt`; future report generation can use that saved extraction if the original temporary extraction is unavailable.
 '''
 reports={'01_COMPLETE_RESULTS_AND_METRICS.md':r1,'02_DEEP_RAW_OUTPUT_FINDINGS.md':r2,'03_PAPER_NARRATIVE_AND_REVISION_PLAN.md':r3,'04_TECHNICAL_METHODS_AND_PSEUDOCODE.md':r4}
+reports=update_reports(reports,table,figure)
 for name,text in reports.items():(O/name).write_text(text)
 # HTML exports use a local markdown renderer when available; safe raw text fallback remains readable.
 try:
@@ -526,7 +529,7 @@ except ImportError:md=lambda x:'<pre>'+html.escape(x)+'</pre>'
 css='body{font:16px/1.6 system-ui,sans-serif;color:#18242f;max-width:1400px;margin:40px auto;padding:0 28px}h1{font-size:30px}h2{border-top:1px solid #d5dce1;padding-top:24px;margin-top:40px}table{border-collapse:collapse;display:block;overflow-x:auto;margin:20px 0;font-size:13px}th,td{border:1px solid #d5dce1;padding:7px 10px;text-align:left;vertical-align:top}th{background:#edf2f6}img{max-width:100%;height:auto}pre{background:#f4f6f8;padding:18px;overflow:auto;white-space:pre-wrap}a{color:#175b86}nav{display:flex;flex-wrap:wrap;gap:18px}code{font-size:.9em}@media print{body{margin:0;font-size:10pt}table{font-size:8pt}h2{break-before:auto}img{max-height:230mm;object-fit:contain}}'
 for name,text in reports.items():
  body=md(text);(O/name.replace('.md','.html')).write_text('<!doctype html><html><head><meta charset="utf-8"><title>'+name+'</title><style>'+css+'</style></head><body><nav><a href="index.html">All reports</a></nav>'+body+'</body></html>')
-index='# SparseComm complete findings bundle\n\nFour reports based on all completed E1–E5 results. No fresh inference.\n\n'
+index='# SparseComm complete findings bundle\n\nFour reports updated 15 October 2026 with completed E3-v2 (299 eligible paired questions, 300 screened), alongside original E1–E5. Original E3 is historical; no fresh inference.\n\n'
 for name in reports:index+=f'- [{name[3:-3].replace("_"," ").title()}]({name.replace(".md",".html")}) — [editable Markdown]({name})\n'
 index+='\nThe verified conclusion is conditional communication benefit with resource/quality tradeoffs, not uniform router superiority. The historical partial audit is preserved separately.\n\n'
 index+='## Complete data and figures\n\n'
@@ -536,9 +539,9 @@ for p in sorted((O/'figures').glob('*.png')):index+=f'### {p.stem}\n\n![{p.stem}
 (O/'index.html').write_text('<!doctype html><html><head><meta charset="utf-8"><title>SparseComm final findings</title><style>'+css+'</style></head><body>'+md(index)+'</body></html>')
 # Compact read-only notebook, preserving the user's notebook workflow.
 import nbformat
-nb=nbformat.v4.new_notebook();nb.cells=[nbformat.v4.new_markdown_cell('# Complete E1–E5 findings\n\nThis notebook reads saved reports and figures only. Recalculation commands are in Report 4. No model requests are made.'),nbformat.v4.new_code_cell("from pathlib import Path\nimport pandas as pd\nfrom IPython.display import display, Markdown, Image\nroot=Path('/home/saurab/Documents/projectRLMAIN/WEBExtension/analysis/final_findings_20261014')\ndisplay(pd.read_csv(root/'tables/condition_summary.csv'))")]
+nb=nbformat.v4.new_notebook();nb.cells=[nbformat.v4.new_markdown_cell('# Complete E1–E5 and E3-v2 findings\n\nUpdated 15 October 2026. Current E3-v2 has 299 eligible paired questions; original E3 remains historical. This notebook reads saved reports and figures only. Recalculation commands are in Report 4. No model requests are made.'),nbformat.v4.new_code_cell("from pathlib import Path\nimport pandas as pd\nfrom IPython.display import display, Markdown, Image\nroot=Path('/home/saurab/Documents/projectRLMAIN/WEBExtension/analysis/final_findings_20261014')\ndisplay(pd.read_csv(root/'tables/condition_summary.csv'))")]
 for name in reports:nb.cells.append(nbformat.v4.new_markdown_cell(f'[{name}]({name})'))
-for fig in ['02_paired_effects','10_E5_complete_quality','15_E5_subgroups','16_prefix_drift']:nb.cells.append(nbformat.v4.new_code_cell(f"display(Image(filename=str(root/'figures/{fig}.png')))"))
+for fig in ['02_paired_effects','10_E5_complete_quality','15_E5_subgroups','16_prefix_drift','07_content_intervention','65_E3_v2_quality','66_E3_v2_transitions','67_E3_v2_complete_facts']:nb.cells.append(nbformat.v4.new_code_cell(f"display(Image(filename=str(root/'figures/{fig}.png')))"))
 nbformat.write(nb,O/'FINAL_FINDINGS.ipynb')
 # Snapshot all scientific input references; fail if they changed during analysis.
 inputs={}
@@ -549,5 +552,8 @@ for seed,h in json.loads((C/'evaluation_gate.json').read_text())['checkpoint_has
 for name,h in plan['sources'].items():assert hashlib.sha256((R/name).read_bytes()).hexdigest()==h
 for name in ['durable_storage.py','durable_runtime.py','durable_worker.py','rate_limited_machine.py','adaptive_pacing.py']:shutil.copyfile(R/'analysis'/name,O/'sources'/('analysis__'+name))
 inputs[str(paper)]=hashlib.sha256(paper.read_bytes()).hexdigest()
-manifest={'created_utc':now,'scope':'Four final reports from complete E1–E5; legacy manuscript values separately labeled','inference_calls_issued':0,'result_counts':{e:a['integrity'][e]['n'] for e in a['integrity']},'score_mismatches':len(a['score_mismatches']),'payload_token_mismatches':len(a['token_count_mismatches']),'inputs_sha256':inputs,'derived_artifacts':{str(p.relative_to(O)):hashlib.sha256(p.read_bytes()).hexdigest() for p in O.rglob('*') if p.is_file() and p.name not in ['final_manifest.json','analysis_artifact_manifest.json']}}
+E3V=Path(e3_v2_analysis['run_dir'])
+for name in ['E3.jsonl','frozen_manifest.json','report.json','payload_plan.json','completion_gate_verified.json']:
+ p=E3V/name;inputs[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
+manifest={'created_utc':now,'scope':'Four updated reports: original E1–E5 plus corrected exploratory E3-v2; original E3 historical and legacy manuscript values separately labeled','inference_calls_issued':0,'result_counts':{**{e:a['integrity'][e]['n'] for e in a['integrity']},'E3_v2_screened':300,'E3_v2_eligible':299},'score_mismatches':len(a['score_mismatches']),'payload_token_mismatches':len(a['token_count_mismatches']),'inputs_sha256':inputs,'derived_artifacts':{str(p.relative_to(O)):hashlib.sha256(p.read_bytes()).hexdigest() for p in O.rglob('*') if p.is_file() and p.name not in ['final_manifest.json','analysis_artifact_manifest.json']}}
 (O/'final_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');print(json.dumps({'reports':list(reports),'figures':len(list((O/'figures').glob('*.png'))),'tables':len(list((O/'tables').glob('*.csv'))),'score_mismatches':manifest['score_mismatches'],'token_mismatches':manifest['payload_token_mismatches']},indent=2))

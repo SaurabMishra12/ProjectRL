@@ -1,0 +1,450 @@
+<!doctype html><html><head><meta charset="utf-8"><title>04_TECHNICAL_METHODS_AND_PSEUDOCODE.md</title><style>body{font:16px/1.6 system-ui,sans-serif;color:#18242f;max-width:1400px;margin:40px auto;padding:0 28px}h1{font-size:30px}h2{border-top:1px solid #d5dce1;padding-top:24px;margin-top:40px}table{border-collapse:collapse;display:block;overflow-x:auto;margin:20px 0;font-size:13px}th,td{border:1px solid #d5dce1;padding:7px 10px;text-align:left;vertical-align:top}th{background:#edf2f6}img{max-width:100%;height:auto}pre{background:#f4f6f8;padding:18px;overflow:auto;white-space:pre-wrap}a{color:#175b86}nav{display:flex;flex-wrap:wrap;gap:18px}code{font-size:.9em}@media print{body{margin:0;font-size:10pt}table{font-size:8pt}h2{break-before:auto}img{max-height:230mm;object-fit:contain}}</style></head><body><nav><a href="index.html">All reports</a></nav><h1>4. Technical methods, pseudocode and reproducibility</h1>
+<p>Snapshot generated 2026-10-14T17:51:19.720260+00:00. Scope: completed frozen WEBExtension E1–E5, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Each experiment uses the same 300 held-out question identities; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.</p>
+<p>Run identifiers: <code>run_f6aa61bac2c3dfae</code>, <code>controller_study_a0b3768357484b45</code>, split <code>controller_splits_2e025f8ae3d9815e</code>. Input hashes and final artifact hashes are in <code>final_manifest.json</code>.</p>
+<h2>Scope and implementation map</h2>
+<p>This report describes the executed WEBExtension implementation, not the different continuous controller in the supplied paper. Source copies are under <code>sources/</code> and hashes in <code>final_manifest.json</code>. The knowledge graph generation 2026-10-13T17:28:45Z did not track WEBExtension; exact sources were read as fallback. No negative structural claim relies on graph absence.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Exact implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BM25, sharding, prompts, parsing, token slicing, majority, paired inference</td>
+<td><code>WEBExtension/protocol.py</code></td>
+</tr>
+<tr>
+<td>E1–E4 state construction, controls and scoring</td>
+<td><code>WEBExtension/experiments.py</code></td>
+</tr>
+<tr>
+<td>Source authentication and disjoint partitions</td>
+<td><code>WEBExtension/controller_splits.py</code></td>
+</tr>
+<tr>
+<td>53-feature categorical policy and PPO update</td>
+<td><code>WEBExtension/learned_controller.py</code></td>
+</tr>
+<tr>
+<td>Rollouts, validation selection, static selection, E5 frozen evaluation</td>
+<td><code>WEBExtension/controller_study.py</code></td>
+</tr>
+<tr>
+<td>Main and controller reporting</td>
+<td><code>WEBExtension/reporting.py</code>, <code>controller_reporting.py</code></td>
+</tr>
+<tr>
+<td>Offline gold ownership and stratum inference</td>
+<td><code>WEBExtension/analysis/gold_strata.py</code></td>
+</tr>
+<tr>
+<td>Durable storage, worker, pacing and recovery</td>
+<td><code>WEBExtension/analysis/durable_storage.py</code>, <code>durable_runtime.py</code>, <code>durable_worker.py</code>, <code>rate_limited_machine.py</code>, <code>adaptive_pacing.py</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Frozen configuration</h2>
+<table>
+<thead>
+<tr>
+<th>field</th>
+<th>value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base.provider</td>
+<td>azure_v1</td>
+</tr>
+<tr>
+<td>base.model</td>
+<td>gpt-oss-120b</td>
+</tr>
+<tr>
+<td>base.model_revision</td>
+<td>deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed</td>
+</tr>
+<tr>
+<td>base.api_version</td>
+<td>v1</td>
+</tr>
+<tr>
+<td>base.tokenizer</td>
+<td>openai/gpt-oss-120b</td>
+</tr>
+<tr>
+<td>base.tokenizer_revision</td>
+<td>b5c939de8f754692c1647ca79fbf85e8c1e70f8a</td>
+</tr>
+<tr>
+<td>base.n_questions</td>
+<td>300</td>
+</tr>
+<tr>
+<td>base.sample_seed</td>
+<td>42</td>
+</tr>
+<tr>
+<td>base.partition_seed</td>
+<td>11</td>
+</tr>
+<tr>
+<td>base.role_seed</td>
+<td>17</td>
+</tr>
+<tr>
+<td>base.crop_seed</td>
+<td>23</td>
+</tr>
+<tr>
+<td>base.replicate_id</td>
+<td>primary</td>
+</tr>
+<tr>
+<td>base.top_k</td>
+<td>6</td>
+</tr>
+<tr>
+<td>base.payload_budget</td>
+<td>256</td>
+</tr>
+<tr>
+<td>base.temperature</td>
+<td>0</td>
+</tr>
+<tr>
+<td>base.max_tokens</td>
+<td>8192</td>
+</tr>
+<tr>
+<td>base.context_limit</td>
+<td>32768</td>
+</tr>
+<tr>
+<td>base.max_calls</td>
+<td>11400</td>
+</tr>
+<tr>
+<td>base.stop_depth</td>
+<td>3</td>
+</tr>
+<tr>
+<td>base.noninferiority_margin_f1</td>
+<td>NA (unknown)</td>
+</tr>
+<tr>
+<td>base.noninferiority_justification</td>
+<td>NA (unknown)</td>
+</tr>
+<tr>
+<td>base.self_refinement_control</td>
+<td>True</td>
+</tr>
+<tr>
+<td>base.heldout_split_dir</td>
+<td>artifacts/controller_splits_e219bbccd74a5888</td>
+</tr>
+<tr>
+<td>base.provider_refusal_policy</td>
+<td>abstain_with_reported_usage</td>
+</tr>
+<tr>
+<td>settings.split_seed</td>
+<td>20271014</td>
+</tr>
+<tr>
+<td>settings.train_questions</td>
+<td>100</td>
+</tr>
+<tr>
+<td>settings.validation_questions</td>
+<td>30</td>
+</tr>
+<tr>
+<td>settings.test_questions</td>
+<td>300</td>
+</tr>
+<tr>
+<td>settings.pilot_questions</td>
+<td>12</td>
+</tr>
+<tr>
+<td>settings.split_pool_per_type</td>
+<td>5000</td>
+</tr>
+<tr>
+<td>settings.training_seeds[0]</td>
+<td>7</td>
+</tr>
+<tr>
+<td>settings.training_seeds[1]</td>
+<td>19</td>
+</tr>
+<tr>
+<td>settings.training_seeds[2]</td>
+<td>31</td>
+</tr>
+<tr>
+<td>settings.collection_epochs</td>
+<td>3</td>
+</tr>
+<tr>
+<td>settings.ppo_epochs</td>
+<td>4</td>
+</tr>
+<tr>
+<td>settings.batch_size</td>
+<td>32</td>
+</tr>
+<tr>
+<td>settings.learning_rate</td>
+<td>0.0003</td>
+</tr>
+<tr>
+<td>settings.hidden</td>
+<td>64</td>
+</tr>
+<tr>
+<td>settings.clip</td>
+<td>0.2</td>
+</tr>
+<tr>
+<td>settings.entropy_coef</td>
+<td>0.01</td>
+</tr>
+<tr>
+<td>settings.target_kl</td>
+<td>0.03</td>
+</tr>
+<tr>
+<td>settings.quotas[0]</td>
+<td>64</td>
+</tr>
+<tr>
+<td>settings.quotas[1]</td>
+<td>128</td>
+</tr>
+<tr>
+<td>settings.quotas[2]</td>
+<td>256</td>
+</tr>
+<tr>
+<td>settings.lambda_payload</td>
+<td>0.05</td>
+</tr>
+<tr>
+<td>settings.lambda_calls</td>
+<td>0.02</td>
+</tr>
+<tr>
+<td>settings.regimes[0]</td>
+<td>R</td>
+</tr>
+<tr>
+<td>settings.regimes[1]</td>
+<td>P</td>
+</tr>
+<tr>
+<td>settings.static_candidates[0]</td>
+<td>CW</td>
+</tr>
+<tr>
+<td>settings.static_candidates[1]</td>
+<td>CCW</td>
+</tr>
+<tr>
+<td>settings.static_candidates[2]</td>
+<td>OUTSTAR</td>
+</tr>
+<tr>
+<td>settings.max_physical_calls</td>
+<td>46000</td>
+</tr>
+</tbody>
+</table>
+<p>The max-token cap is a generation ceiling, not observed completion length. The tokenizer revision is pinned but the provider model is only a deployment alias; no immutable server snapshot was exposed. Provider refusals are explicit abstentions with reported usage retained. Other malformed/truncated responses stop execution and require evidence-preserving diagnosis. HTTP errors/timeouts are not made into incorrect benchmark answers.</p>
+<h2>Data selection and leakage boundary</h2>
+<p>Publisher: hotpotqa/hotpot_qa, pinned revision 1908d6afbbead072334abe2965f91bd2709910ab. The source training files are checked against pinned hashes and 90,447 training records; the local dev candidate data contains 7,405 records. Selection uses type-stratified deterministic ID hashes, excludes the known legacy 100-item Web evaluation IDs from the held-out candidates, and blocks exact normalized candidate titles/questions between partitions. The held-out 300 questions were frozen before the controller study; the later user-requested 100/30 training/validation reduction did not change held-out bytes. The prior larger study's weights/rollouts are preserved separately; the active controller was trained afresh. Real saved responses can be reused by exact authenticated request identity.</p>
+<pre><code class="language-text">DATA_SPLITS(config):
+    verify publisher file hashes and complete source row count
+    heldout ← deterministic type-stratified dev selection excluding known legacy IDs
+    pool ← deterministic source-train candidates with no heldout title/question overlap
+    validation ← select 30 from pool, blocking heldout
+    train ← select 100 from pool, blocking heldout ∪ validation
+    pilot ← select 12, blocking all three
+    assert pairwise disjoint IDs, normalized questions, normalized candidate titles
+    save input-only files separately from annotation files; hash all files
+</code></pre>
+<p>Type strata are 80/20 bridge/comparison for train, 24/6 validation and 240/60 heldout. Filtering by candidate-title disjointness changes representativeness. Exact checks cannot establish semantic or pretraining isolation. Dataset type labels support stratified sampling; gold answers/support labels are not controller features.</p>
+<h2>Common environment and metrics</h2>
+<pre><code class="language-text">INITIALIZE(question, regime):
+    pool ← stable top-6 BM25 ranking of publisher-provided candidate articles
+    roles ← deterministic per-question permutation of retrieval/verification/reasoning
+    if regime=R: give every node all six articles
+    if regime=P: deterministically shuffle and assign documents round-robin to 3 nodes
+    obtain/cache one structured real completion per agent
+    parse answer + citations against allowed visible evidence
+    return pool, assignment, roles, initial responses
+
+DELIVER(state, directed_edges, source_payloads):
+    attach each frozen sender payload to its specified recipients
+    revise each recipient with at least one incoming edge exactly once
+    retain initial responses at non-recipients
+    record full delivery text, exact tokens, sender, recipient, source hash and facts
+    return updated responses and deliveries
+
+AGGREGATE(responses):
+    normalize answers with Hotpot-style normalization
+    select the most frequent answer; ties follow fixed node order
+    return the first original answer string for the winning normalized answer
+</code></pre>
+<p>BM25 uses k1=1.5 and b=.75 over title plus sentences, with stable original-index tie breaking and log(1+(N−df+.5)/(df+.5)) IDF. There is no live network retrieval during question answering. Exact payload slicing decodes a contiguous token slice, rejects invalid Unicode or mismatched retokenization, and never pads a message. A short message transmits min(quota, length) tokens, explaining unused quota.</p>
+<p>Answer F1 is 100×2PR/(P+R) after official normalization; EM is 100 for a normalized exact match, otherwise 0. Supporting recall is |predicted labels∩gold|/|gold| and precision divides by predicted-label count, with safe empty denominators. Additional support-set F1/EM and joint algebra are diagnostic citation-union measures, not leaderboard-validated faithfulness. For E3 the receiver's citations are used; for other experiments the union is over responses agreeing with the final ensemble answer. This final analysis corrects the earlier supplementary E3 union convention, preserving that historical report.</p>
+<h2>E1: evidence regime × communication</h2>
+<p>Purpose: test whether the CW communication gain differs between shared and partitioned evidence. Each question has R/P × NoComm/SelfUpdate/CW/CCW (8 arms). NoComm requires 3 logical calls; the other arms require 6. The source responses and messages are frozen within a regime; semantic condition names are not inserted into model-visible prompts.</p>
+<pre><code class="language-text">FOR each frozen test question q:
+    FOR regime IN {R,P}:
+        s ← INITIALIZE(q,regime)
+        NoComm ← AGGREGATE(s.initial_responses)
+        SelfUpdate ← revise all nodes using own evidence and own prior answer, no peers
+        messages[i] ← exact prefix up to 256 tokens from s.initial_response[i]
+        CW ← DELIVER(s, {(0,1),(1,2),(2,0)}, messages)
+        CCW ← DELIVER(s, {(0,2),(2,1),(1,0)}, messages)
+        verify sender payload identity and exact total tokens between CW and CCW
+        score and save all four arms
+    d[q] ← (F1_P,CW − F1_P,NoComm) − (F1_R,CW − F1_R,NoComm)
+PRIMARY ← mean_q d[q], paired bootstrap CI and sign-randomization p
+</code></pre>
+<p>SelfUpdate is a call-matched extra-computation control with zero peer transmission. R versus P also changes local evidence access; it is not an effect of topology alone. The primary interaction is fixed in advance; CCW and regime-specific contrasts remain secondary.</p>
+<h2>E2: exact frozen-source destination intervention</h2>
+<p>Purpose: compare opposite directed cycles under R while keeping each sender's payload and each node's incoming/outgoing degree fixed. Three logical transmissions and three receiver updates are used in each arm. NoComm is retained as a reference. This uses the same authenticated calls/outcomes as E1 R and is not a second independent sample.</p>
+<pre><code class="language-text">FOR q:
+    s ← the same R initialization used by E1
+    freeze one prefix message per sender
+    y_CW ← simultaneous one-step update over CW
+    y_CCW ← simultaneous one-step update over CCW
+    assert each sender transmits identical bytes/tokens in both arms
+    assert total payload and logical calls match
+    save F1_CW − F1_CCW
+</code></pre>
+<p>Both cycles are isomorphic graph motifs; the tested effect is destination assignment relative to roles/content, not general motif superiority. Updated outputs are not propagated to another node in the same round.</p>
+<h2>E3: content selection at exact token count</h2>
+<p>Purpose: compare prefix and randomized contiguous token crop from sender 0 to receiver 1, with R evidence shared. Endpoint is receiver 1's answer, not the ensemble vote. Logical cost is three initial calls plus the one receiver update.</p>
+<pre><code class="language-text">FOR q:
+    s ← INITIALIZE(q,R)
+    text ← serialize sender 0 answer and cited evidence
+    L ← min(256, tokenizer_length(text))
+    prefix ← valid exact-L prefix
+    crop ← deterministic randomized valid exact-L contiguous token slice
+    FOR payload IN {prefix,crop}:
+        update only receiver 1 using frozen initial state
+        score receiver 1 answer and citations; save 4-call logical cost
+    assert length(prefix)=length(crop)
+    save whether the actual payload bytes are identical
+</code></pre>
+<p>The crop seed is 23 and keyed by text identity. In the realized data 298 pairs coincide, so intervention fidelity fails for a broad content-quality inference despite successful exact-length matching.</p>
+<h2>E4: offline stopping on a shared trajectory</h2>
+<p>Purpose: measure what an exact nonempty unanimity rule would have saved on the same fully generated P trajectory. It does not train stopping and does not truncate actual inference spending in this evaluation.</p>
+<pre><code class="language-text">FOR q:
+    s ← INITIALIZE(q,P); save depth-0 snapshot
+    FOR depth=1..3:
+        truncate current sender messages at 256 tokens
+        perform simultaneous CW update; save snapshot and cumulative deliveries/calls
+    chosen ← first depth whose 3 normalized answers are equal and not empty/noanswer
+              (or depth 3 if none)
+    stopped ← snapshot[chosen]; final ← snapshot[3]
+    avoided_logical_calls ← 3*(3−chosen)
+    wrong_unanimity ← chosen&lt;3 and stopped.EM&lt;100
+    corrected_by_continuation ← wrong_unanimity and final.EM=100
+    save all snapshots, not only the selected one
+</code></pre>
+<p>Initial-state stopping is allowed at depth 0. Counterfactual logical costs are separated from physical calls. Zero observed F1 differences are not a predeclared noninferiority result.</p>
+<h2>E5: categorical contextual-bandit PPO</h2>
+<p>Action space: one NoComm action plus 18 supports × 3 quotas = 55 actions. The supports are all 15 two-edge subsets of six non-self directed edges, CW, CCW and the six-edge broadcast. Quotas are 64,128,256. The actor takes 53 observable features: two global, 9 per node (27), and 4 for each of six ordered sender–receiver pairs (24). Inputs include answer diversity, citation/invalid-label counts, own-document counts, message length, role indicators, lexical overlaps, citation novelty and evidence overlap. No answer correctness, gold support, question ID hash or running accuracy feature is supplied to the policy.</p>
+<p>Network: 53→64→64 Tanh trunk; categorical actor with 55 logits and scalar critic. The Adam learning rate is .0003. The actor output is sampled in training and argmax at validation/test. This is a one-step contextual bandit, not the manuscript's multi-round Gaussian/GAE model.</p>
+<p>Let F1_0 be NoComm F1 and V_full=2Σ_i len(message_i), counting full initial messages on both outgoing edges. Let U be the number of distinct updated recipients. The reward is</p>
+<p>r = (F1_action−F1_0)/100 − 0.05 V_action/max(1,V_full) − 0.02 U/3.</p>
+<p>This reward uses annotations offline. The denominator uses untruncated full sender messages, whereas the evaluated Broadcast baseline has quota 256 per edge; those are different quantities for long messages. NoComm has reward zero by construction. SelfUpdate incurs the three-update penalty without peer payload.</p>
+<pre><code class="language-text">TRAIN(seed):
+    initialize actor/critic and optimizer using frozen seed
+    FOR collection epoch=1..3:
+        FOR each of 100 train questions and both R/P contexts:
+            s ← INITIALIZE(q,regime)
+            x ← observable_features(s)
+            action, old_logprob, old_value ← sample actor(x)
+            result ← execute action with real cached/provider responses
+            reward ← F1 gain − payload penalty − recipient-call penalty
+            durably save x, action, reward, old logprob/value, outputs and RNG state
+        advantage ← standardize(reward−old_value), population standard deviation
+        FOR up to 4 PPO passes over shuffled minibatches of 32:
+            ratio ← exp(logprob−old_logprob)
+            approximate_KL ← mean(exp(logratio)−1−logratio)
+            stop update loop if KL&gt;.03
+            actor_loss ← −mean(min(ratio*A, clip(ratio,.8,1.2)*A))
+            value_loss ← .5*mean((value−reward)^2)
+            total_loss ← actor_loss + .5*value_loss − .01*entropy
+            backpropagate; clip global gradient norm at .5; Adam step
+            save optimizer/checkpoint diagnostics
+        evaluate deterministic actor on 30 validation questions × R/P
+        select checkpoint only if mean validation utility strictly improves
+    freeze selected checkpoint hash
+
+SELECT_STATIC:
+    evaluate prespecified CW, CCW, OUTSTAR at quota256 on validation R/P
+    choose highest mean validation utility (OUTSTAR in this run)
+
+TEST:
+    authenticate all checkpoints, split and static-selection hashes
+    create/verify evaluation gate; permanently close training for this study
+    FOR each of 300 heldout questions and both regimes:
+        reuse one frozen initial state for every arm in this suite
+        evaluate NoComm, Static, Broadcast, SelfUpdate
+        FOR seed in {7,19,31}:
+            learned_action ← argmax selected actor(observable_features)
+            evaluate learned_action
+            eligible ← action-space entries with same edge count and quota
+            random_action ← deterministic choice keyed by question/regime/seed
+            evaluate random_action
+        durably save all 20 arm results for the question
+    assert exact frozen 300-ID set, arm completeness and result checksum
+</code></pre>
+<p>Matching random edge count/quota can leave different recipient counts and realized tokens. Random selection can choose the same action as learned; cache reuse is correct in that case. Static selection spans three candidates, not exhaustive best-static validation. Three optimizer seeds do not provide independent backbone realizations. Frozen argmax replay matched every saved action in this audit.</p>
+<h2>Statistical pseudocode and strata</h2>
+<pre><code class="language-text">PAIRED_EFFECT(A,B):
+    require exactly the same nonempty question IDs
+    d ← array[A[q]−B[q]] in sorted question-ID order
+    bootstrap 10,000 question samples with replacement; store mean(d*)
+    CI ← empirical 2.5th/97.5th percentiles
+    randomize signs independently per paired question 10,000 times
+    p ← (1 + number(|randomized_mean| ≥ |observed_mean|−1e−12))/(10000+1)
+    return mean, CI, p, helped/harmed/tied question counts
+
+E5_CONTRAST:
+    average learned scores across 3 seeds within each question
+    do the same for MatchedRandom when used
+    apply PAIRED_EFFECT to question-level means and baseline
+    Holm-adjust the prespecified reporting family (20 F1/utility contrasts)
+
+GOLD_STRATUM(q):
+    derive the two annotated supporting article titles offline
+    find their owners in the actual P assignment
+    if either absent: Retrieval-Missing-Gold
+    else if owners differ: Disjoint-Gold
+    else: Co-located-Gold
+</code></pre>
+<p>Stratification is post hoc and observational. Preserve pooled primary results, all subgroup sizes, and the stored Holm families. Additional subgroup/type/trajectory diagnostics in this report use marginal 5,000-resample intervals and are explicitly descriptive. Do not interpret intervals as simultaneous or certify equivalence from a failure to reject zero.</p>
+<h2>Persistence, recovery and usage accounting</h2>
+<p>Scientific manifests bind sources, settings, samples, prompts, tokenizer and selected weights. Model-visible prompts do not contain cache arm labels; internal cache namespace isolates controller and controlled suites. Canonical responses, staged HTTP bodies/receipts, request hashes and append-only call ledgers provide recovery before another physical request. Explicit authorization binds an uncertain original attempt before a replacement; original unknown costs survive. Runtime uses offline dataset access, bounded shared request slots and adaptive rate pacing; it never silently retrains after the held-out gate. This analysis consumed saved outputs only.</p>
+<h2>Reproducing this report bundle</h2>
+<p>From the project root, with the original artifacts present:</p>
+<pre><code class="language-bash">HF_HUB_OFFLINE=1 MPLCONFIGDIR=/tmp/sparsecomm_mpl python WEBExtension/analysis/final_findings_20261014/analyze_saved.py
+HF_HUB_OFFLINE=1 MPLCONFIGDIR=/tmp/sparsecomm_mpl python WEBExtension/analysis/final_findings_20261014/add_details.py
+HF_HUB_OFFLINE=1 MPLCONFIGDIR=/tmp/sparsecomm_mpl python WEBExtension/analysis/final_findings_20261014/deeper_analysis.py
+HF_HUB_OFFLINE=1 MPLCONFIGDIR=/tmp/sparsecomm_mpl python WEBExtension/analysis/final_findings_20261014/policy_diagnostics.py
+python WEBExtension/analysis/final_findings_20261014/supplemental_register.py
+python WEBExtension/analysis/final_findings_20261014/write_reports.py
+</code></pre>
+<p>These scripts regenerate derived reports in this new folder and construct no provider client. They require the preserved dataset, checkpoints, tokenizer cache and source manifests. Run in the listed order; preserve or copy the report folder before a future regeneration if you need immutable versions. The original experiment sources/results and the older 129-question publication audit are not edited. The supplied paper extraction is included in <code>sources/current_paper_extracted.txt</code>; future report generation can use that saved extraction if the original temporary extraction is unavailable.</p>
+</body></html>

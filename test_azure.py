@@ -1,8 +1,9 @@
+import os
 import sys
 from openai import OpenAI
 
-endpoint = "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
-api_key = "your-azure-api-key"
+api_key = os.getenv("AZURE_OPENAI_API_KEY", "")
+endpoint = os.getenv("AZURE_OPENAI_BASE_URL", "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1")
 
 client = OpenAI(
     base_url=endpoint,

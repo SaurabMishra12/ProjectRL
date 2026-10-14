@@ -664,13 +664,16 @@ class AzureOpenAIBackend(LLMBackend):
         os.environ["AZURE_EXISTING_AIPROJECT_ENDPOINT"] = "https://msaurab1220-7001-resource.services.ai.azure.com/api/projects/msaurab1220-7001"
         os.environ["AZURE_EXISTING_AIPROJECT_RESOURCE_ID"] = "/subscriptions/be3b31f2-4aa8-45aa-bd4f-437dd875305c/resourceGroups/ai-rg/providers/Microsoft.CognitiveServices/accounts/msaurab1220-7001-resource/projects/msaurab1220-7001"
         os.environ["AZD_ALLOW_NON_EMPTY_FOLDER"] = "true"
+        api_key = os.getenv("AZURE_OPENAI_API_KEY", "")
+        azure_endpoint = os.getenv("AZURE_OPENAI_ENDPOINT", "https://vaibhavka43-0128-resource.openai.azure.com/")
+        api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2024-02-15-preview")
         try:
             from openai import AzureOpenAI
             import httpx
             self.client = AzureOpenAI(
-                api_key="your-azure-api-key",
-                azure_endpoint="https://vaibhavka43-0128-resource.openai.azure.com/",
-                api_version="2024-02-15-preview",
+                api_key=api_key,
+                azure_endpoint=azure_endpoint,
+                api_version=api_version,
                 timeout=httpx.Timeout(timeout, connect=30.0),
                 max_retries=max_retries,
             )

@@ -1,8 +1,9 @@
-from openai import OpenAI
+import os
 import sys
+from openai import OpenAI
 
-endpoint = "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
-token_str = "your-azure-api-key"
+endpoint = os.getenv("AZURE_OPENAI_BASE_URL", "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1")
+token_str = os.getenv("AZURE_OPENAI_API_KEY", "")
 
 # If it's a bearer token or compatible key, we can try passing it to OpenAI
 client = OpenAI(

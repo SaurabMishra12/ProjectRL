@@ -1,0 +1,76 @@
+{
+  "key": "1bd9e99ac9bf482fce9b13129bfc924afe722349ca6658b118f2ebd81bc2bd08",
+  "attempt_id": "54e4887675454bf9acefc8ae62002c1e",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"\\\"Ask Me Why\\\" is a song by the English rock band the Beatles originally released in the United Kingdom as the B-side of their hit single \\\"Please Please Me\\\".\",\"title\":\"Ask Me Why\"},{\"sentence_id\":1,\"text\":\" It was also included on their first UK album, \\\"Please Please Me\\\".\",\"title\":\"Ask Me Why\"},{\"sentence_id\":0,\"text\":\"\\\"P.S. I Love You\\\" is a song composed principally by Paul McCartney (credited to Lennon–McCartney) and recorded by the English rock band the Beatles, with McCartney on lead vocal.\",\"title\":\"P.S. I Love You (Beatles song)\"},{\"sentence_id\":1,\"text\":\" It was released on 5 October 1962 as the B-side of their debut single \\\"Love Me Do\\\" and is also included on their 1963 album \\\"Please Please Me\\\".\",\"title\":\"P.S. I Love You (Beatles song)\"},{\"sentence_id\":2,\"text\":\" It was later included on the 1964 American release \\\"Introducing The Beatles\\\", its 1965 reissue \\\"The Early Beatles\\\" and the 1977 Beatles compilation \\\"Love Songs\\\".\",\"title\":\"P.S. I Love You (Beatles song)\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\"],\"previous_answer\":\"noanswer\",\"question\":\"What song featured on the Beatles' album \\\"Please Please Me\\\" was covered by Tiffany? \"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "81d60c56b3104b6db57c6f13e13b0c5c",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"What song featured on the Beatles' album 'Please Please Me' was covered by Tiffany?\" Need to find which song from that album was covered by Tiffany. Evidence given includes info about \"Ask Me Why\" and \"P.S. I Love You\". Both are on Please Please Me. Need to know if Tiffany covered either. Not in evidence. We need to verify against evidence. No evidence about Tiffany covering any song. So answer is unknown => \"noanswer\". Provide citations? Since no evidence, we cannot cite. But need to return JSON with answer \"noanswer\" and empty citations list."
+        }
+      }
+    ],
+    "created": 1791990141,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 155,
+      "prompt_tokens": 460,
+      "total_tokens": 615,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.7753012359989953,
+  "metadata": {
+    "qid": "5adfd42555429942ec259b52",
+    "stage": "controller_update",
+    "node": 0
+  },
+  "content_hash": "1e5bd036e887c736ab777f44aa4eaefb621afd23c58b51ebd5db35a9909b1dc7"
+}

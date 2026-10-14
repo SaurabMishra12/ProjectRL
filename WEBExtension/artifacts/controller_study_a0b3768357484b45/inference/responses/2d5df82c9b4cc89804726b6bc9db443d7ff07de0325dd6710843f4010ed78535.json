@@ -1,0 +1,76 @@
+{
+  "key": "2d5df82c9b4cc89804726b6bc9db443d7ff07de0325dd6710843f4010ed78535",
+  "attempt_id": "db457c6b573641e2ae26a5468072b146",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Eleanor Roosevelt High School is a small public high school on the Upper East Side of Manhattan in New York City.\",\"title\":\"Eleanor Roosevelt High School (New York City)\"},{\"sentence_id\":1,\"text\":\" Eleanor Roosevelt High School is composed of about 33 teachers and 500 students representing over 40 different countries.\",\"title\":\"Eleanor Roosevelt High School (New York City)\"},{\"sentence_id\":2,\"text\":\" Initially opened at a temporary location in Chelsea, with 105 ninth graders and a staff of eight, ERHS currently has over 500 students and over 45 staff members.\",\"title\":\"Eleanor Roosevelt High School (New York City)\"},{\"sentence_id\":3,\"text\":\" Every year, the school selects 125 to 140 students out of over 6,000 applicants and is often selected over specialized high schools by students looking for a more liberal curriculum.\",\"title\":\"Eleanor Roosevelt High School (New York City)\"},{\"sentence_id\":4,\"text\":\" In 2015, Eleanor Roosevelt High School was ranked the 116th best public high school in the nation by \\\"U.S. News & World Report\\\".\",\"title\":\"Eleanor Roosevelt High School (New York City)\"},{\"sentence_id\":0,\"text\":\"Connetquot High School (CHS) is a public high school serving students from the communities of Bohemia, Sayville, West Sayville, Oakdale and Ronkonkoma in the ninth through twelfth grades located in Bohemia, New York and is part of the Connetquot Central School District.\",\"title\":\"Connetquot High School\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\",\"Unverified peer answer: noanswer\"],\"previous_answer\":\"Bohemia\",\"question\":\"Connetquot High School  is a public high school in what city in New York?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "7b1a36d35e1c4d30963f7174ebc4d577",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Bohemia\",\n  \"citations\": [\n    [\"Connetquot High School\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Connetquot High School is a public high school in what city in New York?\" Evidence includes a sentence: \"Connetquot High School (CHS) is a public high school serving students from the communities of Bohemia, Sayville, West Sayville, Oakdale and Ronkonkoma in the ninth through twelfth grades located in Bohemia, New York and is part of the Connetquot Central School District.\"\n\nThus answer: Bohemia. Provide citation: title \"Connetquot High School\", sentence_id 0.\n\nReturn JSON with answer \"Bohemia\" and citations list.\n\n"
+        }
+      }
+    ],
+    "created": 1791971730,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 170,
+      "prompt_tokens": 539,
+      "total_tokens": 709,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.7880264389996228,
+  "metadata": {
+    "qid": "5a7506f455429916b0164240",
+    "stage": "controller_update",
+    "node": 0
+  },
+  "content_hash": "efef52ed5351346bcb068785996a86e6fda790f305a401e6ae3d16310cbca5be"
+}

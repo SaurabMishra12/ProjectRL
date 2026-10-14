@@ -1,0 +1,187 @@
+Research strategy for making SparseComm a strong WWW 2027 submission
+My recommendation is to rebuild the paper around one scientific question rather than present SparseComm as another communication-efficient multi-agent framework.
+When does communication between retrieval-augmented agents actually contribute useful information, and when do changes in routing, message content, or stopping merely reduce communication without improving the final answer?
+
+This is more substantial than asking whether a learned communication graph uses fewer tokens. It connects communication efficiency to a fundamental question in agentic Web information seeking: what information is worth sharing, with whom, and at what cost?
+I examined the two manuscripts and three AI-generated assessments. The reviews range from Reject to Borderline, but they largely agree on the scientific weaknesses.
+1. What the existing evidence says
+Current WWW manuscript · 100-question HotpotQA evaluation
+84.87%
+Reduction in recorded communication proxy, sparse vs. broadcast
+
+
+−3.85
+Sparse minus broadcast, answer F1 percentage points
+
+
+0/100
+Questions with a different controller-selected routing support in W4
+
+
+
+
+The third figure means the controller selected the same two-edge graph on every evaluated question, not that zero questions benefited.
+The most important observation is that the current sparse policy scores 44.51 F1, while a NoComm ensemble scores 46.79 F1 with zero inter-agent communication. The sparse condition is therefore dominated on the paper's reported communication/F1 axes. Broadcast scores 48.36 F1 but at considerably higher recorded communication.
+This does not prove that communication is generally harmful. It reveals a more interesting, unanswered question: why does exchanging additional agent messages fail to improve certain answers, even when retrieval evidence is available?
+Your original ACL manuscript provides useful context but cannot directly resolve this question. It evaluates mathematical reasoning and closed-book QA, includes a broader 15-topology experiment on GSM8K, and uses a different communication implementation. The WWW manuscript instead studies candidate-based retrieval with sentence-prefix message selection. These results should be linked as motivation, not treated as interchangeable evidence.
+That distinction is central to building a credible finding paper.
+2. Literature review: where the defensible gap is
+The closest literature makes a simple claim such as “routing matters” or “sparse graphs are efficient” insufficiently novel.
+Prior research	What it already establishes	What your paper could add
+AgentPrune / Cut the Crap (ICLR 2025)	Pruning redundant communication can reduce resource use while maintaining useful collaboration.  ICLR Proceedings	Distinguish communication removed from information lost and genuine cost savings.
+G-Designer (ICML 2025)	Task-conditioned communication graph design is an established research direction.  Proceedings of Machine Learning Research	Test whether a graph's benefit survives matched-message and matched-cost interventions.
+AgentDropout (ACL 2025)	Dynamically eliminating agents and exchanges can reduce input/output token consumption.  ACL Anthology	Separate graph changes from reduced agent invocation and stopping.
+Understanding Information Propagation Effects (EMNLP 2025)	A causal framework studies how correct and incorrect agent outputs propagate, finding an advantageous balance between useful diffusion and error propagation.  ACL Anthology	Study what happens when Web evidence is unevenly distributed and messages have explicit token budgets.
+E2-Explainer (arXiv, August 2026)	Uses edge-level interventions to identify consequential communication subgraphs.  arXiv	Measure the value of delivered evidence under controlled content, destination, and stopping conditions rather than simply explain selected edges.
+MultiHop-RAG (COLM 2024)	Demonstrates the challenge of retrieving and combining multiple supporting documents for multi-hop questions.  OpenReview	Connect communication decisions to multi-hop evidence coverage and answer correctness.
+Two additional papers matter: Improving Multi-Agent Debate with Sparse Communication Topology (Findings of EMNLP 2024) already evaluates sparse connectivity, and Should We Be Going MAD? (ICML 2024) finds that debate does not reliably outperform simpler prompting and ensembling strategies. 
+
+
+ACL Anthology
++1
+
+
+
+The gap I would pursue
+Existing literature investigates graph optimization, message pruning, error propagation, and efficiency. The remaining opportunity is a more specific, experimentally testable question:
+Does communication become useful when one agent possesses relevant evidence that another agent lacks—and how much of that usefulness depends on where and what we transmit?
+This is a candidate research gap, not a claim that nobody has previously studied information sharing. Its novelty would come from a controlled evidence-distribution × communication-allocation evaluation, explicitly tied to multi-hop Web information seeking.
+A meaningful contribution would establish three things:
+1. Whether the value of inter-agent communication changes between redundant-evidence and complementary-evidence settings.
+2. Whether routing and content decisions change delivery of the supporting facts needed for multi-hop answers, even under a fixed communication budget.
+3. Whether the savings reported by conventional sparse-agent evaluations remain worthwhile after including answer quality, inference calls, and full token costs.
+The literature makes the motivation credible, but new experiments must establish these findings. They cannot be claimed from the existing W1–W4 results.
+3. The experiments I would actually run
+I would not run every experiment proposed by the reviewers. There are two viable strategies: a stronger Web-specific finding paper, or a smaller but more rigorous evaluation paper.
+Priority	Experiment	Additional inference calls (indicative)	Why it matters
+P0 · Essential	Reproducibility and actual-token cost audit	0 if logs suffice	Establishes whether the existing results are trustworthy and reproducible
+P1 · Highest scientific value	Redundant versus complementary evidence with matched communication controls	~1,400 for 100 questions	Tests when communication contributes useful Web evidence
+P2 · Strong fallback	Fixed-message, balanced-recipient routing intervention	~600 for 100 questions	Isolates the effect of who receives information under controlled delivery
+P3 · Secondary	Exact-budget prefix versus random message selection	~200 for 100 questions	Tests whether content selection matters beyond token volume
+P4 · Optional	Shared-trajectory stopping validation	Depends on existing trajectories	Tests whether early stopping safely avoids additional inference
+These counts refer to model completions, not tokens or monetary cost.
+Experiment P1: Does evidence complementarity determine the value of communication?
+Experimental intervention
+A. Redundant evidence
+A+B
+
+A+B
+
+A+B
+
+
+
+Agent 0
+
+Agent 1
+
+Agent 2
+
+
+
+All three agents start with overlapping retrieved information.
+
+
+B. Complementary evidence
+A
+
+B
+
+C
+
+
+
+Agent 0
+
+Agent 1
+
+Agent 2
+
+
+
+Agents start with different portions of the same candidate evidence collection.
+
+
+
+
+A, B, and C represent document or evidence partitions, not model-generated findings. Within each regime, compare NoComm with controlled message delivery, using identical initial answers for the paired conditions.
+
+This requires a change to the existing Web harness, because the current three agents receive the same retrieved passages.
+I would use a prespecified HotpotQA sample, randomly assign the document partitions without looking at gold answers, and evaluate whether communication delivers supporting facts previously unavailable to the recipient. Gold supporting-fact labels can be used afterward to characterize evidence coverage, but not to choose the primary routing or partition.
+The primary quantity should be the improvement over a NoComm ensemble within each evidence regime, followed by an interaction comparing those improvements. That isolates a much more useful question than whether one graph has a higher average F1.
+The strongest result could be a positive effect, a negative effect, or a carefully measured boundary: for example, communication may be helpful only when missing facts are actually transferred, and harmful when it merely repeats misleading claims. These are hypotheses, not existing findings.
+Experiment P2: A properly controlled routing intervention
+The third review recommends comparing two-edge graphs with frozen messages. That is affordable, but those graph switches can also alter which roles receive updates.
+A better-balanced experiment uses opposite directed three-agent cycles:
+Clockwise delivery
+0 → 1 → 2 → 0
+
+
+Counterclockwise delivery
+0 → 2 → 1 → 0
+
+
+
+For each question, both conditions transmit exactly the same initial source messages. Every agent sends once, receives once, and performs one receiver update. Role instructions and condition-neutral prompts are kept fixed.
+This balances sender participation, recipient invocation, and payload volume. It measures a controlled recipient-allocation effect, not learned adaptive routing. A separate second-round test would be needed to study propagation of newly revised messages.
+If P1 is unaffordable before the deadline, P2 plus an actual-token audit is the minimum worthwhile experimental improvement. I would add P3 only after P2 is stable.
+4. Changes required in the current paper
+Current manuscript element	Recommended revision
+Abstract begins with communication efficiency and the SparseComm instrument	Begin with the specific scientific question and the strongest completed controlled finding
+W1 treated as the main efficiency result	Retain as the motivating whole-policy contrast; explicitly discuss NoComm dominance
+W2 prefix selection discussed as rationing	Keep the accurate prefix terminology; strengthen only with exact-budget evaluation
+W3 stopping	Keep as exploratory unless the shared-prefix rule and quality-loss criterion are validated
+W4 fixed controller-selected support	Replace as the primary routing evidence with P1/P2; keep original W4 as an audit finding
+Formal decomposition and volume identities	Shorten bookkeeping derivations; emphasize experimentally identifiable comparisons and evidence-delivery measurements
+Old ACL framework context	Use as historical motivation and technical provenance, not confirmatory open-book Web results
+Missing full cost accounting	Report payload tokens, full input/output tokens, model calls, and measured cost separately
+Limited related work	Add causal propagation, subgraph attribution, sparse debate, and multi-hop evidence retrieval
+One important repository issue
+I also checked the public ProjectRL repository, including its experimental manifest, legacy audit and publicly accessible result records.
+The public experiment manifest identifies an October 7 evaluation suite. However, rows visible in the W4 result file referenced by that manifest contain unequal recorded communication counts across routing conditions. Your manuscript specifically describes a later corrected W4 experiment with matched proxy volume.
+Those may be different experiment versions. The corrected W4 file path, run identifier and checksums need to be explicitly documented before submission. This is a reproducibility problem worth resolving immediately, not evidence by itself that the corrected manuscript numbers are wrong.
+The same priority applies to restoring the controller checkpoint, identifying the exact execution source revision, and making sure cached responses cannot be reused across mismatched prompts or models. I have inspected accessible repository materials but have not rerun the experiments or independently verified every code path.
+5. How I would tell the final story
+I would organize the paper around the following progression:
+
+Observation: Sparse communication reduces transmitted text, but the sparse policy is not necessarily a better cost–quality operating point than NoComm.
+
+
+
+Hypothesis: Communication's value depends on whether missing, useful evidence can reach agents that lack it—not simply on edge count or message length.
+
+
+
+Intervention: Randomize evidence distribution, control message delivery and budget, and compare communication against no communication on the same initial states.
+
+
+
+Finding: Report where communication improves, harms, or leaves answers unchanged, tied to delivered evidence and measured inference cost.
+
+
+
+Contribution: Give researchers a reusable way to determine whether agent-to-agent communication buys useful information rather than just incurs overhead.
+
+
+
+A possible title, only if the evidence-intervention experiment supports that framing, is:
+When Does Agent Communication Help Multi-Hop Web QA? Evidence Availability and Budget-Matched Message Delivery.
+If that experiment cannot be completed, retain Routing or Rationing? and position the contribution as a controlled communication-evaluation study.
+6. Submission readiness
+The official WWW 2027 Research Track call gives an October 18, 2026 abstract deadline and an October 25, 2026 full-paper deadline, both Anywhere on Earth. It requires the first eight pages of a long paper to be self-contained, with at most 12 total pages including references and appendix. The Evaluation, Human Computation, and Resources track is a defensible choice. 
+
+
+ACM Web 2027
+
+
+
+The most important near-term decision is to freeze a feasible primary experiment now. With the deadline this close, a rigorously controlled result is more valuable than another loosely controlled table. A second model or benchmark would improve generalizability, but should not come at the expense of completing the primary study properly.
+Full research blueprint
+I prepared a more detailed research document containing the manuscript mapping, estimands, experiment designs, indicative API-call budgets, statistical tests, repository audit checklist, figure plan, related-work links and submission schedule.
+SparseComm — WWW 2027 Research & Experiment Blueprint
+Detailed Markdown research plan · approximately 3,250 words
+
+
+Open the complete research blueprint
+
+My final decision: Pursue the evidence-complementarity finding if the available inference budget and time support a clean experiment. Otherwise, complete the balanced routing intervention and cost/provenance audit, retaining the paper's narrower claims. Neither path guarantees acceptance, but the first has a stronger opportunity to answer a genuinely Web-specific scientific question; the second is the more credible fallback for October 25.

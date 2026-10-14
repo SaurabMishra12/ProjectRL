@@ -1,0 +1,77 @@
+{
+  "key": "92cd80af933743b1280e75a38111fb4ebf820abbcd26db30041847a01bf56cfc",
+  "attempt_id": "baaaeb45f63e468aa6ba364b919f624a",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Ethel Houbiers is a French voice actress.\",\"title\":\"Ethel Houbiers\"},{\"sentence_id\":1,\"text\":\" She is the French voice of Penélope Cruz and Salma Hayek.\",\"title\":\"Ethel Houbiers\"},{\"sentence_id\":0,\"text\":\"Dorothée Jemma (born June 16, 1956) is a French voice actress specializing in dubbing.\",\"title\":\"Dorothée Jemma\"},{\"sentence_id\":1,\"text\":\" She is the dub voice of Jennifer Aniston, Melanie Griffith and Sheryl Lee.\",\"title\":\"Dorothée Jemma\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"which Mexican and American film actress is Ethel Houbiers  French voice of \"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "primary",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "ebb355726a3a4798b371f521938205d6",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Salma Hayek\",\n  \"citations\": [\n    [\"Ethel Houbiers\", 1]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"which Mexican and American film actress is Ethel Houri... French voice of\". The evidence says: \"She is the French voice of Penélope Cruz and Salma Hayek.\" Penélope Cruz is Spanish, not Mexican. Salma Hayek is Mexican-American actress. The question: \"which Mexican and American film actress is Ethel Houbiers French voice of\". Likely answer: Salma Hayek. Provide citation. Use evidence sentence id 1 from Ethel Houbiers. Provide JSON with answer \"Salma Hayek\". Citations list: [\"Ethel Houbiers\",1]."
+        }
+      }
+    ],
+    "created": 1791981290,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 171,
+      "prompt_tokens": 318,
+      "total_tokens": 489,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.8975459639996188,
+  "metadata": {
+    "qid": "5adef1b35542993a75d263af",
+    "regime": "P",
+    "stage": "initial",
+    "node": 2
+  },
+  "content_hash": "d2cf3380b9384276bea55e0e7c6d7fb04c94f90fa7647fd7dfcf9804c255e167"
+}

@@ -1,0 +1,76 @@
+{
+  "key": "e1947f73a23a861300274a29f277f0d70de94f5a5e5998d1185311e96f100da2",
+  "attempt_id": "e8a28d3a573b4205903b336147417070",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"\\\"Craving You\\\" is a song recorded by American country music artist Thomas Rhett, with backup lyrics by Maren Morris.\",\"title\":\"Craving You\"},{\"sentence_id\":1,\"text\":\" It was released to country radio on April 3, 2017 via Valory Music Group as the lead single from Rhett's third studio album, \\\"Life Changes\\\", which was released on September 8, 2017.\",\"title\":\"Craving You\"},{\"sentence_id\":2,\"text\":\" The song was written by Dave Barnes and Julian Bunetta.\",\"title\":\"Craving You\"},{\"sentence_id\":0,\"text\":\"\\\"Unforgettable\\\" is a song recorded by American country music artist Thomas Rhett.\",\"title\":\"Unforgettable (Thomas Rhett song)\"},{\"sentence_id\":1,\"text\":\" It was released to country radio on July 28, 2017 via Valory Music Group as the second single from his third studio album, \\\"Life Changes\\\" (2017).\",\"title\":\"Unforgettable (Thomas Rhett song)\"},{\"sentence_id\":2,\"text\":\" The song was written by Rhett, Jesse Frasure, Ashley Gorley and Shane McAnally.\",\"title\":\"Unforgettable (Thomas Rhett song)\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\",\"Unverified peer answer: noanswer\"],\"previous_answer\":\"noanswer\",\"question\":\"\\\"Vacation\\\" is a song recorded by American country music artist Thomas Rhett, it was released on June 13, 2016 via Valory Music Group as the fourth single from his second studio album, \\\"Tangled Up\\\", released on which date?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "d0f6d451e505406cb1aa973b84c95446",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"answer\":\"noanswer\",\"citations\":[]}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: The question asks: \"\\\"Vacation\\\" is a song recorded by American country music artist Thomas Rhett, it was released on June 13, 2016 via Valory Music Group as the fourth single from his second studio album, \\\"Tangled Up\\\", released on which date?\" So we need the release date of the album \"Tangled Up\". The evidence provided only includes info about \"Craving You\" and \"Unforgettable\". No evidence about \"Vacation\" or \"Tangled Up\". So we cannot answer; answer should be \"noanswer\". Need citations: none? But we must provide citations list; if no evidence, maybe empty list. The format: {\"answer\":\"noanswer\",\"citations\":[]}.\n\nCheck instructions: Return ONLY JSON with answer and citations. So do that."
+        }
+      }
+    ],
+    "created": 1791962709,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 185,
+      "prompt_tokens": 496,
+      "total_tokens": 681,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.2397137110001495,
+  "metadata": {
+    "qid": "5ae4164b55429970de88d8f1",
+    "stage": "controller_update",
+    "node": 0
+  },
+  "content_hash": "d539298009fe1a58082e9bc0f480d8c020257da93d0e037fc41506f81170b85b"
+}

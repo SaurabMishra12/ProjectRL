@@ -1,0 +1,51 @@
+{
+  "attempt_id": "31804d5930864499911f3e7f32c7730e",
+  "key": "837020b535d60e6ab359cebe040a2988a3c4d313c24d72331c2232e90db52112",
+  "request_sha256": "9f554beb52060321d939c5c0fa7f169c82404e41e57e5c010f9dff6ab7593d4a",
+  "utc_dispatch": "2026-10-14T09:41:34.685404+00:00",
+  "utc_received": "2026-10-14T09:41:35.892756+00:00",
+  "http_status": 200,
+  "selected_response_headers": {
+    "x-request-id": "b1147dee-8eee-4e7b-aa85-74108db10f52",
+    "apim-request-id": "e53642a8-a155-40e1-b5dc-618331d9644b",
+    "content-type": "application/json"
+  },
+  "provider_response": {
+    "id": "1979204fbbec4514af4170086880cb3e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"The Aristocats\",\n  \"citations\": [\n    [\"Roddy Maude-Roxby\", 0],\n    [\"The Aristocats\", 1]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer the question: \"In what film did Roddy Maize-Roxby play a character based on a story by a team including Tom Rowe as a writer?\" Actually the question: \"In what film did Roddy Maude-Roxby play a character based on a story by a team including Tom Rower as a writer?\" Let's parse.\n\nWe have evidence: The Aristocats is a 1970 American animated romantic musical comedy film produced by Walt Disney Productions and released by Buena Vista Distribution. It says: \"The 20th Disney animated feature film, the film is based on a story by Tom McGowan and Tom Rowe...\" So Tom Rowe is a writer for The Aristocats.\n\nAlso evidence: Roddy Maude-Roxby (born 2 April 1930) is an English actor who has appeared in numerous films, such as Walt Disney's \"The Aristocats\", where he appeared as Edgar Balthazar; etc.\n\nThus the film is The Aristocats.\n\nWe need to provide answer as JSON with answer string and citations list of [title, sentence index] pairs.\n\nCitations: need to support both that Roddy Maude-Roxby appeared in The Aristocats, and that The Aristocats is based on a story by Tom Rowe (and Tom McGowan). So we need two citations: one from \"Roddy Maude-Roxby\" sentence 0, and one from \"The Aristocats\" sentence 1 (the story by Tom Rowe). Also maybe \"The Aristocats\" sentence 0 for film name, but we have enough.\n\nThus answer: \"The Aristocats\". Provide citations: [\"Roddy Maude-Roxby\",0] and [\"The Aristocats\",1].\n\nMake sure format: list of [title, zero-based sentence index] pairs. So JSON:\n\n{\n \"answer\": \"The Aristocats\",\n \"citations\": [[\"Roddy Maude-Roxby\",0],[\"The Aristocats\",1]]\n}\n\nCheck that sentence indices are correct: In evidence, for Roddy Maude-Roxby, sentence_id 0 is the line with his description. For The Aristocats, sentence_id 1 is the line about story by Tom McGowan and Tom Rowe. Good.\n\nReturn only JSON."
+        }
+      }
+    ],
+    "created": 1791970895,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 520,
+      "prompt_tokens": 1535,
+      "total_tokens": 2055,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_response_sha256": "e326d9958fe51f00ca305a2eda2736d4a298329c8a224c3fe125a0fd76cf1515",
+  "network_wall_seconds": 1.2075463770001988,
+  "end_to_end_wall_seconds": 1.2487857169999188
+}

@@ -1,0 +1,77 @@
+{
+  "key": "afba0e0917afdf9fa51b36bf86afa9a523e9cbcbb971cc7d8d888cdf214d1954",
+  "attempt_id": "532aa3b7844243d1b130d2f4581b742a",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"\\\"Yankee Doodle\\\" is a well-known British-American song, the early versions of which date back to before the Seven Years' War and the American Revolution (1775–83).\",\"title\":\"Yankee Doodle\"},{\"sentence_id\":1,\"text\":\" It is often sung patriotically in the United States today and is the state anthem of Connecticut.\",\"title\":\"Yankee Doodle\"},{\"sentence_id\":2,\"text\":\" Its Roud Folk Song Index number is 4501.\",\"title\":\"Yankee Doodle\"},{\"sentence_id\":3,\"text\":\" The melody is thought to be much older than both the lyrics and the subject, going back to folk songs of Medieval Europe.\",\"title\":\"Yankee Doodle\"},{\"sentence_id\":0,\"text\":\"The Capitol Hill Chorale is a 100-voice volunteer mixed choir with members throughout the Capitol Hill and Washington, DC metropolitan area.\",\"title\":\"Capitol Hill Chorale\"},{\"sentence_id\":1,\"text\":\" Founded in 1993, the Chorale performs a principally classical repertoire with an emphasis on Eastern European liturgical works and early American song.\",\"title\":\"Capitol Hill Chorale\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"Hasty pudding is notably mentioned in a verse of an early American song that is currently the anthem of this state of the USA?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "47b29ba3d21c4d1a953ec8f8677feb0c",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Connecticut\",\n  \"citations\": [\n    [\"Yankee Doodle\", 1]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Hasty pudding is notably mentioned in a verse of an early American song that is currently the anthem of this state of the USA?\" So they ask: which state has an anthem that is an early American song that mentions hasty pudding. The evidence includes Yankee Doodle info: \"It is often sung patriotically in the United States today and is the state anthem of Connecticut.\" So Yankee Doodle is the early American song, mentions hasty pudding? Not in evidence but known lyric: \"Yankee Doodle went to town, a-riding on a pony, stuck a feather in his cap and called it hasty pudding.\" Actually lyric: \"Yankee Doodle went to town, a-riding on a pony, stuck a feather in his cap and called it 'macaroni'.\" Wait hasty pudding appears in \"Yankee Doodle\"? Another early American song \"Yankee Doodle\" includes \"stuck a feather in his cap and called it hasty pudding\"? I think the lyric is \"stuck a feather in his cap and called it macaroni\". But there is a verse: \"Yankee Doodle, keep it up, etc.\" Not sure. However the question: \"Hasty pudding is notably mentioned in a verse of an early American song that is currently the anthem of this state of the USA?\" So answer: Connecticut. Provide citation: Yankee Doodle sentence stating it's state anthem of Connecticut. That's evidence line 1. So answer \"Connecticut\". Provide citation list: [\"Yankee Doodle\",1] (sentence index 1). Ensure zero-based index: sentence_id 1 corresponds to \"It is often sung patriotically in the United States today and is the state anthem of Connecticut.\" Good.\n\nReturn JSON."
+        }
+      }
+    ],
+    "created": 1791927371,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 405,
+      "prompt_tokens": 440,
+      "total_tokens": 845,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 19.83958344200073,
+  "metadata": {
+    "qid": "5a7b8608554299042af8f777",
+    "regime": "P",
+    "stage": "initial",
+    "node": 0
+  },
+  "content_hash": "943fc605c95252b42284e2175337599b31ca798945e2794f0944c843a62a97d7"
+}

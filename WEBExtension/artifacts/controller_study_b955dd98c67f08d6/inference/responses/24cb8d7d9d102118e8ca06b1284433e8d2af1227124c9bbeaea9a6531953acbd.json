@@ -1,0 +1,75 @@
+{
+  "key": "24cb8d7d9d102118e8ca06b1284433e8d2af1227124c9bbeaea9a6531953acbd",
+  "attempt_id": "981ca26dc93d4c8ab0c08337baa62d21",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 2048,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Pakbugs was a Pakistani-based crime forum and security releases updates, offering discussion of hacking, credit card fraud, phishing and other forms of computer crime; as well as trading in malware, bank login details and stolen credit card numbers.\",\"title\":\"Pakbugs\"},{\"sentence_id\":1,\"text\":\" The forum was shut down by Pakistani Federal Investigation Agency after raids in 2010, in which five individuals were arrested, with the alleged founder suspected to remain at large in Riyadh.\",\"title\":\"Pakbugs\"},{\"sentence_id\":0,\"text\":\"A crime forum is a generic term for an internet forum specialising in computer crime and Internet fraud activities such as hacking or spamming.\",\"title\":\"Crime forum\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\"],\"previous_answer\":\"computer crime and Internet fraud such as hacking or spamming\",\"question\":\"A crime forum aka internet forum works on what type of fraud?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "7a9aafbb90b2490d97658e31444707c3",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"computer crime and Internet fraud\",\n  \"citations\": [\n    [\"Crime forum\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"A crime forum aka internet forum works on what type of fraud?\" The question: \"A crime forum aka internet forum works on what type of fraud?\" The evidence includes definition: \"A crime forum is a generic term for an internet forum specialising in computer crime and Internet fraud activities such as hacking or spamming.\" So type of fraud: \"computer crime and Internet fraud\" but specifically \"computer crime and Internet fraud activities such as hacking or spamming.\" The question asks \"what type of fraud?\" Probably \"Internet fraud\" or \"computer crime\". The answer should be concise: \"computer crime and Internet fraud\". Provide citation: from title \"Crime forum\", sentence 0. So JSON with answer and citations."
+        }
+      }
+    ],
+    "created": 1791921320,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 187,
+      "prompt_tokens": 349,
+      "total_tokens": 536,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "latency_seconds": 0.6679476839999552,
+  "metadata": {
+    "qid": "5a72ee8a5542992359bc31db",
+    "stage": "controller_update",
+    "node": 0
+  },
+  "content_hash": "b8b2f2550b1547c9d65c8dc2d0307efe7826c1a343b8a41d078b75a854ce2e3c"
+}

@@ -1,0 +1,76 @@
+{
+  "key": "9b026d4a22dc6678c231f30eda0c16937e600468b4d66fee665df8663d3a5eef",
+  "attempt_id": "7c21a5060f7441b0ad46f3aaa89a980d",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The 28th Test and Evaluation Squadron is an active United States Air Force unit.\",\"title\":\"28th Test and Evaluation Squadron\"},{\"sentence_id\":1,\"text\":\" Its current assignment is with the 53d Wing, based at Eglin Air Force Base, Florida.\",\"title\":\"28th Test and Evaluation Squadron\"},{\"sentence_id\":0,\"text\":\"Eglin Air Force Base (AFB) (IATA: VPS, ICAO: KVPS, FAA LID: VPS) is a United States Air Force base located approximately 3 miles (5 kilometers) southwest of Valparaiso, Florida in Okaloosa County.\",\"title\":\"Eglin Air Force Base\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\"],\"previous_answer\":\"Eglin Air Force Base\",\"question\":\"The 28th Test and Evaluation Squadron of the Air Force operating out of Okaloosa County in Florida is based at which Air Force base?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "28edd1871a614127bb87a83e0ea7dff9",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Eglin Air Force Base\",\n  \"citations\": [\n    [\"28th Test and Evaluation Squadron\", 1],\n    [\"Eglin Air Force Base\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"The 28ity Test and Evaluation Squadron of the Air Force operating out of Okaloosa County in Florida is based at which Air Force base?\" Evidence: sentence 0 of 28th Test and Evaluation Squadron says it's an active USAF unit. Sentence 1 says its current assignment is with the 53d Wing, based at Eglin Air Force Base, Florida. Also Eglin Air Force Base description. So answer: Eglin Air Force Base. Provide citations: from 28th Test and Evaluation Squadron sentence 1, and maybe Eglin Air Force Base sentence 0. Provide JSON with answer and citations list.\n\nAnswer string: \"Eglin Air Force Base\". Citations: [\"28th Test and Evaluation Squadron\",1], [\"Eglin Air Force Base\",0].\n\nReturn JSON only."
+        }
+      }
+    ],
+    "created": 1791969130,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 230,
+      "prompt_tokens": 359,
+      "total_tokens": 589,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 3.4258238099998835,
+  "metadata": {
+    "qid": "5ac102e8554299012d1db682",
+    "stage": "controller_update",
+    "node": 1
+  },
+  "content_hash": "e7d700ba0f9b8aef622fc142f2a7247181fc8dd74db11cbcc7c3fafa71e43d22"
+}

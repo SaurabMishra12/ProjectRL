@@ -1,0 +1,76 @@
+{
+  "key": "2bd9f2dc155d7ac08aea6e966538e102854121f876e66acd4536d2236539c49d",
+  "attempt_id": "cc913abf20d24afe91f3a855808f2977",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"For Sale: Live at Maxwell's 1986 is a 2017 live album by American alternative rock band The Replacements.\",\"title\":\"For Sale: Live at Maxwell's 1986\"},{\"sentence_id\":1,\"text\":\" Recorded at the famous Maxwell's at the height of the band's commercial and creative arc, it is one of the few good recordings of their live performances.\",\"title\":\"For Sale: Live at Maxwell's 1986\"},{\"sentence_id\":2,\"text\":\" The band's only previous live album—1985's \\\"The Shit Hits the Fans\\\"—was a limited cassette tape release which features poor audio quality and several false starts and stops on songs.\",\"title\":\"For Sale: Live at Maxwell's 1986\"},{\"sentence_id\":3,\"text\":\" In 2007, bassist Tommy Stinson stated that \\\"There are no good Replacements live recordings\\\", in part due to a lack of high-quality recordings and in part due to the band's notoriously sloppy performances due to alcohol abuse.\",\"title\":\"For Sale: Live at Maxwell's 1986\"},{\"sentence_id\":4,\"text\":\" The album was produced by Bob Mehr, who wrote the 2016 biography of the band \\\"Trouble Boys: The True Story of the Replacements\\\".\",\"title\":\"For Sale: Live at Maxwell's 1986\"},{\"sentence_id\":0,\"text\":\"Switchfoot is an American alternative rock band from San Diego, California.\",\"title\":\"Switchfoot\"},{\"sentence_id\":1,\"text\":\" The band's members are Jon Foreman (lead vocals, guitar), Tim Foreman (bass guitar, backing vocals), Chad Butler (drums, percussion), Jerome Fontamillas (guitar, keyboards, backing vocals), and Drew Shirley (guitar, backing vocals).\",\"title\":\"Switchfoot\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\"],\"previous_answer\":\"San Diego\",\"question\":\"Meant to Live is a single by an American alternative rock band that is from what city in California?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "d3477a5fb3d84accb69e263529e10025",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"answer\":\"San Diego\",\"citations\":[[\"Switchfoot\",0]]}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Meant to Live is a single by an American alternative rock band that is from what city in California?\" The evidence includes info about Switchfoot, an American alternative rock band from San Diego, California. \"Meant to Live\" is a single by Switchfoot. So answer: San Diego. Need to provide citations: from Switchfoot article sentence 0: \"Switchfoot is an American alternative rock band from San Diego, California.\" That's title \"Switchfoot\", sentence_id 0. Provide JSON with answer \"San Diego\" and citations list.\n\nCheck if any other band? \"Meant to Live\" is indeed a Switchfoot song. So answer San Diego.\n\nReturn JSON: {\"answer\":\"San Diego\",\"citations\":[[\"Switchfoot\",0]]}"
+        }
+      }
+    ],
+    "created": 1791924075,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 185,
+      "prompt_tokens": 569,
+      "total_tokens": 754,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 19.602560232000542,
+  "metadata": {
+    "qid": "5adcc3705542994ed6169bf4",
+    "stage": "controller_update",
+    "node": 2
+  },
+  "content_hash": "cc73d5ce6dc95d66e8d08bdf483c492829c91b55f9e6bf89c73cbd79d73c6d87"
+}

@@ -1,0 +1,920 @@
+{
+  "base": {
+    "provider": "azure",
+    "model": "gpt-oss-120b",
+    "model_revision": "",
+    "base_url": "",
+    "api_version": "2024-02-15-preview",
+    "tokenizer": "openai/gpt-oss-120b",
+    "tokenizer_revision": "",
+    "n_questions": 300,
+    "sample_seed": 42,
+    "partition_seed": 11,
+    "role_seed": 17,
+    "crop_seed": 23,
+    "replicate_id": "primary",
+    "top_k": 6,
+    "payload_budget": 256,
+    "temperature": 0.0,
+    "max_tokens": 2048,
+    "context_limit": 32768,
+    "max_calls": 11400,
+    "stop_depth": 3,
+    "noninferiority_margin_f1": null,
+    "noninferiority_justification": null,
+    "self_refinement_control": true,
+    "credential_source": "project_existing",
+    "heldout_split_dir": "artifacts/controller_splits_e219bbccd74a5888"
+  },
+  "settings": {
+    "split_seed": 20271014,
+    "train_questions": 300,
+    "validation_questions": 100,
+    "test_questions": 300,
+    "pilot_questions": 12,
+    "split_pool_per_type": 5000,
+    "training_seeds": [
+      7,
+      19,
+      31
+    ],
+    "collection_epochs": 3,
+    "ppo_epochs": 4,
+    "batch_size": 32,
+    "learning_rate": 0.0003,
+    "hidden": 64,
+    "clip": 0.2,
+    "entropy_coef": 0.01,
+    "target_kl": 0.03,
+    "quotas": [
+      64,
+      128,
+      256
+    ],
+    "lambda_payload": 0.05,
+    "lambda_calls": 0.02,
+    "regimes": [
+      "R",
+      "P"
+    ],
+    "static_candidates": [
+      "CW",
+      "CCW",
+      "OUTSTAR"
+    ],
+    "max_physical_calls": 46000
+  },
+  "splits_sha256": "8c5b152fffe6d82a759f4578608defedd8aaf060ac9d1e5f81fcf57b448e7447",
+  "sources": {
+    "protocol.py": "30e18df0949f40b152131dca3c65d9a2a897080f0451a7f989dcf34a3fa28226",
+    "download_data.py": "f109e23a8e8b735dfb7963b5fe29ae3a9e5fca3d697566c6e4dc35426221ed7a",
+    "backend.py": "adbdad4d8476d3353f97f5e60af82ae4d1bf2e14cb0de4dac240be0be8ea6cdc",
+    "experiments.py": "51285b48286cd5f110319baa061bff8173f8feefa136355309680601d90ac580",
+    "audit.py": "61a5d5cd21b3a07a3b1745d363c8ef1c70beea62f8ede22943668e812872db6c",
+    "reporting.py": "04b8a7ceb12c3b6da8087ad694296426547a20ee70fd288fd06fa901b777130f",
+    "robustness.py": "9e42e4f62208c0d34dcb64c6310e342265a9a0eedc0bd3a8b054472050fed94f",
+    "validate_notebooks.py": "958cde178da7f475f8c6935ef7dd46da04ffecba196a92653a1bb7a5bb6e2ecc",
+    "machine_connection.py": "24556d175ea5c570f876bcb503b34b40aaf31b3aa43dab21df46257a1be95979",
+    "learned_controller.py": "ec648eea11ee2e724002c22a8f80d611e71fd3ae9dd80e65c0e5550b43359b17",
+    "controller_splits.py": "06bf2ffbfebc6eb45f36e27c32c622e3f211a918bb93e487c84e7c6c789ac0b1",
+    "controller_study.py": "25cdf4f8b2cae44df0954bd4a4a17b43bca520aec0a4131303db757578134846",
+    "controller_reporting.py": "24bddd4105465a1ea1f7e3c3f0803077c69ccbcae9b37fa9f584fdce7c3c134a"
+  },
+  "feature_version": "observable_web_v1",
+  "actions": [
+    {
+      "edges": [],
+      "quota": 0,
+      "name": "NoComm"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "quota": 64,
+      "name": "support_0_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "quota": 128,
+      "name": "support_0_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "quota": 256,
+      "name": "support_0_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 64,
+      "name": "support_1_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 128,
+      "name": "support_1_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 256,
+      "name": "support_1_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 64,
+      "name": "support_2_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 128,
+      "name": "support_2_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 256,
+      "name": "support_2_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 64,
+      "name": "support_3_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 128,
+      "name": "support_3_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 256,
+      "name": "support_3_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 64,
+      "name": "support_4_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 128,
+      "name": "support_4_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 256,
+      "name": "support_4_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 64,
+      "name": "support_5_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 128,
+      "name": "support_5_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 256,
+      "name": "support_5_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 64,
+      "name": "support_6_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 128,
+      "name": "support_6_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 256,
+      "name": "support_6_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 64,
+      "name": "support_7_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 128,
+      "name": "support_7_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 256,
+      "name": "support_7_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 64,
+      "name": "support_8_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 128,
+      "name": "support_8_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 256,
+      "name": "support_8_quota_256"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 64,
+      "name": "support_9_quota_64"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 128,
+      "name": "support_9_quota_128"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "quota": 256,
+      "name": "support_9_quota_256"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 64,
+      "name": "support_10_quota_64"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 128,
+      "name": "support_10_quota_128"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 256,
+      "name": "support_10_quota_256"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 64,
+      "name": "support_11_quota_64"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 128,
+      "name": "support_11_quota_128"
+    },
+    {
+      "edges": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 256,
+      "name": "support_11_quota_256"
+    },
+    {
+      "edges": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 64,
+      "name": "support_12_quota_64"
+    },
+    {
+      "edges": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 128,
+      "name": "support_12_quota_128"
+    },
+    {
+      "edges": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 256,
+      "name": "support_12_quota_256"
+    },
+    {
+      "edges": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 64,
+      "name": "support_13_quota_64"
+    },
+    {
+      "edges": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 128,
+      "name": "support_13_quota_128"
+    },
+    {
+      "edges": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 256,
+      "name": "support_13_quota_256"
+    },
+    {
+      "edges": [
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 64,
+      "name": "support_14_quota_64"
+    },
+    {
+      "edges": [
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 128,
+      "name": "support_14_quota_128"
+    },
+    {
+      "edges": [
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 256,
+      "name": "support_14_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 64,
+      "name": "support_15_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 128,
+      "name": "support_15_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ]
+      ],
+      "quota": 256,
+      "name": "support_15_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 64,
+      "name": "support_16_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 128,
+      "name": "support_16_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "quota": 256,
+      "name": "support_16_quota_256"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 64,
+      "name": "support_17_quota_64"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 128,
+      "name": "support_17_quota_128"
+    },
+    {
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ]
+      ],
+      "quota": 256,
+      "name": "support_17_quota_256"
+    }
+  ],
+  "scientific_scope": "one-step categorical contextual-bandit SparseComm PPO; no multi-round stopping attribution"
+}

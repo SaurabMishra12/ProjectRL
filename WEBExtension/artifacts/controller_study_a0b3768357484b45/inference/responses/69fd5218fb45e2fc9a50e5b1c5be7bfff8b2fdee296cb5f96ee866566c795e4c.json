@@ -1,0 +1,76 @@
+{
+  "key": "69fd5218fb45e2fc9a50e5b1c5be7bfff8b2fdee296cb5f96ee866566c795e4c",
+  "attempt_id": "be66558a9e5b4efa86a46b71ebde7dff",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Dixit is a card game created by Jean-Louis Roubira, and published by Libellud.\",\"title\":\"Dixit (card game)\"},{\"sentence_id\":1,\"text\":\" Using a deck of cards illustrated with dreamlike images, players select cards that match a title suggested by the \\\"storyteller\\\", and attempt to guess which card the \\\"storyteller\\\" selected.\",\"title\":\"Dixit (card game)\"},{\"sentence_id\":2,\"text\":\" The game was introduced in 2008.\",\"title\":\"Dixit (card game)\"},{\"sentence_id\":3,\"text\":\" \\\"Dixit\\\" won the 2010 Spiel des Jahres award.\",\"title\":\"Dixit (card game)\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\",\"Unverified peer answer: noanswer\"],\"previous_answer\":\"noanswer\",\"question\":\"Dixit and Fanorona are the names of what?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "b86efb7cd6914a77a3bafda96009c027",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\"answer\":\"noanswer\",\"citations\":[]}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Dixie and Fanorona are the names of what?\" Actually \"Dixit and Fanorona are the names of what?\" We have evidence about Dixit being a card game. Fanorona is a board game (I know). Need evidence for Fanorona? Not provided. Only evidence about Dixit. No evidence about Fanorona. The question asks what both are names of. Likely both are games. We have evidence for Dixit being a card game. Need evidence for Fanorona being a board game. Not provided. Since we lack evidence, we cannot answer definitively. But we could answer \"games\" if we have at least one evidence? The question asks \"are the names of what?\" Both are names of games. We have evidence for Dixit being a card game, which is a type of game. We lack evidence for Fanorona, but we could still answer \"games\" with partial support? The instruction: verify against quoted evidence. If we cannot verify Fanorona, answer may be \"noanswer\". The safe approach: Since we cannot verify Fanorona, we must answer noanswer."
+        }
+      }
+    ],
+    "created": 1791960496,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 263,
+      "prompt_tokens": 357,
+      "total_tokens": 620,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 4.892489580999609,
+  "metadata": {
+    "qid": "5a760fbc5542992db9473722",
+    "stage": "controller_update",
+    "node": 1
+  },
+  "content_hash": "61466b887e42af9a01908563b8550a80d372e9e5e3654395c3b0e7f1770bf61e"
+}

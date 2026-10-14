@@ -1,0 +1,77 @@
+{
+  "key": "e403b573a1f00d37331018b327e54a2c5e60ff2e6889c3060dcb16c142ef7970",
+  "attempt_id": "caef6deaed97418eab8d985ca15fc6be",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Troubles in Dunloy recounts incidents during, and the effects of, The Troubles in Dunloy, County Antrim, Northern Ireland.\",\"title\":\"The Troubles in Dunloy\"},{\"sentence_id\":0,\"text\":\"The Troubles in Jordanstown recounts incidents during, and the effects of, The Troubles in Jordanstown, Newtownabbey, County Antrim, Northern Ireland.\",\"title\":\"The Troubles in Jordanstown\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"The Troubles in Newtownabbey recounts incidents during and the effects of the Troubles in Newtownabbey in the County Antrim of which country?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "837991abb5a64a72af0ef2be4b15012d",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Northern Ireland\",\n  \"citations\": [\n    [\"The Troubles in Jordanstown\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need answer: The country is Northern Ireland (part of United Kingdom). The evidence: \"The Troubles in Jordanstown recounts incidents during, and the effects of, The Troubles in Jordanstown, Newtownabbey, County Antrim, Northern Ireland.\" That indicates Newtownabbey is in County Antrim, Northern Ireland. So answer: Northern Ireland. Provide citation: title \"The Troubles in Jordanstown\", sentence 0. Also maybe \"The Troubles in Dunloy\" mentions County Antrim, Northern Ireland but not Newtownabbey. Use Jordanstown evidence. Provide JSON."
+        }
+      }
+    ],
+    "created": 1791990268,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 159,
+      "prompt_tokens": 298,
+      "total_tokens": 457,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.871956365999722,
+  "metadata": {
+    "qid": "5abfab8d5542997ec76fd42d",
+    "regime": "P",
+    "stage": "initial",
+    "node": 0
+  },
+  "content_hash": "cd2be28ae68cfa1ff4bb2784cb62b805c4d4064c8a969cf6537ea0e0d2ecf377"
+}

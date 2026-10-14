@@ -1,0 +1,77 @@
+{
+  "key": "d2eb6acf3549c7a7cde1c417d50cf0bdd81928e83adb14903cb41a7786b56d9d",
+  "attempt_id": "77153d602e02428e9f1dc2f2bbb9c497",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Eatza Pizza was a buffet-style restaurant chain founded in Arizona in 1997.\",\"title\":\"Eatza Pizza\"},{\"sentence_id\":1,\"text\":\" As recently as 2007, it was one of the largest all-buffet pizza chains in the United States, with 112 locations in 14 states and Puerto Rico.\",\"title\":\"Eatza Pizza\"},{\"sentence_id\":0,\"text\":\"Upper Crust Pizzeria is a Boston, Massachusetts based chain of pizzeria restaurants.\",\"title\":\"Upper Crust Pizzeria\"},{\"sentence_id\":1,\"text\":\" The chain went bankrupt following a finding by the U.S. Department of Labor that it had engaged in wage theft (not paying workers their legally required wages).\",\"title\":\"Upper Crust Pizzeria\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"Are both Upper Crust Pizzeria and Eatza Pizza restaurants?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "primary",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "4a346df08ee74a6cb976ec7e9601602c",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Yes\",\n  \"citations\": [\n    [\"Upper Crust Pizzeria\", 0],\n    [\"Eatza Pizza\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Are both Upper Crust Pizzeria and Eatza Pizza restaurants?\" The question likely asks if both are restaurants. Evidence: Upper Crust Pizzeria is a Boston, Massachusetts based chain of pizzeria restaurants. Eatza Pizza was a buffet-style restaurant chain. So both are restaurants. Answer: Yes. Provide citations: Upper Crust Pizzeria sentence 0, Eatza Pizza sentence 0. Need JSON with answer and citations list.\n\nAnswer string: \"Yes\". Provide citations as list of [title, sentence_index]. Use zero-based indices as given. Upper Crust Pizzeria sentence 0, Eatza Pizza sentence 0."
+        }
+      }
+    ],
+    "created": 1791978040,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 183,
+      "prompt_tokens": 344,
+      "total_tokens": 527,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.9935255669997787,
+  "metadata": {
+    "qid": "5ade15a45542997545bbbe46",
+    "regime": "P",
+    "stage": "initial",
+    "node": 1
+  },
+  "content_hash": "7a6d4f553eeca3822ba403ce9f55c81ce115c0378e15e563aa96ab2bc4dc0e7d"
+}

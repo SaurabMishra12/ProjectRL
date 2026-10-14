@@ -1,0 +1,77 @@
+{
+  "key": "90d65df0303dde7e1b63a5b1aa0e5295c79492ffbfe46df2f338f4eb01bd750d",
+  "attempt_id": "37b01cacc183432e9a80df08fc439156",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Troubles in Newtownabbey recounts incidents during and the effects of the Troubles in Newtownabbey, County Antrim, Northern Ireland.\",\"title\":\"The Troubles in Newtownabbey\"},{\"sentence_id\":0,\"text\":\"The Troubles in Antrim recounts incidents during, and the effects of, The Troubles in Antrim, County Antrim, Northern Ireland.\",\"title\":\"The Troubles in Antrim\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"The Troubles in Newtownabbey recounts incidents during and the effects of the Troubles in Newtownabbey in the County Antrim of which country?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "7406f87bbb42443c88ca5944f8432bf7",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Northern Ireland\",\n  \"citations\": [\n    [\"The Troubles in Newtownabbey\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"The Troubles in Newtownabbey recounts incidents during and the effects of the Troubles in Newtownabbey in the County Antrim of which country?\" The evidence says: \"The Troubles in Newtownabbey recounts incidents during and the effects of the Troubles in Newtownabbey, County Antrim, Northern Ireland.\" So the country is Northern Ireland. Provide JSON with answer \"Northern Ireland\" and citation: title \"The Troubles in Newtownabbey\", sentence index 0."
+        }
+      }
+    ],
+    "created": 1791990270,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 146,
+      "prompt_tokens": 294,
+      "total_tokens": 440,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.85123559099884,
+  "metadata": {
+    "qid": "5abfab8d5542997ec76fd42d",
+    "regime": "P",
+    "stage": "initial",
+    "node": 2
+  },
+  "content_hash": "8b77e27e9070ea7ebfbdfce991e2b740ec1086c4ac2c49b0c2d6f66323cdf7cb"
+}

@@ -1,0 +1,77 @@
+{
+  "key": "7a64ad56e9cb7d7e55ff860f86d910772ff228d7960e5f69cbb88ab48adb0f70",
+  "attempt_id": "a14ca16627f748b5a7d5724887157c84",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Oliver Cromwell (1599–1658) was an English military and political leader and later Lord Protector of the Commonwealth of England, Scotland and Ireland.\",\"title\":\"Oliver Cromwell (disambiguation)\"},{\"sentence_id\":0,\"text\":\"Oliver Cromwell (25 April 15993 September 1658) was an English military and political leader and later Lord Protector of the Commonwealth of England, Scotland, and Ireland.\",\"title\":\"Oliver Cromwell\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"Bridget Cromwell is the eldest daughter of an English military and political leader and later Lord Protector of what commonwealths?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "890248f0d82e4e57960b45c95c2bc10e",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"the Commonwealth of England, Scotland, and Ireland\",\n  \"citations\": [\n    [\"Oliver Cromwell (disambiguation)\", 0],\n    [\"Oliver Cromwell\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Bridget Cromwell is the eldest daughter of an English military and political leader and later Lord Protector of what commonwealths?\" The leader is Oliver Cromwell. The question: \"of what commonwealths?\" According to evidence: \"Commonwealth of England, Scotland and Ireland.\" Both evidence sentences mention \"Commonwealth of England, Scotland and Ireland.\" So answer: \"the Commonwealth of England, Scotland, and Ireland.\"\n\nWe need to provide JSON with answer and citations. Use citations from the evidence. Provide list of [title, sentence_index] pairs. Both evidence entries have sentence_id 0. Titles: \"Oliver Cromwell (disambiguation)\" and \"Oliver Cromwell\". Could cite either. Provide both maybe. Provide answer string: \"the Commonwealth of England, Scotland, and Ireland\". Ensure concise. Provide citations.\n\n"
+        }
+      }
+    ],
+    "created": 1791984667,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 232,
+      "prompt_tokens": 296,
+      "total_tokens": 528,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.0105219670003862,
+  "metadata": {
+    "qid": "5ab8111c5542991d3222382b",
+    "regime": "P",
+    "stage": "initial",
+    "node": 2
+  },
+  "content_hash": "60612a6b74d0bf7a1875d55d780ec52a666da80e461c6eaa3d335dc526556e3c"
+}

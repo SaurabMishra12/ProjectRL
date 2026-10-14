@@ -1,0 +1,77 @@
+{
+  "key": "a9ad0b729e7d9a6ce177fb3a11f0dd77eb8124b827aed9e9b939a5a1791b74ce",
+  "attempt_id": "66e334d5169747c48dd95f49a6e4fc9a",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Karakoram, or Karakorum is a large mountain range spanning the borders of Pakistan, India, and China, with the northwest extremity of the range extending to Afghanistan and Tajikistan.\",\"title\":\"Karakoram\"},{\"sentence_id\":1,\"text\":\" It is located in the regions of Gilgit–Baltistan (Pakistan), Ladakh (India), and southern Xinjiang (China), and reaches the Wakhan Corridor (Afghanistan).\",\"title\":\"Karakoram\"},{\"sentence_id\":2,\"text\":\" A part of the complex of ranges from the Hindu Kush to the Himalayan Range, it is one of the Greater Ranges of Asia.\",\"title\":\"Karakoram\"},{\"sentence_id\":3,\"text\":\" The Karakoram is home to the four most closely located peaks over 8000m in height on earth: K2, the second highest peak in the world at 8611 m , Gasherbrum I, Broad Peak and Gasherbrum II.\",\"title\":\"Karakoram\"},{\"sentence_id\":0,\"text\":\"Jongsong Peak is a mountain in the \\\"Janak\\\" section of the Himalayas.\",\"title\":\"Jongsong Peak\"},{\"sentence_id\":1,\"text\":\" At 7462 m it is the 57th highest peak in the world, although it is dominated by 3rd highest, Kangchenjunga, 20 km to the south.\",\"title\":\"Jongsong Peak\"},{\"sentence_id\":2,\"text\":\" Jongsong's summit is on tri-junction of India, Nepal and China.\",\"title\":\"Jongsong Peak\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"Between Jongsong Peak and Broad Peak, which mountain is higher?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "d055640d99e545c6a2c21f1f4b03d8cd",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Broad Peak\",\n  \"citations\": [\n    [\"Karakoram\", 3],\n    [\"Jongsong Peak\", 1]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: Between Jongsong Peak and Broad Peak, which mountain is higher? Use evidence.\n\nWe have evidence about Broad Peak: from Karakoram sentence 3: \"The Karakoram is home to the four most closely located peaks over 8000m in height on earth: K2, the second highest peak in the world at 8611 m , Gasherbrum I, Broad Peak and Gasherbrum II.\"\n\nThus Broad Peak is over 8000m. Jongsong Peak is 7462 m (sentence 1). So Broad Peak is higher.\n\nWe need to cite evidence: For Broad Peak height, we have sentence 3 of Karakoram which mentions Broad Peak among peaks over 8000m. That indicates >8000m. For Jongsong Peak height, sentence 1 of Jongsong Peak says 7462 m. So answer: Broad Peak is higher.\n\nCitations: [\"Karakoram\", 3] and [\"Jongsong Peak\", 1].\n\nReturn JSON with answer \"Broad Peak\" and citations list.\n\n"
+        }
+      }
+    ],
+    "created": 1791961327,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 270,
+      "prompt_tokens": 516,
+      "total_tokens": 786,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 4.705374559999655,
+  "metadata": {
+    "qid": "5a7bbc5d55429927d897c020",
+    "regime": "P",
+    "stage": "initial",
+    "node": 0
+  },
+  "content_hash": "4a7f7b29e38f8c6e229fae3acfa351130b192bf71a9fcd14629976711a2cbf14"
+}

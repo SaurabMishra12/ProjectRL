@@ -1,0 +1,76 @@
+{
+  "key": "9ea04ce48c41d3dc600af2cbc5c4c7b7c9ea29c41416e3d3f2632b15c054f389",
+  "attempt_id": "687fd9c2b93947d6aaebf1afc30c96fe",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Serbian Hound (Serbian: Српски гонич / \\\"Srpski gonič\\\" ), previously known as the Balkan Hound (Балкански гонич / \\\"Balkanski gonič\\\"), is a pack hunting dog breed used in Serbia.\",\"title\":\"Serbian Hound\"},{\"sentence_id\":1,\"text\":\" It is red or tan with a black saddle, neck and cranium and red or tan face.\",\"title\":\"Serbian Hound\"},{\"sentence_id\":2,\"text\":\" Its head is flat and sloping, its muzzle pointed, with drop ears of the usual scent hound type.\",\"title\":\"Serbian Hound\"},{\"sentence_id\":3,\"text\":\" The Serbian Hound stands 17 to 21 inches (44–56 cm) in height and weighs about 44 pounds (20 kg).\",\"title\":\"Serbian Hound\"},{\"sentence_id\":4,\"text\":\" It is smooth-coated and coarse-haired.\",\"title\":\"Serbian Hound\"},{\"sentence_id\":5,\"text\":\" Described as pleasant natured and obedient, the breed is thought to descend from dogs left in the Balkan region by the Phoenicians in ancient times.\",\"title\":\"Serbian Hound\"},{\"sentence_id\":0,\"text\":\"The Molossus (Greek: Μολοσσὸς ) is a breed of dog from ancient southern Europe.\",\"title\":\"Molossus (dog)\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\",\"Unverified peer answer: noanswer\"],\"previous_answer\":\"Molossus\",\"question\":\"Which breed of dog, Molossus or Artois Hound, is from ancient southern Europe?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "96a15c72146e48ec8bfca04958a892ed",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Molossus\",\n  \"citations\": [\n    [\"Molossus (dog)\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Which breed of dog, Molossus or Artois Hound, is from ancient southern Europe?\" We have evidence: Molossus entry says \"The Molossus (Greek: Μολοσσὸς ) is a breed of dog from ancient southern Europe.\" No evidence about Artois Hound. So answer: Molossus. Provide citation: title \"Molossus (dog)\", sentence 0. Return JSON with answer \"Molossus\"."
+        }
+      }
+    ],
+    "created": 1791962786,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 141,
+      "prompt_tokens": 510,
+      "total_tokens": 651,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.250114983999083,
+  "metadata": {
+    "qid": "5a804aab5542995d8a8ddf5a",
+    "stage": "controller_update",
+    "node": 2
+  },
+  "content_hash": "ce680d6ee7cfba49a0c4aab42227441760972861d96c22d953dd8530a502c2fe"
+}

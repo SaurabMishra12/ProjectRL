@@ -1,0 +1,77 @@
+{
+  "key": "3d4bb88300c80dd3593510e51da2cc7b72dc41e90114606f57eac2c00f4fff31",
+  "attempt_id": "b1700609e4374f28ace6c8ff7292300a",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Cressida Curzon Bonas (born 18 February 1989) is an English actress, dancer and model.\",\"title\":\"Cressida Bonas\"},{\"sentence_id\":1,\"text\":\" She is the youngest daughter of Lady Mary-Gaye Curzon and entrepreneur Jeffrey Bonas, and a granddaughter of Edward Curzon, 6th Earl Howe.\",\"title\":\"Cressida Bonas\"},{\"sentence_id\":0,\"text\":\"One Night in Istanbul, also known as One Night in Istanbul: The Movie, is a British comedy-drama film, directed by James Marquand and produced/written by Nicky Allt.\",\"title\":\"One Night in Istanbul\"},{\"sentence_id\":1,\"text\":\" The film stars Steven Waddington, Paul Barber, Lucien Laviscount, Samantha Womack, and Ingvar Eggert Sigurðsson.\",\"title\":\"One Night in Istanbul\"},{\"sentence_id\":2,\"text\":\" It is based on the play of the same name by Nicky Allt.\",\"title\":\"One Night in Istanbul\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"The youngest daughter of Lady Mary-Gaye Curzon stars with Douglas Smith and Lucien Laviscount  in what 2017 film?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "primary",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "be1a7abb3a604933b981e984a975165a",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"The youngest daughter of Lady Mary-Gaye Curzon stars with Douglas Smith and Lucien Laviscount in what 2017 film?\" The youngest daughter of Lady Mary-Gaye Curzon is Cressida Bonas (from evidence). She stars with Douglas Smith and Lucien Laviscounter in a 2017 film. Need to find which film that is. Evidence includes \"One Night in Istanbul\" but that film stars Steven Waddington, Paul Barber, Lucien Laviscount, Samantha Womack, Ingvar Eggert Sigurðsson. No Douglas Smith. Also year? Not given but likely 2014? Actually One Night in Istanbul is 2014? Not sure. Need to find a 2017 film starring Cressida Bonas, Douglas Smith, Lucien Laviscount. We have no direct evidence. We only have evidence about Cressida Bonas and One Night in Istanbul. No mention of Douglas Smith. So we cannot answer. Should return noanswer."
+        }
+      }
+    ],
+    "created": 1791977649,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 238,
+      "prompt_tokens": 418,
+      "total_tokens": 656,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.8705698140001914,
+  "metadata": {
+    "qid": "5ab7c1a955429928e1fe38c8",
+    "regime": "P",
+    "stage": "initial",
+    "node": 0
+  },
+  "content_hash": "ec2ab6e947d759ab9df89f85ecda84254e453c44f81f0e2eb2aa106b6992b843"
+}

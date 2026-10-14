@@ -1,0 +1,76 @@
+{
+  "key": "2c73aaea3729b82e31f1b7f8df5fb4e0bfa6f089c68de16240004a3a1c811eb1",
+  "attempt_id": "500e338b9b4b44139fa30f1c0c274380",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Hedwig Eleonora of Holstein-Gottorp (23 October 1636 – 24 November 1715) was Queen of Sweden from 1654 until 1660 by marriage to Charles X Gustav of Sweden, and the mother of Charles XI.\",\"title\":\"Hedwig Eleonora of Holstein-Gottorp\"},{\"sentence_id\":1,\"text\":\" She served as regent during the minority of her son from 1660 until 1672, and during the minority of her grandson Charles XII in 1697.\",\"title\":\"Hedwig Eleonora of Holstein-Gottorp\"},{\"sentence_id\":2,\"text\":\" She also represented Charles XII during his absence in the Great Northern War from 1700 until the regency of her granddaughter Ulrika Eleonora in 1713.\",\"title\":\"Hedwig Eleonora of Holstein-Gottorp\"},{\"sentence_id\":3,\"text\":\" Hedwig Eleonora was described as a dominant personality, and was regarded as the \\\"de facto\\\" first lady of the royal court for 61 years, from 1654 until her death.\",\"title\":\"Hedwig Eleonora of Holstein-Gottorp\"},{\"sentence_id\":0,\"text\":\"Gustav Victor Rudolf Born FRCP, HonFRCS, FRS (born 29 July 1921) is Emeritus Professor of Pharmacology at King's College London and Research Professor at the William Harvey Research Institute, Barts and The London School of Medicine and Dentistry.\",\"title\":\"Gustav Victor Rudolf Born\"},{\"sentence_id\":1,\"text\":\" Born was born in Germany to Jewish parents, the son of Hedwig Ehrenberg and the scientist Max Born.\",\"title\":\"Gustav Victor Rudolf Born\"},{\"sentence_id\":2,\"text\":\" He was educated at the Oberrealschule, Göttingen.\",\"title\":\"Gustav Victor Rudolf Born\"},{\"sentence_id\":3,\"text\":\" After moving to the UK with his father, he attended The Perse School, Cambridge, Edinburgh Academy and the University of Edinburgh.\",\"title\":\"Gustav Victor Rudolf Born\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\"],\"previous_answer\":\"a scientist\",\"question\":\"Gustav Victor Rudolf Born was the son of Hedwig Ehrenberg and someone of which vocations?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "d05553028572455fa4faad74cf8a4d1b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"scientist\",\n  \"citations\": [\n    [\"Gustav Victor Rudolf Born\", 1]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Gustian Victor Rudolf Born was the son of Hedwig Ehrenberg and someone of which vocations?\" The evidence says: \"Born was born in Germany to Jewish parents, the son of Hedwig Ehrenberg and the scientist Max Born.\" So his father is Max Born, who is a scientist. The question asks \"someone of which vocations?\" Likely \"scientist\". Could also be \"physicist\" but evidence says \"the scientist Max Born\". So answer: \"scientist\". Provide citation: title \"Gustav Victor Rudolf Born\", sentence_id 1. Return JSON with answer and citations."
+        }
+      }
+    ],
+    "created": 1791960583,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 170,
+      "prompt_tokens": 633,
+      "total_tokens": 803,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 5.295111528000234,
+  "metadata": {
+    "qid": "5ae596955542993aec5ec1cc",
+    "stage": "controller_update",
+    "node": 2
+  },
+  "content_hash": "ea570a447d706ffa310c0a313765682dc4d340b12df3fc1f74bfc7da37b5dae6"
+}

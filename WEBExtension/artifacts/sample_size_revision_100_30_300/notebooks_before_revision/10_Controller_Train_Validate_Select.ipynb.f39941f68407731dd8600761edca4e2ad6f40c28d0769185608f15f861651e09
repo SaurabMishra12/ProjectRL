@@ -1,0 +1,168 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "3d935ed9",
+   "metadata": {},
+   "source": [
+    "# Train and select SparseComm without held-out tuning\n",
+    "\n",
+    "The actor chooses one of 55 explicit actions: NoComm, or one of all 15 directed two-edge supports, two opposite cycles, or broadcast at quota 64/128/256. This makes the sampled action exactly the graph/quota executed. NoComm incurs zero additional calls and is a legitimate learned decision. Do not force nonzero edges or claim adaptation if the policy selects one action for every question.\n",
+    "\n",
+    "Observable features are citation/evidence availability, source-message lengths, answer disagreement, lexical relevance and fixed role assignments. No gold correctness, answer labels, ID hashes or accuracy history is a controller input. Gold answer F1 is used only as a training reward after choosing and executing the action.\n",
+    "\n",
+    "Reward: `(F1_after−F1_initial)/100 − .05×(payload/full_broadcast_payload) − .02×(distinct_receiver_calls/3)`. Report full measured inference costs separately; this engineering objective is not a dollar-cost formula or universally optimal weighting. A fan-in invokes one receiver, an out-star two, and a cycle/broadcast three; untouched initial responses must never be counted as new calls.\n",
+    "\n",
+    "PPO uses autograd clipping, value regression, entropy, gradient-norm clipping and approximate-KL stopping. Three optimizer seeds share the same authentic frozen initial LLM responses, reducing waste. They are optimizer replicates, not independent backbones or additional independent questions.\n",
+    "\n",
+    "After each collection epoch, choose maximum prespecified validation utility, with earlier-epoch tie breaking. The 100-question validation set selects both checkpoint and one of three declared static candidates. Held-out scores cannot affect optimizer updates, early stopping, penalty coefficients, prompts or checkpoint selection. Optimizer, actor/critic and Torch RNG state are saved for resume. A held-out evaluation gate closes further training on that frozen study."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "fd88b1b9",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-10-13T20:09:39.912436Z",
+     "iopub.status.busy": "2026-10-13T20:09:39.910774Z",
+     "iopub.status.idle": "2026-10-13T20:09:43.208914Z",
+     "shell.execute_reply": "2026-10-13T20:09:43.206283Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Notebook root: /home/saurab/Documents/projectRLMAIN/WEBExtension\n",
+      "Inference enabled: False\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{\n",
+      "  \"study_dir\": \"/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/controller_study_ef6d6250364374ee\",\n",
+      "  \"split_dir\": \"/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/controller_splits_e219bbccd74a5888\",\n",
+      "  \"train\": 300,\n",
+      "  \"validation\": 100,\n",
+      "  \"heldout\": 300,\n",
+      "  \"seeds\": [\n",
+      "    7,\n",
+      "    19,\n",
+      "    31\n",
+      "  ],\n",
+      "  \"conservative_max_calls_before_reuse\": 43800,\n",
+      "  \"configured_operational_cap\": 46000,\n",
+      "  \"note\": \"Upper bound; identical initial and receiver prompts reuse real cached responses. Pilot costs are separate.\"\n",
+      "}\n"
+     ]
+    }
+   ],
+   "source": [
+    "from pathlib import Path\n",
+    "import sys, json\n",
+    "ROOT = Path.cwd() if (Path.cwd() / 'protocol.py').exists() else Path.cwd() / 'WEBExtension'\n",
+    "if not (ROOT / 'protocol.py').exists():\n",
+    "    raise FileNotFoundError('Launch Jupyter from the project root or WEBExtension folder')\n",
+    "ROOT = ROOT.resolve()\n",
+    "sys.path.insert(0, str(ROOT))\n",
+    "from protocol import load_official, write_json, file_hash\n",
+    "from experiments import load_config, preview, freeze, run\n",
+    "CFG = load_config(ROOT / 'config.json')\n",
+    "EXECUTE = False  # Set True only after configuring your real backend and maximum call budget.\n",
+    "print('Notebook root:', ROOT)\n",
+    "print('Inference enabled:', EXECUTE)\n",
+    "\n",
+    "SETTINGS=json.loads((ROOT/'controller_config.json').read_text())\n",
+    "from controller_study import forecast, study_directory\n",
+    "STUDY_DIR,SPLIT_DIR=study_directory(CFG,SETTINGS)\n",
+    "print(json.dumps(forecast(CFG,SETTINGS),indent=2))\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "959b2902",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-10-13T20:09:43.214476Z",
+     "iopub.status.busy": "2026-10-13T20:09:43.213787Z",
+     "iopub.status.idle": "2026-10-13T20:09:43.269328Z",
+     "shell.execute_reply": "2026-10-13T20:09:43.265288Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'study_dir': '/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/controller_study_ef6d6250364374ee', 'split_dir': '/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/controller_splits_e219bbccd74a5888', 'train': 300, 'validation': 100, 'heldout': 300, 'seeds': [7, 19, 31], 'conservative_max_calls_before_reuse': 43800, 'configured_operational_cap': 46000, 'note': 'Upper bound; identical initial and receiver prompts reuse real cached responses. Pilot costs are separate.'}\n",
+      "No real controller training completed. Unit tests are not learned checkpoints.\n"
+     ]
+    }
+   ],
+   "source": [
+    "from controller_study import train\n",
+    "print(train(CFG,SETTINGS,execute=EXECUTE))\n",
+    "status=STUDY_DIR/'training_status.json'\n",
+    "if status.exists():\n",
+    "    print(json.loads(status.read_text()))\n",
+    "else:\n",
+    "    print('No real controller training completed. Unit tests are not learned checkpoints.')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "461d827a",
+   "metadata": {
+    "execution": {
+     "iopub.execute_input": "2026-10-13T20:09:43.281799Z",
+     "iopub.status.busy": "2026-10-13T20:09:43.280117Z",
+     "iopub.status.idle": "2026-10-13T20:09:43.300984Z",
+     "shell.execute_reply": "2026-10-13T20:09:43.297194Z"
+    }
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "7 NO VALIDATION-SELECTED CHECKPOINT\n",
+      "19 NO VALIDATION-SELECTED CHECKPOINT\n",
+      "31 NO VALIDATION-SELECTED CHECKPOINT\n"
+     ]
+    }
+   ],
+   "source": [
+    "for seed in SETTINGS['training_seeds']:\n",
+    "    path=STUDY_DIR/f'seed_{seed}'/'selection.json'\n",
+    "    print(seed,json.loads(path.read_text()) if path.exists() else 'NO VALIDATION-SELECTED CHECKPOINT')"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.14.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

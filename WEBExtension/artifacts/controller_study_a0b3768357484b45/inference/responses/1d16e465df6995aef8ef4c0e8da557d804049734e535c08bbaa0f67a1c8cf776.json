@@ -1,0 +1,77 @@
+{
+  "key": "1d16e465df6995aef8ef4c0e8da557d804049734e535c08bbaa0f67a1c8cf776",
+  "attempt_id": "250a865ef3a44b22b0106782e27ed874",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Saab 36 (also known as Projekt 1300) was a supersonic bomber planned by Saab during the 1950s.\",\"title\":\"Saab 36\"},{\"sentence_id\":1,\"text\":\" The aircraft was intended to be able to carry an 800 kg free-falling nuclear weapon, but the Swedish nuclear weapons program was cancelled in the 1960s; the plans for the bomber had been cancelled in 1957.\",\"title\":\"Saab 36\"},{\"sentence_id\":2,\"text\":\" The Saab 36 was to be fitted with delta wings, as was the Saab 35 Draken fighter.\",\"title\":\"Saab 36\"},{\"sentence_id\":3,\"text\":\" The engine was to be a version of the British Bristol Olympus turbojet, the same engine powering the Avro Vulcan jet bomber.\",\"title\":\"Saab 36\"},{\"sentence_id\":0,\"text\":\"Roy Chadwick, CBE, FRSA, FRAeS (30 April 1893 – 23 August 1947) was an aircraft design engineer for the Avro Company.\",\"title\":\"Roy Chadwick\"},{\"sentence_id\":1,\"text\":\" Born at Marsh Hall Farm, Farnworth, the son of the mechanical engineer Charles Chadwick, he was the chief designer for Avro and was responsible for practically all of their aeroplane designs.\",\"title\":\"Roy Chadwick\"},{\"sentence_id\":2,\"text\":\" He is famous in particular for designing the Avro Lancaster bomber, its follow-up Avro Lincoln and preliminary designs of the Avro Vulcan V bomber.\",\"title\":\"Roy Chadwick\"},{\"sentence_id\":3,\"text\":\" He also converted the Lincoln into the much-used Shackleton.\",\"title\":\"Roy Chadwick\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"What type of engine powered both the Saab 36 and the Avro Vulcan?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "1d8174e302c740f1867fbf5e4d21f64d",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"British Bristol Olympus turbojet\",\n  \"citations\": [\n    [\"Saab 36\", 3]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need answer: type of engine powering both Saab 36 and Avro Vulcan. Evidence: Saab 36 sentence says: \"The engine was to be a version of the British Bristol Olympus turbojet, the same engine powering the Avro Vulcan jet bomber.\" So engine type: British Bristol Olympus turbojet. So answer: Bristol Olympus turbojet. Provide citations: from Saab 36 sentence id 3 (zero-based). Also maybe from Roy Chadwick? Not needed. Use citation: [\"Saab 36\",3]. Provide JSON with answer and citations list."
+        }
+      }
+    ],
+    "created": 1791990156,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 157,
+      "prompt_tokens": 545,
+      "total_tokens": 702,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.8353938929994911,
+  "metadata": {
+    "qid": "5ab7f7465542993667794071",
+    "regime": "P",
+    "stage": "initial",
+    "node": 0
+  },
+  "content_hash": "3f161e7e5d9f86a74b5d830ff37ce1417a1f7e9ae5df1e38dd3f5b21071b9e2d"
+}

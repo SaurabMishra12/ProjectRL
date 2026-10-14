@@ -1,0 +1,77 @@
+{
+  "key": "770183f8fc4b5531a9b9521d57af911c49ea30368d547d31981b7e2e4c0207f8",
+  "attempt_id": "f1a2630a4f59405bac1543d9d06ab913",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"John Donaldson, Jr., (16 March 1886 – 1 September 1933), better known as Jack, was a professional sprinter in the early part of the 1900s.\",\"title\":\"Jack Donaldson (athlete)\"},{\"sentence_id\":1,\"text\":\" He held various world sprinting records ranging from 100 yards to 400 yards, some of which stood for many years.\",\"title\":\"Jack Donaldson (athlete)\"},{\"sentence_id\":0,\"text\":\"The first world record in the 100 metres sprint for women was recognised by the Fédération Sportive Féminine Internationale (FSFI) in 1922.\",\"title\":\"Women's 100 metres world record progression\"},{\"sentence_id\":1,\"text\":\" The FSFI was absorbed by the International Association of Athletics Federations (IAAF) in 1936.\",\"title\":\"Women's 100 metres world record progression\"},{\"sentence_id\":2,\"text\":\" The current record is 10.49 seconds set by Florence Griffith-Joyner in 1988.\",\"title\":\"Women's 100 metres world record progression\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"What is the company that currently recognizes the sprinting records set by Leni Junker and Florence Griffith-Joyner?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "primary",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "7195bbb54d7648cd8131ed710b95b62b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"International Association of Athletics Federations (IAAF)\",\n  \"citations\": [\n    [\"Women's 100 metres world record progression\", 1],\n    [\"Women's 100 metres world record progression\", 2]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"What is the company that currently recognizes the sprinting records set by Leni Junker and Florence Griffith-Joyner?\" The question asks about a company that currently recognizes the sprinting records set by Leni Junker and Florence Griffith-Joyner. Likely refers to the International Association of Athletics Federations (IAAF), now known as World Athletics. The evidence includes: women's 100m world record progression says FSFI was absorbed by IAAF in 1936. The current record is 10.49 seconds set by Florence Griffith-Joyner in 1988. So the organization that recognizes the record is IAAF (now World Athletics). The question says \"company\". Might be \"International Association of Athletics Federations (IAAF)\". That's not a company but an organization. Use evidence: sentence 1: \"The FSFI was absorbed by the International Association of Athletics Federations (IAAF) in 1936.\" Also the current record is set by Florence Griffith-Joyner. So the IAAF currently recognizes the record. Provide answer: International Association of Athletics Federations (IAAF). Cite sentence 1 (Women's 100 metres world record progression, sentence 1) and sentence 2 (current record). Provide citations accordingly."
+        }
+      }
+    ],
+    "created": 1791929961,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 323,
+      "prompt_tokens": 423,
+      "total_tokens": 746,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 4.7823524180021195,
+  "metadata": {
+    "qid": "5ae6d3345542996d980e7c85",
+    "regime": "P",
+    "stage": "initial",
+    "node": 0
+  },
+  "content_hash": "21bcf11c4743048d09c887c89aced2b1bfc292d270e5c5e23358b2e3528f03c0"
+}

@@ -1,0 +1,76 @@
+{
+  "key": "1513fc4370051d0a408d715b026f15fbe7d1002a5a268a8df216532520f86b97",
+  "attempt_id": "bb11fd618b1840aa8775e4e3882d1499",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Troubles in Lisburn recounts incidents during, and the effects of, the Troubles in Lisburn, County Antrim, Northern Ireland.\",\"title\":\"The Troubles in Lisburn\"},{\"sentence_id\":0,\"text\":\"The Troubles in Monkstown recounts incidents during, and the effects of, The Troubles in Monkstown, Newtownabbey, County Antrim, Northern Ireland.\",\"title\":\"The Troubles in Monkstown, County Antrim\"}],\"peer_messages\":[],\"previous_answer\":\"Northern Ireland\",\"question\":\"The Troubles in Newtownabbey recounts incidents during and the effects of the Troubles in Newtownabbey in the County Antrim of which country?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "0074cc64912d498aa6e688a0a0bb56be",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Northern Ireland\",\n  \"citations\": [\n    [\"The Troubles in Lisburn\", 0],\n    [\"The Troubles in Monkstown, County Antrim\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"The Troubles in Newtownabbey recounts incidents during and the effects of the Troubles in Newtownabbey in the County Antrim of which country?\" So we need to know which country County Antrim is in. The evidence includes two entries: \"The Troubles in Lisburn recounts incidents during, and the effects of, the Troubles in Lisburn, County Antrim, Northern Ireland.\" and \"The Troubles in Monkstown recounts incidents during, and the effects of, The Troubles in Monkstown, Newtownabbey, County Antrim, Northern Ireland.\"\n\nThus County Antrim is in Northern Ireland. So answer: Northern Ireland. Provide citation: from either of those sentences. Use title \"The Troubles in Lisburn\" sentence 0, or \"The Troubles in Monkstown, County Antrim\" sentence 0. Provide both maybe. Provide JSON with answer and citations.\n\n"
+        }
+      }
+    ],
+    "created": 1791990278,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 241,
+      "prompt_tokens": 300,
+      "total_tokens": 541,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.8424020419988665,
+  "metadata": {
+    "qid": "5abfab8d5542997ec76fd42d",
+    "stage": "self_update",
+    "node": 1
+  },
+  "content_hash": "c9b4e5c666f9beb45560a092e1f2da37928e227b1f9a9b3407b4170cc596a4ac"
+}

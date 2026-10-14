@@ -1,0 +1,76 @@
+{
+  "key": "5fa55e80b4064bba4128526ea86f6902d37fb5b9ad719efc30278619d85b3564",
+  "attempt_id": "acc6016af5914258897abd502d7a7076",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Dead Meat is a 2004 Irish zombie film written and directed by Conor McMahon, starring Spanish theatre actress Marian Araujo and veteran Irish actor Eoin Whelan.\",\"title\":\"Dead Meat\"},{\"sentence_id\":0,\"text\":\"Plaga zombie is a 1997 Argentine horror film directed and written by Pablo Parés and Hernán Sáez and written by Berta Muñiz and Pablo Parés who all starred in the film.\",\"title\":\"Plaga Zombie\"},{\"sentence_id\":1,\"text\":\" It is the first entry in the \\\"Plaga Zombie film series\\\" being followed up with \\\"\\\" (2001) and \\\"\\\" (2012).\",\"title\":\"Plaga Zombie\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\",\"Unverified peer answer: noanswer\"],\"previous_answer\":\"noanswer\",\"question\":\"Who starred in a 2015 zombie film with Northern Irish actor?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "13ac764e46014f81b60f0fdffadfe963",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Who starred in a 2015 zombie film with Northern Irish actor?\" Need to use supplied evidence. Evidence includes two films: Dead Meat (2004 Irish zombie film starring Marian Araujo and Eoin Whelan). Plaga zombie (1997 Argentine horror film). No 2015 film mentioned. The question: \"Who starred in a 2015 zombie film with Northern Irish actor?\" We have no evidence about a 2015 zombie film or Northern Irish actor. So answer is unknown => \"noanswer\". Provide citations? Since no evidence, citations list empty. Return JSON with answer \"noanswer\" and citations [].\n\n"
+        }
+      }
+    ],
+    "created": 1791990690,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 160,
+      "prompt_tokens": 353,
+      "total_tokens": 513,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 3.215870119000101,
+  "metadata": {
+    "qid": "5ae527085542993aec5ec165",
+    "stage": "controller_update",
+    "node": 1
+  },
+  "content_hash": "fe78298ae727c84507b8ff44f40907da611db27680c478c7d719dc2fd1b8f3eb"
+}

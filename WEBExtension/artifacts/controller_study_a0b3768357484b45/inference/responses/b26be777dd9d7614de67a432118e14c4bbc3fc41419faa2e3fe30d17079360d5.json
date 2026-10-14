@@ -1,0 +1,76 @@
+{
+  "key": "b26be777dd9d7614de67a432118e14c4bbc3fc41419faa2e3fe30d17079360d5",
+  "attempt_id": "1cdbd28fd467484fa1eec2522fc55fe3",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Conjuring is an American horror film series distributed by the New Line Cinema division of Warner Bros.\",\"title\":\"The Conjuring (film series)\"},{\"sentence_id\":1,\"text\":\" Pictures.\",\"title\":\"The Conjuring (film series)\"},{\"sentence_id\":2,\"text\":\" The films present a fictional take on the real-life cases of Ed and Lorraine Warren, paranormal investigators and authors associated with prominent yet controversial cases of haunting.\",\"title\":\"The Conjuring (film series)\"},{\"sentence_id\":3,\"text\":\" The main series follows their attempts to assist people who find themselves possessed by demonic spirits, while the spin-off films focus on the origins of some of the entities the Warrens have come across.\",\"title\":\"The Conjuring (film series)\"},{\"sentence_id\":0,\"text\":\"The Lady of Monza (Italian: La monaca di Monza , also known as \\\"The Awful Story of the Nun of Monza\\\" and \\\"The Nun of Monza\\\") is a 1969 Italian historical drama film directed by Eriprando Visconti.\",\"title\":\"The Lady of Monza\"},{\"sentence_id\":1,\"text\":\" It is loosely based on real life events of Marianna de Leyva, better known as \\\"The Nun of Monza\\\", whose story was made famous by the Alessandro Manzoni's novel \\\"The Betrothed\\\".\",\"title\":\"The Lady of Monza\"}],\"peer_messages\":[\"Unverified peer answer: The Conjuring series\\nEvidence: {\\\"sentence_id\\\":1,\\\"text\\\":\\\" It is the first installment in \\\\\\\"The Conjuring\\\\\\\" series.\\\",\\\"title\\\":\\\"The Conjuring\\\"}\"],\"previous_answer\":\"The Conjuring film series\",\"question\":\"The Nun is based on what film series based on the real life cases of Ed and Lorraine Warren?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "142f6f9f6c6b4498858ffcf116880309",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"The Conjuring film series\",\n  \"citations\": [\n    [\"The Conjuring (film series)\", 0],\n    [\"The Conjuring (film series)\", 2]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer the question: \"The Nun is based on what film series based on the real life cases of Ed and Lorraine Warren?\" The question seems to ask: The Nun (presumably a film) is based on what film series that is based on the real life cases of Ed and Lorraine Warren? The evidence includes info about The Conjuring film series: \"The Conjuring is an American horror film series ... The films present a fictional take on the real-life cases of Ed and Lorraine Warren...\" So The Nun is a spin-off of The Conjuring series. So answer: The Conjuring film series.\n\nWe need to provide citations: from evidence, sentence 0 of \"The Conjuring (film series)\" mentions it's a film series. Sentence 2 mentions real-life cases of Ed and Lorraine Warren. So we can cite those two sentences.\n\nThus answer JSON: {\"answer\":\"The Conjuring film series\",\"citations\":[[\"The Conjuring (film series)\",0],[\"The Conjuring (film series)\",2]]}"
+        }
+      }
+    ],
+    "created": 1791971567,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 274,
+      "prompt_tokens": 542,
+      "total_tokens": 816,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.4019934020002438,
+  "metadata": {
+    "qid": "5a72bb045542994cef4bc3e4",
+    "stage": "controller_update",
+    "node": 0
+  },
+  "content_hash": "83af7cc398512382263c443ac43498f89fc5122ed9a03b3b8af5b9cbd897f3b2"
+}

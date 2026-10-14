@@ -1,0 +1,77 @@
+{
+  "key": "94964af8f889f292ceba1a99611151546bf7e6bad7c487290de91890d672cc5e",
+  "attempt_id": "4c6ee074d10e46e580fe9502b920337f",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Piglet's Big Movie is a 2003 American animated musical comedy-drama adventure film produced by Walt Disney Feature Animation and animated by Walt Disney Animation (Japan).\",\"title\":\"Piglet's Big Movie\"},{\"sentence_id\":1,\"text\":\" It was released by Walt Disney Pictures on March 21, 2003.\",\"title\":\"Piglet's Big Movie\"},{\"sentence_id\":2,\"text\":\" The film is based upon the characters in the \\\"Winnie-the-Pooh\\\" books written by A. A. Milne.\",\"title\":\"Piglet's Big Movie\"},{\"sentence_id\":3,\"text\":\" It is the second in a recent series of theatrically released \\\"Winnie the Pooh\\\" films, preceded by \\\"The Tigger Movie\\\" (2000) and followed by \\\"Pooh's Heffalump Movie\\\" (2005).\",\"title\":\"Piglet's Big Movie\"},{\"sentence_id\":4,\"text\":\" In the film, Piglet is ashamed of being small and wanders off into the Hundred Acre Woods, leading his friends to form a search party to find him.\",\"title\":\"Piglet's Big Movie\"},{\"sentence_id\":0,\"text\":\"Moana ( ) is a 2016 American 3D computer-animated musical fantasy-adventure film produced by Walt Disney Animation Studios and released by Walt Disney Pictures.\",\"title\":\"Moana (2016 film)\"},{\"sentence_id\":1,\"text\":\" It is the 56th Disney animated feature film.\",\"title\":\"Moana (2016 film)\"},{\"sentence_id\":2,\"text\":\" Directed by Ron Clements and John Musker, co-directed by Don Hall and Chris Williams, the film introduces Auli'i Cravalho as Moana and features the voices of Dwayne Johnson, Rachel House, Temuera Morrison, Jemaine Clement, Nicole Scherzinger, and Alan Tudyk.\",\"title\":\"Moana (2016 film)\"},{\"sentence_id\":3,\"text\":\" The film features music written by Lin-Manuel Miranda, Opetaia Foa'i, and Mark Mancina.\",\"title\":\"Moana (2016 film)\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"Both Moana and Pooh's Heffalump Movie were released by what company?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "63928099a007474abf31fd190d6a3602",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need answer: Both Moian and Pooh's Heffalump Movie were released by what company? Evidence includes Moana: \"released by Walt Disney Pictures\". For Pooh's Heffalump Movie, not directly in evidence. We have Piglet's Big Movie evidence, not Heffalump. But we need Heffalump. Not provided. Could infer from series: \"It is the second in a recent series ... followed by 'Pooh's Heffalump Movie' (2005).\" But no release company. However we know Disney released it, but need citation. Not present. Since we must only cite evidence. No evidence for Heffalump's release company. So answer unknown => \"noanswer\"."
+        }
+      }
+    ],
+    "created": 1791962158,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 178,
+      "prompt_tokens": 623,
+      "total_tokens": 801,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 2.3458806710004865,
+  "metadata": {
+    "qid": "5ab60de2554299488d4d9a91",
+    "regime": "P",
+    "stage": "initial",
+    "node": 1
+  },
+  "content_hash": "dc52333435cc75dca316d7cfc3c32f9a7b6e4d0cbf85cc0c02d28ca152f2bd93"
+}

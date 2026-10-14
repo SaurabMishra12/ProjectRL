@@ -1,0 +1,77 @@
+{
+  "key": "dc25561b306c06d46e13fcddba3ab4aba139ad45edb51b0cf2721f1e234bdf89",
+  "attempt_id": "27173b0715264f6da09f85d6cfe1c99f",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Isidor Isaac Rabi ( ; born Israel Isaac Rabi, 29 July 1898 – 11 January 1988) was an American physicist who won the Nobel Prize in Physics in 1944 for his discovery of nuclear magnetic resonance, which is used in magnetic resonance imaging.\",\"title\":\"Isidor Isaac Rabi\"},{\"sentence_id\":1,\"text\":\" He was also one of the first scientists in the United States to work on the cavity magnetron, which is used in microwave radar and microwave ovens.\",\"title\":\"Isidor Isaac Rabi\"},{\"sentence_id\":0,\"text\":\"In physics, a Fano resonance is a type of resonant scattering phenomenon that gives rise to an asymmetric line-shape.\",\"title\":\"Fano resonance\"},{\"sentence_id\":1,\"text\":\" Interference between a background and a resonant scattering process produces the asymmetric line-shape.\",\"title\":\"Fano resonance\"},{\"sentence_id\":2,\"text\":\" It is named after Italian-American physicist Ugo Fano, who gave a theoretical explanation for the scattering line-shape of inelastic scattering of electrons from helium; however, Ettore Majorana was the first to discover this phenomenon.\",\"title\":\"Fano resonance\"},{\"sentence_id\":3,\"text\":\" Because it is a general wave phenomenon, examples can be found across many areas of physics and engineering.\",\"title\":\"Fano resonance\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"The Italian theorectical physicist was the first to discover Fano resonance which is what?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "78eb16cb5ed748ad98712d0dae4ccc1b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"a type of resonant scattering phenomenon that gives rise to an asymmetric line-shape\",\n  \"citations\": [\n    [\"Fano resonance\", 0],\n    [\"Fano resonance\", 1]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"The Italian theorectical physicist was the first to discover Fano resonance which is what?\" The question asks: \"The Italian theoretical physicist was the first to discover Fano resonance which is what?\" So we need to identify the Italian theoretical physicist (Ugo Fano) and what Fano resonance is. The evidence says: \"It is named after Italian-American physicist Ugo Fano, who gave a theoretical explanation for the scattering line-shape of inelastic scattering of electrons from helium; however, Ettore Majorana was the first to discover this phenomenon.\" Also earlier: \"In physics, a Fano resonance is a type of resonant scattering phenomenon that gives rise to an asymmetric line-shape.\" So answer: \"a type of resonant scattering phenomenon that gives rise to an asymmetric line-shape.\" Provide citations: from Fano resonance sentences 0 and 1 maybe. Sentence 0 defines Fano resonance. Sentence 1 mentions interference produces asymmetric line-shape. So answer: \"a type of resonant scattering phenomenon that gives rise to an asymmetric line-shape.\" Provide citations: [\"Fano resonance\",0] and maybe also [\"Fano resonance\",1] but one is enough. Use list of pairs. Provide JSON."
+        }
+      }
+    ],
+    "created": 1791924776,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 324,
+      "prompt_tokens": 475,
+      "total_tokens": 799,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 4.805304156998318,
+  "metadata": {
+    "qid": "5ae4ab905542995dadf24394",
+    "regime": "P",
+    "stage": "initial",
+    "node": 1
+  },
+  "content_hash": "d5e75a059d4aa9799b653921336dd224178f30ccc8496bf8b48d252bf5685c2f"
+}

@@ -1,0 +1,51 @@
+{
+  "attempt_id": "80460068e5c04ce59ddc10cea63cd402",
+  "key": "d03b5bbad09e49d3473cecbc2e70439f6a12f570a8a116432879131839b47065",
+  "request_sha256": "f0d755ef4b73505a84cac8176f70e9ae9f99b49e0d99f69fa37fe1b5bc097cf3",
+  "utc_dispatch": "2026-10-14T13:19:36.091860+00:00",
+  "utc_received": "2026-10-14T13:19:37.371514+00:00",
+  "http_status": 200,
+  "selected_response_headers": {
+    "x-request-id": "e86d516b-19e8-4fcb-8d89-9affb734f150",
+    "apim-request-id": "ffef5f8c-1b60-4b21-93b1-970cc4c0a0b7",
+    "content-type": "application/json"
+  },
+  "provider_response": {
+    "id": "950facab4a4c4a7d80d289ef03446eae",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"The 17th Street Canal is in New Orleans, Louisiana (forming part of the boundary with Metairie), and the Beaver and Erie Canal is in western Pennsylvania, running from the Ohio River to Lake Erie through several Pennsylvania counties.\",\n  \"citations\": [\n    [\"17th Street Canal\", 0],\n    [\"17th Street Canal\", 3],\n    [\"Beaver and Erie Canal\", 0],\n    [\"Beaver and Erie Canal\", 1]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer the question using supplied evidence. The evidence includes:\n\n- From 17th Street Canal article: sentences 0-4. Sentence 0: \"The 17th Street Canal is the largest and most important drainage canal in the city of New Orleans.\" So location: New Orleans.\n\n- Also sentence 3: \"The 17th Street Canal forms a significant portion of the boundary between the city of New Orleans and Metairie, Louisiana.\" So location: New Orleans and Metairie, Louisiana.\n\n- For Beaver and Erie Canal: sentences 0-1. Sentence 0: \"The Beaver and Erie Canal, also known as the Erie Extension Canal, was part of the Pennsylvania Canal system and consisted of three sections...\" So location: Pennsylvania.\n\n- Sentence 1: \"The canal ran 136 mi north–south near the western edge of the state from the Ohio River to Lake Erie through Beaver County, Lawrence County, Mercer County, Crawford County, and Erie County, Pennsylvania.\" So location: western Pennsylvania.\n\nThus answer: 17th Street Canal is in New Orleans, Louisiana (boundary with Metairie). Beaver and Erie Canal is in western Pennsylvania, USA.\n\nWe need to provide JSON with answer string and citations list of [title, sentence_index] pairs.\n\nWe need to cite evidence for each part.\n\nCitations:\n\n- For 17th Street Canal location: title \"17th Street Canal\", sentence_id 0 (or 3). Use both maybe. Use sentence 0 for city, sentence 3 for boundary. Provide both.\n\n- For Beaver and Erie Canal location: title \"Beaver and Erie Canal\", sentence_id 0 (states Pennsylvania) and sentence_id 1 (states western edge of state, counties). Use both.\n\nThus answer string: \"The 17th Street Canal is in New Orleans, Louisiana (forming part of the boundary with Metairie), and the Beaver and Erie Canal is in western Pennsylvania, running from the Ohio River to Lake Erie through several Pennsylvania counties.\"\n\nCitations list: [[\"17th Street Canal\",0],[\"17th Street Canal\",3],[\"Beaver and Erie Canal\",0],[\"Beaver and Erie Canal\",1]]\n\nReturn JSON only."
+        }
+      }
+    ],
+    "created": 1791983976,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 567,
+      "prompt_tokens": 698,
+      "total_tokens": 1265,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_response_sha256": "92867577bdde6b174f62e003e62f1cffad748479bf0d425d30d731fe4f8e4598",
+  "network_wall_seconds": 1.2800761299986334,
+  "end_to_end_wall_seconds": 1.3622752520004724
+}

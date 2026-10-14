@@ -1,0 +1,77 @@
+{
+  "key": "d4f4583f181dc36450c33142520c3d08abc509c879c1f74b15b8812529e1be9a",
+  "attempt_id": "cba05fc435ef4f169cb1bea7373c5fd0",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Dixit is a card game created by Jean-Louis Roubira, and published by Libellud.\",\"title\":\"Dixit (card game)\"},{\"sentence_id\":1,\"text\":\" Using a deck of cards illustrated with dreamlike images, players select cards that match a title suggested by the \\\"storyteller\\\", and attempt to guess which card the \\\"storyteller\\\" selected.\",\"title\":\"Dixit (card game)\"},{\"sentence_id\":2,\"text\":\" The game was introduced in 2008.\",\"title\":\"Dixit (card game)\"},{\"sentence_id\":3,\"text\":\" \\\"Dixit\\\" won the 2010 Spiel des Jahres award.\",\"title\":\"Dixit (card game)\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"Dixit and Fanorona are the names of what?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "758e9a985ca84e92a9cb704004513e81",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Dixie and Fanorona are the names of what?\" Actually \"Dixit and Fanorona are the names of what?\" The evidence includes Dixit is a card game. Fanorona is not in evidence. No evidence about Fanorona. We need to verify. Since we have no evidence for Fanorona, we cannot answer definitively. The question asks what both are names of. Likely both are games (Dixit is a card game, Fanorona is a board game from Madagascar). But we lack evidence for Fanorona. Since we must only use supplied evidence, we cannot assert. So answer \"noanswer\"."
+        }
+      }
+    ],
+    "created": 1791929586,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 169,
+      "prompt_tokens": 340,
+      "total_tokens": 509,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 11.69042121000166,
+  "metadata": {
+    "qid": "5a760fbc5542992db9473722",
+    "regime": "P",
+    "stage": "initial",
+    "node": 1
+  },
+  "content_hash": "41baafb1039ee63cc1ea41daf8c024b39dce099cbc66761400dea7ef22a9f287"
+}

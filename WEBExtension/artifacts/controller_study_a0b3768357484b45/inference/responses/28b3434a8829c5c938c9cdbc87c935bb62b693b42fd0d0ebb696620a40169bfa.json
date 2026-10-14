@@ -1,0 +1,76 @@
+{
+  "key": "28b3434a8829c5c938c9cdbc87c935bb62b693b42fd0d0ebb696620a40169bfa",
+  "attempt_id": "c60e2fbdabdd44dfa2a88f384ca07906",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Re-Editioned Texts: Heart of Darkness is a novel by Stephanie Syjuco, with 12 reproduced versions of Joseph Conrad's novel \\\"Heart of Darkness\\\".\",\"title\":\"Re-Edition Texts: Heart of Darkness\"},{\"sentence_id\":1,\"text\":\" Each version of the novel includes Joseph Conrad's \\\"Heart of Darkness\\\" opened in different online sources and printed without any changes.\",\"title\":\"Re-Edition Texts: Heart of Darkness\"},{\"sentence_id\":2,\"text\":\" Each version is unique to the other 11.\",\"title\":\"Re-Edition Texts: Heart of Darkness\"},{\"sentence_id\":3,\"text\":\" Differences include Font size, Font type, advertisements, and even mistakes.\",\"title\":\"Re-Edition Texts: Heart of Darkness\"},{\"sentence_id\":0,\"text\":\"Sarah Waters (born 21 July 1966) is a Welsh novelist.\",\"title\":\"Sarah Waters\"},{\"sentence_id\":1,\"text\":\" She is best known for her novels set in Victorian society and featuring lesbian protagonists, such as \\\"Tipping the Velvet\\\" and \\\"Fingersmith\\\".\",\"title\":\"Sarah Waters\"}],\"peer_messages\":[\"Unverified peer answer: Sarah Waters\\nEvidence: {\\\"sentence_id\\\":0,\\\"text\\\":\\\"The Paying Guests is a 2014 novel by Welsh author Sarah Waters.\\\",\\\"title\\\":\\\"The Paying Guests\\\"}\"],\"previous_answer\":\"Sarah Waters\",\"question\":\"Who is welsh, Joseph Conrad or Sarah Waters?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "a30b8eb9058f4a028797d013f7536a92",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Sarah Waters\",\n  \"citations\": [\n    [\"Sarah Waters\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer the question: \"Who is welsh, Joseph Conrad or Sarah Waters?\" The evidence includes info about Sarah Waters being a Welsh novelist. No evidence about Joseph Conrad being Welsh. So answer: Sarah Waters. Provide citations: from evidence: Sarah Waters sentence 0: \"Sarah Waters (born 21 July 1966) is a Welsh novelist.\" That's title \"Sarah Waters\". Also could cite that. So answer JSON with answer \"Sarah Waters\" and citations list with [\"Sarah Waters\",0]. Ensure format: list of [title, sentence_index] pairs. Provide exactly."
+        }
+      }
+    ],
+    "created": 1791961668,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 156,
+      "prompt_tokens": 460,
+      "total_tokens": 616,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.5499665579991415,
+  "metadata": {
+    "qid": "5a765b125542992d0ec060b7",
+    "stage": "controller_update",
+    "node": 0
+  },
+  "content_hash": "151d622da976060b862b0a1ec5e11f3c4428cb283a46924836fcb9e7b37c13a9"
+}

@@ -1,0 +1,77 @@
+{
+  "key": "ae8dbf5c1fd38ed25b4ae3a29dd531fd553a89053940dc566dfb1ae96bcd0fdf",
+  "attempt_id": "d2ecb898c54c48f0b677ac7f39a7108b",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Jack \\\"Spot\\\" Comer (12 April 1912 – 12 March 1996) was an English gangster.\",\"title\":\"Jack Comer\"},{\"sentence_id\":0,\"text\":\"Entebbe is an upcoming British crime thriller film directed by José Padilha and written by Gregory Burke.\",\"title\":\"Entebbe (film)\"},{\"sentence_id\":1,\"text\":\" The film stars Rosamund Pike and Daniel Brühl.\",\"title\":\"Entebbe (film)\"},{\"sentence_id\":2,\"text\":\" The film is set for release on 16 March 2018.\",\"title\":\"Entebbe (film)\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"Once Upon a Time in London is an upcoming British crime film directed by Simon Rumley, the film is about the notorious gangsters Billy Hill and which English gangster, that died on 12 March 1996?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "f6ebdf023046410680dadbbeaab605bc",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Jack \\\"Spot\\\" Comer\",\n  \"citations\": [\n    [\"Jack Comer\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Once Upon a Time in London is an upcoming British crime film directed by Simon Rumley, the film is about the notorious gangsters Billy Hill and which English gangster, that died on 12 March 1996?\" So we need name of English gangster who died on 12 March 1996. Evidence includes Jack \"Spot\" Comer (12 April 1912 – 12 March 1996) was an English gangster. So answer: Jack \"Spot\" Comer. Need citation: from evidence title \"Jack Comer\", sentence 0. Provide JSON with answer and citations.\n\n"
+        }
+      }
+    ],
+    "created": 1791962825,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 161,
+      "prompt_tokens": 347,
+      "total_tokens": 508,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.291576368999813,
+  "metadata": {
+    "qid": "5adf82f45542995ec70e9025",
+    "regime": "P",
+    "stage": "initial",
+    "node": 2
+  },
+  "content_hash": "d1d1052e924121758790692e585481245fbfbcc53c8a252c013861b6880250c0"
+}

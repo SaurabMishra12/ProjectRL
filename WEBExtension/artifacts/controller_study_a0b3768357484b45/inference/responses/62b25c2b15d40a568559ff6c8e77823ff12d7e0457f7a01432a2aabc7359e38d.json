@@ -1,0 +1,76 @@
+{
+  "key": "62b25c2b15d40a568559ff6c8e77823ff12d7e0457f7a01432a2aabc7359e38d",
+  "attempt_id": "9ef4a209c5164b9289f4c41c2fe9de65",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Chien Français Tricolore (FCI No.219) translated into English as the French Tricolour Hound, is a breed of dog of the scenthound type, originating in France.\",\"title\":\"Chien Français Tricolore\"},{\"sentence_id\":1,\"text\":\" The breed is used for hunting in packs.\",\"title\":\"Chien Français Tricolore\"},{\"sentence_id\":0,\"text\":\"The Chien Français Blanc et Orange (FCI No.316) is a breed of dog of the scenthound type, originating in France.\",\"title\":\"Chien Français Blanc et Orange\"},{\"sentence_id\":1,\"text\":\" The breed is used for hunting in packs and descends from the old Hound of Saintonge type of large hunting dog.\",\"title\":\"Chien Français Blanc et Orange\"}],\"peer_messages\":[],\"previous_answer\":\"noanswer\",\"question\":\"Are the Chien Français Blanc et Orange and Cretan Hound both used for hunting in packs?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "c6e39b04b2104eb9967e0bfc614e741c",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: Are the Chien Français Blanc et Orange and Cretan Hound both used for hunting in packs? Evidence includes info about Chien Français Blanc et Orange: sentence 1 says \"The breed is used for hunting in packs and descends from the old Hound of Saintonge type of large hunting dog.\" So that part is true.\n\nWe need info about Cretan Hound. No evidence provided about Cretan Hound. So we cannot verify that it is used for hunting in packs. Since we lack evidence, answer should be \"noanswer\" because unknown? The question asks if both are used for hunting in packs. We have evidence for one, but not for the other. So we cannot confirm both. So answer \"noanswer\". Provide citations only for the part we have? But answer is noanswer, no citations needed? The format expects answer and citations list. For noanswer, citations list can be empty. Return JSON.\n\n"
+        }
+      }
+    ],
+    "created": 1791992196,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 220,
+      "prompt_tokens": 364,
+      "total_tokens": 584,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.1145412330006366,
+  "metadata": {
+    "qid": "5a893fc855429951533612f0",
+    "stage": "self_update",
+    "node": 2
+  },
+  "content_hash": "572d09c0df3731ac95a658e9895570e3cef4775bcf24ffc370ad7d6e10bd018f"
+}

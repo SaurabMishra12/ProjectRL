@@ -1,0 +1,77 @@
+{
+  "key": "ed14cae11d4af1f7340a34cc38d4fc4d3f48faecead5b7315f5e358051ee9406",
+  "attempt_id": "7c67935be02349dd92665f7d1426d8e0",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Black Mouth Cur is a hunting and cattle dog that has its origins in Southern United States.\",\"title\":\"Black Mouth Cur\"},{\"sentence_id\":0,\"text\":\"The Stephens Cur (a.k.a. Stephens' Stock Cur), is a scent hound that belongs to the Cur dog breed.\",\"title\":\"Stephens Cur\"},{\"sentence_id\":1,\"text\":\" They were originally bred by the Stephens family in southeastern Kentucky.\",\"title\":\"Stephens Cur\"},{\"sentence_id\":2,\"text\":\" The dogs known as \\\"Little black dog\\\" were bred by generations of that family for over a century.\",\"title\":\"Stephens Cur\"},{\"sentence_id\":3,\"text\":\" In 1970, they were recognized as separate and distinct breed of Cur.\",\"title\":\"Stephens Cur\"},{\"sentence_id\":4,\"text\":\" The dog is mostly black with white markings, but more than a third white is not permissible.\",\"title\":\"Stephens Cur\"},{\"sentence_id\":5,\"text\":\" It is good for hunting raccoon and squirrel, but can also be used to bay wild boar.\",\"title\":\"Stephens Cur\"},{\"sentence_id\":6,\"text\":\" They are registered with the United Kennel Club\",\"title\":\"Stephens Cur\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"The Havanese and the Black Mouth Cur are both which kind of animal?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "9611c3eded874f849247c34e0e841db6",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"The Havanese and the Black Mouth Cur are both which kind of animal?\" So we need to identify that both are dog breeds (type of animal). Evidence includes Black Mouth Cur description: \"The Black Mouth Cur is a hunting and cattle dog...\" So that indicates it's a dog. We need evidence for Havanese. Not provided in evidence. We have no evidence about Havanese. The question asks what kind of animal both are. We have evidence that Black Mouth Cur is a dog. We lack evidence for Havanese. We cannot assume. Must verify both. Since we have no evidence for Havanese, we cannot answer definitively. The answer would be \"dog\" but we need evidence for both. Since missing, we must answer \"noanswer\". According to instructions, if unknown, return \"noanswer\"."
+        }
+      }
+    ],
+    "created": 1791990345,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 203,
+      "prompt_tokens": 437,
+      "total_tokens": 640,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.9640685529993789,
+  "metadata": {
+    "qid": "5a74f8235542993748c89766",
+    "regime": "P",
+    "stage": "initial",
+    "node": 2
+  },
+  "content_hash": "ed988bb63f51bd4736273cf883c0fa6e7f9e7bf20677b3f81a337256584ccfd8"
+}

@@ -1,0 +1,76 @@
+{
+  "key": "0c80130d79e3c061cfd6ecedf3365b00d1cc286c47ba9e29e67e4cdd965aa4a5",
+  "attempt_id": "950a7dd33d4845769dd641896eae72b4",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Jessica Paré (born December 5, 1980) is a Canadian actress and singer.\",\"title\":\"Jessica Paré\"},{\"sentence_id\":1,\"text\":\" She is best known for her co-starring role as Megan Draper on the AMC series \\\"Mad Men\\\".\",\"title\":\"Jessica Paré\"},{\"sentence_id\":2,\"text\":\" She has also appeared in the films \\\"Stardom\\\" (2000), \\\"Lost and Delirious\\\" (2001), \\\"Wicker Park\\\" (2004), \\\"Suck\\\" (2009), \\\"Hot Tub Time Machine\\\" (2010), and \\\"Brooklyn\\\" (2015).\",\"title\":\"Jessica Paré\"},{\"sentence_id\":0,\"text\":\"Kiernan Brennan Shipka (born November 10, 1999) is an American actress.\",\"title\":\"Kiernan Shipka\"},{\"sentence_id\":1,\"text\":\" She is known for playing Sally Draper on the AMC series \\\"Mad Men.\\\"\",\"title\":\"Kiernan Shipka\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\",\"Unverified peer answer: noanswer\"],\"previous_answer\":\"noanswer\",\"question\":\"Flowers in the Attic starred what actress known for playing Sally Draper on Mad Men?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "9828ee3c33c84f8f90b48742decafc50",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Flowers in the Attic starred what actress known for playing Sally Draper on Mad Men?\" So we need actress who starred in Flowers in the Attic and is known for playing Sally Draper on Mad Men. Sally Draper is played by Kiernan Shipka (as per evidence). Did Kiernan Shipka star in Flowers in the Attic? Need evidence. Not provided in evidence. We only have evidence about Jessica Paré and Kiernan Shipka. No mention of Flowers in the Attic. So we cannot verify. The question asks which actress known for playing Sally Draper starred in Flowers in the Attic. If we know external knowledge: The 2014 film Flowers in the Attic starred Kiernan Shipka as Cathy Dollanganger. So answer is Kiernan Shipka. But we need to verify with supplied evidence. The evidence does not mention Flowers in the Attic. So we cannot support answer with citations. The instruction: Return answer and citations. Must have citations from supplied evidence. If we cannot find citation, we must answer \"noanswer\". The question expects a name, but we lack evidence. So answer \"noanswer\"."
+        }
+      }
+    ],
+    "created": 1791992432,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 268,
+      "prompt_tokens": 422,
+      "total_tokens": 690,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.194788475997484,
+  "metadata": {
+    "qid": "5a7f6f4b5542994857a76740",
+    "stage": "controller_update",
+    "node": 0
+  },
+  "content_hash": "94ec50ffa47d1cf17a2fda0c0697bf3d9423929f92444c9bfcd57a42b2018212"
+}

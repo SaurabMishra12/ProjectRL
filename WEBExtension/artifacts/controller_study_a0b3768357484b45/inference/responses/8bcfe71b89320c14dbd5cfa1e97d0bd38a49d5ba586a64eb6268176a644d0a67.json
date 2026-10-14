@@ -1,0 +1,77 @@
+{
+  "key": "8bcfe71b89320c14dbd5cfa1e97d0bd38a49d5ba586a64eb6268176a644d0a67",
+  "attempt_id": "50625dd85b8b4716b066b525fad81c22",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The André Baronetcy, of Southampton in the County of Southampton, was a title in the Baronetage of Great Britain.\",\"title\":\"André baronets\"},{\"sentence_id\":1,\"text\":\" It was created on 4 March 1781 for William André, in recognition of the services rendered to the country by his brother John André, who was executed in 1780 after being convicted of espionage by an American tribunal during the American Revolutionary War.\",\"title\":\"André baronets\"},{\"sentence_id\":2,\"text\":\" The title became extinct on William André's death in 1802.\",\"title\":\"André baronets\"},{\"sentence_id\":0,\"text\":\"André Holland (born December 28, 1979) is an American actor, known for his roles as Dr. Algernon Edwards on the Cinemax drama series \\\"The Knick\\\", and as Matt Miller on the FX series \\\"\\\".\",\"title\":\"André Holland\"},{\"sentence_id\":1,\"text\":\" He portrayed politician and activist Andrew Young in the 2014 film \\\"Selma\\\", sportswriter Wendell Smith in the 2013 film \\\"42\\\".\",\"title\":\"André Holland\"},{\"sentence_id\":2,\"text\":\" In 2016, he starred in \\\"Moonlight\\\", which won Best Picture at the 89th Academy Awards, as Kevin.\",\"title\":\"André Holland\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"What country of origin does André Holland and 42 have in common?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "18c950128d9d448f92fe5f0b6bd800f9",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"What country of origin does André Holland and 42 have in common?\" The question asks: what country of origin do André Holland and 42 have in common? Likely both are American. Need evidence: André Holland is an American actor (sentence says \"is an American actor\"). The film \"42\" is about baseball, starring André Holland as sportswriter Wendell Smith. The film is American. Need evidence that \"42\" is an American film. However the provided evidence does not include that. Only evidence about André Holland and the André baronets. No evidence about the film \"42\". We cannot assume. The question: \"What country of origin does André Holland and 42 have in common?\" We have evidence that André Holland is American. Need evidence that 42 (the film) is American. Not present. Could we infer from \"He portrayed ... in the 2013 film '42'.\" That doesn't state country. No citation. So we cannot answer definitively. According to policy, if unknown, answer \"noanswer\". Provide empty citations? Should we provide citation for André Holland being American? But we need both share same country. Since we lack evidence for 42, we cannot confirm. So answer noanswer with empty citations."
+        }
+      }
+    ],
+    "created": 1791971910,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 288,
+      "prompt_tokens": 472,
+      "total_tokens": 760,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.3693406550000873,
+  "metadata": {
+    "qid": "5a8b120755429949d91db4a4",
+    "regime": "P",
+    "stage": "initial",
+    "node": 2
+  },
+  "content_hash": "23398d07395ae8e8fd90b039ac980c59da7b67c5f52e80c57b736bc275afe394"
+}

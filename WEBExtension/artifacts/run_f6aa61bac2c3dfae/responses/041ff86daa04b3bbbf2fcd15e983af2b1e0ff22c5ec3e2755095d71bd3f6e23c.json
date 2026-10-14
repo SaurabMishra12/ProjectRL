@@ -1,0 +1,76 @@
+{
+  "key": "041ff86daa04b3bbbf2fcd15e983af2b1e0ff22c5ec3e2755095d71bd3f6e23c",
+  "attempt_id": "a47097624fa242218bc1be7ff412a4f3",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Braques français are hunting dogs, from a very old type of gun dog used for pointing the location of game birds for a hunter.\",\"title\":\"Braque Francais\"},{\"sentence_id\":1,\"text\":\" There are two breeds of Braque français, both from the south of France, the Braque français, type Gascogne (French Pointing Dog - Gascogne type, larger size) and the Braque français, type Pyrénées (French Pointing Dog - Pyrenean type, smaller size) They are popular hunting dogs in France, but are seldom seen elsewhere.\",\"title\":\"Braque Francais\"},{\"sentence_id\":0,\"text\":\"The Grand Anglo-Français Blanc et Orange (FCI No.324) translated into English as the Great Anglo-French White and Orange Hound, is a breed of dog used in hunting as a scenthound, usually in packs.\",\"title\":\"Grand Anglo-Français Blanc et Orange\"},{\"sentence_id\":1,\"text\":\" It is one of the Anglo-French hound breeds which were created by crossing French scenthounds with English (Anglo) foxhounds.\",\"title\":\"Grand Anglo-Français Blanc et Orange\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\"],\"previous_answer\":\"noanswer\",\"question\":\"Are the Chien Français Blanc et Orange and Cretan Hound both used for hunting in packs?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "primary",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "42e916ed20f9480580ff4c70379cbe5f",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: Are the Chien Français Blanc et Orange and Cretan Hound both used for hunting in packs? Evidence includes Grand Anglo-Français Blanc et Orange (which is \"Great Anglo-French White and Orange Hound\") used in hunting as a scenthound, usually in packs. But the question mentions \"Chien Français Blanc et Orange\". Is that same as Grand Anglo-Français Blanc et Orange? Possibly different breed. The evidence does not mention Chien Français Blanc et Orange. It mentions Grand Anglo-Français Blanc et Orange. No evidence about Cretan Hound. So we cannot verify both are used for hunting in packs. Therefore answer \"noanswer\". Need citations? Since we answer noanswer, we provide empty citations list."
+        }
+      }
+    ],
+    "created": 1791977878,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 181,
+      "prompt_tokens": 446,
+      "total_tokens": 627,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.4595654029999423,
+  "metadata": {
+    "qid": "5a893fc855429951533612f0",
+    "stage": "CW",
+    "node": 0
+  },
+  "content_hash": "761d84a5d670521ff1699b02cbcd0030ed7984bbdaca6aa471831ba2512b530d"
+}

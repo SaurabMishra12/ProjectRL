@@ -73,6 +73,13 @@ class Runtime:
         durable_json(self.directory/'runtime_progress.json',{'heartbeat_utc':utc(),'pid':os.getpid(),
             'state':status,'session':str(self.session),'session_wall_seconds':time.perf_counter()-self.start_perf})
 
+def rebind_json_writers(modules,old_write,tracked_json):
+    # Inspect already-loaded bindings without invoking module-level __getattr__.
+    # Transformers lazy imports can otherwise import unrelated optional backends.
+    for module in modules:
+        if module is not None and vars(module).get('write_json') is old_write:
+            module.write_json=tracked_json
+
 def install(runtime):
     import protocol,backend
     root=protocol.ROOT
@@ -88,8 +95,7 @@ def install(runtime):
     import experiments
     # Catch imports that obtained the former write_json function before install.
     import sys
-    for module in list(sys.modules.values()):
-        if module is not None and getattr(module,'write_json',None) is old_write:module.write_json=tracked_json
+    rebind_json_writers(list(sys.modules.values()),old_write,tracked_json)
     backend.unresolved_attempts=lambda records:blocking_attempts(records,runtime.allowed)
     old_init=backend.RealBackend.__init__;old_complete=backend.RealBackend.complete
     def persisted_init(self,*args,**kwargs):

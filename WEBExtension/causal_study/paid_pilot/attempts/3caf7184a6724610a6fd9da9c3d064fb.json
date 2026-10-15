@@ -1,0 +1,80 @@
+{
+  "attempt_id": "3caf7184a6724610a6fd9da9c3d064fb",
+  "request_hash": "2a563af079682dd08c03abdeff4408880a154bd097f577b67ac78cd136b6c53e",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions from Wikipedia source evidence. Use the local evidence and any source evidence supplied in peer messages. Peer answer proposals are unverified. Reconsider a previous response when one is supplied. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs). Cite only source sentences actually shown in this request. Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Danny Jones (born 12 March 1986) is a British musician who is one of the lead vocalists and guitarists for pop-rock band McFly.\",\"title\":\"Danny Jones\"},{\"sentence_id\":1,\"text\":\" Jones' fellow band members are Tom Fletcher (guitar and vocals), Dougie Poynter (bass and vocals), and Harry Judd (drums).\",\"title\":\"Danny Jones\"},{\"sentence_id\":0,\"text\":\"Aleksi Sihvonen is the current vocalist for the Finnish band Medicated.\",\"title\":\"Aleksi Sihvonen\"},{\"sentence_id\":1,\"text\":\" He replaced Norther's vocalist Petri Lindroos in 2009, until the group disbanded in 2012.\",\"title\":\"Aleksi Sihvonen\"},{\"sentence_id\":2,\"text\":\" He was also the former guitarist and vocalist of Imperanon.\",\"title\":\"Aleksi Sihvonen\"}],\"peer_messages\":[],\"previous_response\":{\"answer\":\"vocalists\",\"citations\":[[\"Danny Jones\",0],[\"Aleksi Sihvonen\",0]]},\"question\":\" Danny Jones and Aleksi Sihvonen are both what?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_limit": 32768,
+    "max_completions": 150,
+    "max_attempts": 180,
+    "max_retries_per_request": 2,
+    "min_interval_seconds": 2.0,
+    "max_estimated_tokens": 2000000,
+    "tokenizer_identity": {
+      "name": "openai/gpt-oss-120b",
+      "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+      "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+    },
+    "study_manifest_hash": "f7181aec0eeb20426d1aef9f47c97a6bb1189b9c034b20cfb7b3c8f18e8e971c",
+    "e7_paid_inference": false
+  },
+  "http_status": 200,
+  "headers": {
+    "x-request-id": "79813d3a-f648-44ac-a080-963fb751d66f",
+    "x-ratelimit-remaining-requests": "49",
+    "x-ratelimit-remaining-tokens": "49580",
+    "apim-request-id": "a83195fe-4cd3-4270-86d3-122d6d498726"
+  },
+  "raw": {
+    "id": "35c1094fcecf4810a873cbd6f4699aa1",
+    "model": "gpt-oss-120b",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"answer\":\"vocalists\",\"citations\":[[\"Danny Jones\",0],[\"Aleksi Sihvonen\",0]]}",
+          "reasoning_content": "The question: \"Danny Jones and Aleksi Sihuman are both what?\" We have evidence: Danny Jones is a British musician who is one of the lead vocalists and guitarists for pop-rock band McFly. Aleksi Sihvonen is the current vocalist for the Finnish band Medicated. So both are vocalists. The previous response gave answer \"vocalists\". That seems correct. Need to output JSON with answer and citations. Cite sentences that support: Danny Jones sentence 0 says \"lead vocalists\". Aleksi Sihvonen sentence 0 says \"current vocalist\". So citations: [\"Danny Jones\",0] and [\"Aleksi Sihvonen\",0]. Provide answer \"vocalists\". Ensure format: {\"answer\":\"vocalists\",\"citations\":[[\"Danny Jones\",0],[\"Aleksi Sihvonen\",0]]}"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 428,
+      "completion_tokens": 214,
+      "total_tokens": 642,
+      "audio_prompt_tokens": 0
+    },
+    "created": 1792071245,
+    "object": "chat.completion",
+    "prompt_filter_results": null
+  },
+  "latency_seconds": 0.7856119030002446,
+  "metadata": {
+    "question_id": "5ac3044f5542990b17b154dc",
+    "placement": "colocated",
+    "stage": "nocomm",
+    "node": 0
+  },
+  "content_hash": "941909912652dbe8eff3d0f6693fdc8c4a33039396ec12a5c6fd496213296b25"
+}

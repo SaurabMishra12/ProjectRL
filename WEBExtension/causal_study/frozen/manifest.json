@@ -1,0 +1,2340 @@
+{
+  "protocol": {
+    "version": "causal-pilot-e6-matched-revision-v1",
+    "seed": 20261015,
+    "n_questions": 8,
+    "e6_completions_per_question": 18,
+    "e6_successful_completions": 144,
+    "e7_paid_completions": 0,
+    "successful_completion_ceiling": 150,
+    "http_attempt_ceiling": 180,
+    "primary": "(distributed_comm - distributed_nocomm) - (colocated_comm - colocated_nocomm)",
+    "nocomm": "one independent initial generation then one own-state revision with no peer context per node",
+    "comm": "same frozen initial state, then one simultaneous full directed broadcast revision per node",
+    "aggregation": "normalized unweighted majority; three-way ties resolved by fixed node order, identical in every arm",
+    "initial_majority": "secondary descriptive zero-additional-call anchor",
+    "e7_status": "LOCAL_VALIDATION_ONLY_PAID_INFERENCE_DEFERRED",
+    "source": {
+      "dataset_path": "WEBExtension/data/hotpot_dev_fullwiki_v1.json",
+      "dataset_sha256": "103e345973c309cb857a72d8519e1edaa03d50a6611c059bcf5b12f50bcc5909",
+      "known_exposure_sources": [
+        {
+          "path": "WEBExtension/artifacts/controller_splits_2e025f8ae3d9815e/heldout_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_2e025f8ae3d9815e/pilot_gold.json",
+          "sha256": "f271377f8ad8753bd305240f73e31c71ba70593d148085baf0a9723353e8b968",
+          "rows": 12
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_2e025f8ae3d9815e/train_gold.json",
+          "sha256": "e974ad3085053b8d209457422fd12f26398270d1039ad7eeb43c54fee49d732f",
+          "rows": 100
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_2e025f8ae3d9815e/validation_gold.json",
+          "sha256": "8c212da62e792ce8cd585808864124fd7f2049d72375ab633817001d64b206d3",
+          "rows": 30
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_c24c185381e6999c/heldout_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_c24c185381e6999c/pilot_gold.json",
+          "sha256": "f271377f8ad8753bd305240f73e31c71ba70593d148085baf0a9723353e8b968",
+          "rows": 12
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_c24c185381e6999c/train_gold.json",
+          "sha256": "cc2ee68c07c0ae11d1614bbd2b5fb77e66c03fa428ee619376f8abc2067897b5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_c24c185381e6999c/validation_gold.json",
+          "sha256": "ce5fe76e9603ea4e7fc9fd76b197eba230c75f8bfcc77306a7c7766f0ccd49f0",
+          "rows": 100
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_e219bbccd74a5888/heldout_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_e219bbccd74a5888/pilot_gold.json",
+          "sha256": "f271377f8ad8753bd305240f73e31c71ba70593d148085baf0a9723353e8b968",
+          "rows": 12
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_e219bbccd74a5888/train_gold.json",
+          "sha256": "cc2ee68c07c0ae11d1614bbd2b5fb77e66c03fa428ee619376f8abc2067897b5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/controller_splits_e219bbccd74a5888/validation_gold.json",
+          "sha256": "ce5fe76e9603ea4e7fc9fd76b197eba230c75f8bfcc77306a7c7766f0ccd49f0",
+          "rows": 100
+        },
+        {
+          "path": "WEBExtension/artifacts/run_14145dd27dc0b054/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_42793111ea00a3da/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_429436144372dabe/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_4b543b0c0d4ac170/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_4f3c115a07f1450c/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_5545d6b37f8b35d8/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_7075d597dd8d61fe/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_71bc747f3145680d/sample_gold.json",
+          "sha256": "e9d8aed3811b31e2f94fa1a5f8da2f044164e04e32762f998143d411209bb2c3",
+          "rows": 200
+        },
+        {
+          "path": "WEBExtension/artifacts/run_9acd47cc115fa77d/sample_gold.json",
+          "sha256": "e9d8aed3811b31e2f94fa1a5f8da2f044164e04e32762f998143d411209bb2c3",
+          "rows": 200
+        },
+        {
+          "path": "WEBExtension/artifacts/run_b50e6039b364b7e4/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_b5653c3cb7506be5/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_b6b5a63b5c9e1af9/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_d90e67a084d95ef3/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_daa23ebcfaacdb4b/sample_gold.json",
+          "sha256": "e9d8aed3811b31e2f94fa1a5f8da2f044164e04e32762f998143d411209bb2c3",
+          "rows": 200
+        },
+        {
+          "path": "WEBExtension/artifacts/run_dbe8e4e3ed403a2d/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        },
+        {
+          "path": "WEBExtension/artifacts/run_e92261f6cdfce5dd/sample_gold.json",
+          "sha256": "e9d8aed3811b31e2f94fa1a5f8da2f044164e04e32762f998143d411209bb2c3",
+          "rows": 200
+        },
+        {
+          "path": "WEBExtension/artifacts/run_f6aa61bac2c3dfae/sample_gold.json",
+          "sha256": "3c97dec882ea981716da4de1d03ff0490a3212ea47e247f7365fe348b480a7c5",
+          "rows": 300
+        }
+      ],
+      "construction_time_utc": "2026-10-15T13:29:24.892684+00:00"
+    },
+    "token_length_method": "exact_provided_callable",
+    "scope": "controlled evidence availability, supplied HotpotQA candidates; exploratory pilot, no confirmatory claim"
+  },
+  "questions": [
+    {
+      "id": "5abace6b5542996cc5e49e99",
+      "question": "Irish print journalist, Arthur Quinlan, was the only one to interviewed which major figure of the Cuban Revolution?",
+      "type": "bridge",
+      "documents": [
+        {
+          "title": "Che Guevara",
+          "sentences": [
+            "Ernesto \"Che\" Guevara (] June 14, 1928 – October 9, 1967) was an Argentine Marxist revolutionary, physician, author, guerrilla leader, diplomat and military theorist.",
+            " A major figure of the Cuban Revolution, his stylized visage has become a ubiquitous countercultural symbol of rebellion and global insignia in popular culture."
+          ]
+        },
+        {
+          "title": "Coffee production in Cuba",
+          "sentences": [
+            "Coffee has been grown in Cuba since the mid-18th century.",
+            " Boosted by French farmers fleeing the revolution in Haiti, coffee farms expanded from the western plains to the nearby mountain ranges.",
+            " Coffee production in eastern Cuba significantly increased during the 19th and early 20th centuries.",
+            " At its peak production, Cuba exported more than 20000 MT of coffee beans per year in the mid 1950s.",
+            " After the Cuban Revolution and the nationalization of the coffee industry, coffee production slowly began to decline until it reached all time lows during the Great Recession.",
+            " Once a major Cuban export, it now makes up an insignificant portion of Cuban trade.",
+            " By the 21st century, 92 percent of the country's coffee was grown in area of the Sierra Maestra mountains.",
+            " All Cuban coffee is exported by Cubaexport, which pays regulated prices to coffee growers and processors."
+          ]
+        },
+        {
+          "title": "Eulogio Cantillo",
+          "sentences": [
+            "Eulogio Cantillo (September 13, 1911, Cuba - September 9, 1978, Miami, Florida, U.S.) was a general in the pre-revolutionary Cuban army.",
+            " General Cantillo served as Chief of the Joint Staff during the dictatorship of Fulgencio Batista.",
+            " Cantillo did not participate in the military coup that brought Batista to power.",
+            " During the Cuban Revolution, he led Cuban soldiers in the fight against Fidel Castro's 26th of July Movement.",
+            " After the Cuban Revolution, He was tried by the revolutionary tribunals and sentenced to 15 years in prison.",
+            " He was released before serving his entire sentence sometime in the sixties, and went into exile in Miami where he died in 1978."
+          ]
+        },
+        {
+          "title": "Cuban immigration to the United States",
+          "sentences": [
+            "Cuban immigration to the United States, for the most part, occurred in two periods: the first series of immigration of Cuban Americans from Cuba to the United States resulted from establishment of Cuban cigar factories in Tampa and from attempts to overthrow Spanish colonial rule by the movement led by José Martí, the second from dissatisfaction with communist rule by Fidel Castro following the Cuban Revolution.",
+            " Massive Cuban migration to Miami during the second series led to major demographic and cultural changes in Miami.",
+            " There was also economic emigration, particularly during the Great Depression in the 1930s."
+          ]
+        },
+        {
+          "title": "Brian Cuban",
+          "sentences": [
+            "Brian Cuban is an American attorney, author, and activist.",
+            " He is often interviewed authority on Male Eating Disorders and a lawyer and activist in the areas of First Amendment issues and hate speech.",
+            " He is also the brother of Mark Cuban and resides in Dallas, Texas.",
+            " He was born on January 11, 1961, in Pittsburgh, Pennsylvania.",
+            " He grew up in Pittsburgh and attended Mt. Lebanon High School.",
+            " Cuban earned his undergraduate degree from Pennsylvania State University and his law degree from The University of Pittsburgh School of Law.",
+            " He is licensed to practice law in Pennsylvania (inactive) and Texas, specializing in First Amendment issues.",
+            " He runs a blog called \"The Cuban Revolution\" that he uses as a platform to discuss many First Amendment legal battles and news stories."
+          ]
+        },
+        {
+          "title": "Arthur Quinlan",
+          "sentences": [
+            "Arthur Quinlan (15 January 1921 – 22 December 2012) was an Irish raconteur and print journalist with \"The Irish Times\".",
+            " Known for his interviews with politicians, royalty and film stars in a career spanning more than 50 years, he was widely regarded as a very important figure in his field, and was both the first Irishman to get a jet across the Atlantic Ocean to New York in 1958 and the only western journalist to have interviewed Che Guevara.",
+            " Considered a \"master of executing international scoops\", his work was sent across the world."
+          ]
+        }
+      ],
+      "placements": {
+        "colocated": {
+          "assignments": [
+            [
+              {
+                "title": "Che Guevara",
+                "sentences": [
+                  "Ernesto \"Che\" Guevara (] June 14, 1928 – October 9, 1967) was an Argentine Marxist revolutionary, physician, author, guerrilla leader, diplomat and military theorist.",
+                  " A major figure of the Cuban Revolution, his stylized visage has become a ubiquitous countercultural symbol of rebellion and global insignia in popular culture."
+                ]
+              },
+              {
+                "title": "Arthur Quinlan",
+                "sentences": [
+                  "Arthur Quinlan (15 January 1921 – 22 December 2012) was an Irish raconteur and print journalist with \"The Irish Times\".",
+                  " Known for his interviews with politicians, royalty and film stars in a career spanning more than 50 years, he was widely regarded as a very important figure in his field, and was both the first Irishman to get a jet across the Atlantic Ocean to New York in 1958 and the only western journalist to have interviewed Che Guevara.",
+                  " Considered a \"master of executing international scoops\", his work was sent across the world."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Coffee production in Cuba",
+                "sentences": [
+                  "Coffee has been grown in Cuba since the mid-18th century.",
+                  " Boosted by French farmers fleeing the revolution in Haiti, coffee farms expanded from the western plains to the nearby mountain ranges.",
+                  " Coffee production in eastern Cuba significantly increased during the 19th and early 20th centuries.",
+                  " At its peak production, Cuba exported more than 20000 MT of coffee beans per year in the mid 1950s.",
+                  " After the Cuban Revolution and the nationalization of the coffee industry, coffee production slowly began to decline until it reached all time lows during the Great Recession.",
+                  " Once a major Cuban export, it now makes up an insignificant portion of Cuban trade.",
+                  " By the 21st century, 92 percent of the country's coffee was grown in area of the Sierra Maestra mountains.",
+                  " All Cuban coffee is exported by Cubaexport, which pays regulated prices to coffee growers and processors."
+                ]
+              },
+              {
+                "title": "Eulogio Cantillo",
+                "sentences": [
+                  "Eulogio Cantillo (September 13, 1911, Cuba - September 9, 1978, Miami, Florida, U.S.) was a general in the pre-revolutionary Cuban army.",
+                  " General Cantillo served as Chief of the Joint Staff during the dictatorship of Fulgencio Batista.",
+                  " Cantillo did not participate in the military coup that brought Batista to power.",
+                  " During the Cuban Revolution, he led Cuban soldiers in the fight against Fidel Castro's 26th of July Movement.",
+                  " After the Cuban Revolution, He was tried by the revolutionary tribunals and sentenced to 15 years in prison.",
+                  " He was released before serving his entire sentence sometime in the sixties, and went into exile in Miami where he died in 1978."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Cuban immigration to the United States",
+                "sentences": [
+                  "Cuban immigration to the United States, for the most part, occurred in two periods: the first series of immigration of Cuban Americans from Cuba to the United States resulted from establishment of Cuban cigar factories in Tampa and from attempts to overthrow Spanish colonial rule by the movement led by José Martí, the second from dissatisfaction with communist rule by Fidel Castro following the Cuban Revolution.",
+                  " Massive Cuban migration to Miami during the second series led to major demographic and cultural changes in Miami.",
+                  " There was also economic emigration, particularly during the Great Depression in the 1930s."
+                ]
+              },
+              {
+                "title": "Brian Cuban",
+                "sentences": [
+                  "Brian Cuban is an American attorney, author, and activist.",
+                  " He is often interviewed authority on Male Eating Disorders and a lawyer and activist in the areas of First Amendment issues and hate speech.",
+                  " He is also the brother of Mark Cuban and resides in Dallas, Texas.",
+                  " He was born on January 11, 1961, in Pittsburgh, Pennsylvania.",
+                  " He grew up in Pittsburgh and attended Mt. Lebanon High School.",
+                  " Cuban earned his undergraduate degree from Pennsylvania State University and his law degree from The University of Pittsburgh School of Law.",
+                  " He is licensed to practice law in Pennsylvania (inactive) and Texas, specializing in First Amendment issues.",
+                  " He runs a blog called \"The Cuban Revolution\" that he uses as a platform to discuss many First Amendment legal battles and news stories."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "verification",
+            "reasoning",
+            "retrieval"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 1131,
+              "words": 145,
+              "tokens": 264
+            },
+            {
+              "characters": 2371,
+              "words": 278,
+              "tokens": 530
+            },
+            {
+              "characters": 2031,
+              "words": 247,
+              "tokens": 411
+            }
+          ]
+        },
+        "distributed": {
+          "assignments": [
+            [
+              {
+                "title": "Coffee production in Cuba",
+                "sentences": [
+                  "Coffee has been grown in Cuba since the mid-18th century.",
+                  " Boosted by French farmers fleeing the revolution in Haiti, coffee farms expanded from the western plains to the nearby mountain ranges.",
+                  " Coffee production in eastern Cuba significantly increased during the 19th and early 20th centuries.",
+                  " At its peak production, Cuba exported more than 20000 MT of coffee beans per year in the mid 1950s.",
+                  " After the Cuban Revolution and the nationalization of the coffee industry, coffee production slowly began to decline until it reached all time lows during the Great Recession.",
+                  " Once a major Cuban export, it now makes up an insignificant portion of Cuban trade.",
+                  " By the 21st century, 92 percent of the country's coffee was grown in area of the Sierra Maestra mountains.",
+                  " All Cuban coffee is exported by Cubaexport, which pays regulated prices to coffee growers and processors."
+                ]
+              },
+              {
+                "title": "Che Guevara",
+                "sentences": [
+                  "Ernesto \"Che\" Guevara (] June 14, 1928 – October 9, 1967) was an Argentine Marxist revolutionary, physician, author, guerrilla leader, diplomat and military theorist.",
+                  " A major figure of the Cuban Revolution, his stylized visage has become a ubiquitous countercultural symbol of rebellion and global insignia in popular culture."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Eulogio Cantillo",
+                "sentences": [
+                  "Eulogio Cantillo (September 13, 1911, Cuba - September 9, 1978, Miami, Florida, U.S.) was a general in the pre-revolutionary Cuban army.",
+                  " General Cantillo served as Chief of the Joint Staff during the dictatorship of Fulgencio Batista.",
+                  " Cantillo did not participate in the military coup that brought Batista to power.",
+                  " During the Cuban Revolution, he led Cuban soldiers in the fight against Fidel Castro's 26th of July Movement.",
+                  " After the Cuban Revolution, He was tried by the revolutionary tribunals and sentenced to 15 years in prison.",
+                  " He was released before serving his entire sentence sometime in the sixties, and went into exile in Miami where he died in 1978."
+                ]
+              },
+              {
+                "title": "Arthur Quinlan",
+                "sentences": [
+                  "Arthur Quinlan (15 January 1921 – 22 December 2012) was an Irish raconteur and print journalist with \"The Irish Times\".",
+                  " Known for his interviews with politicians, royalty and film stars in a career spanning more than 50 years, he was widely regarded as a very important figure in his field, and was both the first Irishman to get a jet across the Atlantic Ocean to New York in 1958 and the only western journalist to have interviewed Che Guevara.",
+                  " Considered a \"master of executing international scoops\", his work was sent across the world."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Brian Cuban",
+                "sentences": [
+                  "Brian Cuban is an American attorney, author, and activist.",
+                  " He is often interviewed authority on Male Eating Disorders and a lawyer and activist in the areas of First Amendment issues and hate speech.",
+                  " He is also the brother of Mark Cuban and resides in Dallas, Texas.",
+                  " He was born on January 11, 1961, in Pittsburgh, Pennsylvania.",
+                  " He grew up in Pittsburgh and attended Mt. Lebanon High School.",
+                  " Cuban earned his undergraduate degree from Pennsylvania State University and his law degree from The University of Pittsburgh School of Law.",
+                  " He is licensed to practice law in Pennsylvania (inactive) and Texas, specializing in First Amendment issues.",
+                  " He runs a blog called \"The Cuban Revolution\" that he uses as a platform to discuss many First Amendment legal battles and news stories."
+                ]
+              },
+              {
+                "title": "Cuban immigration to the United States",
+                "sentences": [
+                  "Cuban immigration to the United States, for the most part, occurred in two periods: the first series of immigration of Cuban Americans from Cuba to the United States resulted from establishment of Cuban cigar factories in Tampa and from attempts to overthrow Spanish colonial rule by the movement led by José Martí, the second from dissatisfaction with communist rule by Fidel Castro following the Cuban Revolution.",
+                  " Massive Cuban migration to Miami during the second series led to major demographic and cultural changes in Miami.",
+                  " There was also economic emigration, particularly during the Great Depression in the 1930s."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "verification",
+            "reasoning",
+            "retrieval"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 1807,
+              "words": 214,
+              "tokens": 393
+            },
+            {
+              "characters": 1695,
+              "words": 209,
+              "tokens": 401
+            },
+            {
+              "characters": 2031,
+              "words": 247,
+              "tokens": 411
+            }
+          ]
+        }
+      },
+      "execution_order": [
+        "distributed",
+        "colocated"
+      ],
+      "revision_order": [
+        "nocomm",
+        "broadcast"
+      ]
+    },
+    {
+      "id": "5a8080365542992097ad2fed",
+      "question": "A vehicle that uses hydrogen as its onboard fuel for motive power is cosidered which, Flex-fuel or Bi-fuel?",
+      "type": "bridge",
+      "documents": [
+        {
+          "title": "Fuel cell vehicle",
+          "sentences": [
+            "A fuel cell vehicle (FCV) or fuel cell electric vehicle (FCEV) is a type of electric vehicle which uses a fuel cell, instead of a battery, or in combination with a battery or supercapacitor, to power its on-board electric motor.",
+            " Fuel cells in vehicles generate electricity to power the motor, generally using oxygen from the air and compressed hydrogen.",
+            " Most fuel cell vehicles are classified as zero-emissions vehicles that emit only water and heat.",
+            " As compared with internal combustion vehicles, hydrogen vehicles centralize pollutants at the site of the hydrogen production, where hydrogen is typically derived from reformed natural gas.",
+            " Transporting and storing hydrogen may also create pollutants."
+          ]
+        },
+        {
+          "title": "Hydrogen highway (Japan)",
+          "sentences": [
+            "Japan's hydrogen highway is a network of hydrogen filling stations placed along roadsides that provide fuel for hydrogen fuel cell vehicles (HFCV).",
+            " An HFCV is a vehicle that uses a fuel cell to convert hydrogen energy into electrical energy.",
+            " The hydrogen that is used in fuel cell vehicles can be made using fossil or renewable resources.",
+            " The hydrogen highway is necessary for HFCVs to be used.",
+            " HFCV reduce tailpipe emissions of greenhouse gases.",
+            " By May 2016, there were approximately 80 hydrogen fueling stations in Japan."
+          ]
+        },
+        {
+          "title": "Hydrogen-powered aircraft",
+          "sentences": [
+            "A hydrogen-powered aircraft is an aeroplane that uses hydrogen fuel as a power source.",
+            " Hydrogen can either be burned in some kind of jet engine, or other kind of internal combustion engine, or can be used to power a fuel cell to generate electricity to power a propeller."
+          ]
+        },
+        {
+          "title": "Flexible-fuel vehicles in the United States",
+          "sentences": [
+            "Flexible-fuel vehicles in the United States are the second largest flex-fuel fleet in the world after Brazil, and there were about 17.4 million flex-fuel cars and light trucks in operation by the end of 2014.",
+            " Despite the growing fleet of E85 flex-fuel vehicles, actual use of ethanol fuel is limited due to the lack of E85 refueling infrastructure and also because many American flex-fuel car owners were not aware they owned an E85 flex-fuel vehicle.",
+            " Flex-fuel vehicles are common in the Midwest, where corn is a major crop and is the primary feedstock for ethanol fuel production.",
+            " Also the U.S. government has been using flex-fuel vehicles for many years."
+          ]
+        },
+        {
+          "title": "Flexible-fuel vehicle",
+          "sentences": [
+            "A flexible-fuel vehicle (FFV) or dual-fuel vehicle (colloquially called a flex-fuel vehicle) is an alternative fuel vehicle with an internal combustion engine designed to run on more than one fuel, usually gasoline blended with either ethanol or methanol fuel, and both fuels are stored in the same common tank.",
+            " Modern flex-fuel engines are capable of burning any proportion of the resulting blend in the combustion chamber as fuel injection and spark timing are adjusted automatically according to the actual blend detected by a fuel composition sensor.",
+            " Flex-fuel vehicles are distinguished from bi-fuel vehicles, where two fuels are stored in separate tanks and the engine runs on one fuel at a time, for example, compressed natural gas (CNG), liquefied petroleum gas (LPG), or hydrogen."
+          ]
+        },
+        {
+          "title": "Hydrogen vehicle",
+          "sentences": [
+            "A hydrogen vehicle is a vehicle that uses hydrogen as its onboard fuel for motive power.",
+            " Hydrogen vehicles include hydrogen fueled space rockets, as well as automobiles and other transportation vehicles.",
+            " The power plants of such vehicles convert the chemical energy of hydrogen to mechanical energy either by burning hydrogen in an internal combustion engine, or by reacting hydrogen with oxygen in a fuel cell to run electric motors.",
+            " Widespread use of hydrogen for fueling transportation is a key element of a proposed hydrogen economy."
+          ]
+        }
+      ],
+      "placements": {
+        "colocated": {
+          "assignments": [
+            [
+              {
+                "title": "Hydrogen-powered aircraft",
+                "sentences": [
+                  "A hydrogen-powered aircraft is an aeroplane that uses hydrogen fuel as a power source.",
+                  " Hydrogen can either be burned in some kind of jet engine, or other kind of internal combustion engine, or can be used to power a fuel cell to generate electricity to power a propeller."
+                ]
+              },
+              {
+                "title": "Flexible-fuel vehicles in the United States",
+                "sentences": [
+                  "Flexible-fuel vehicles in the United States are the second largest flex-fuel fleet in the world after Brazil, and there were about 17.4 million flex-fuel cars and light trucks in operation by the end of 2014.",
+                  " Despite the growing fleet of E85 flex-fuel vehicles, actual use of ethanol fuel is limited due to the lack of E85 refueling infrastructure and also because many American flex-fuel car owners were not aware they owned an E85 flex-fuel vehicle.",
+                  " Flex-fuel vehicles are common in the Midwest, where corn is a major crop and is the primary feedstock for ethanol fuel production.",
+                  " Also the U.S. government has been using flex-fuel vehicles for many years."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Hydrogen vehicle",
+                "sentences": [
+                  "A hydrogen vehicle is a vehicle that uses hydrogen as its onboard fuel for motive power.",
+                  " Hydrogen vehicles include hydrogen fueled space rockets, as well as automobiles and other transportation vehicles.",
+                  " The power plants of such vehicles convert the chemical energy of hydrogen to mechanical energy either by burning hydrogen in an internal combustion engine, or by reacting hydrogen with oxygen in a fuel cell to run electric motors.",
+                  " Widespread use of hydrogen for fueling transportation is a key element of a proposed hydrogen economy."
+                ]
+              },
+              {
+                "title": "Flexible-fuel vehicle",
+                "sentences": [
+                  "A flexible-fuel vehicle (FFV) or dual-fuel vehicle (colloquially called a flex-fuel vehicle) is an alternative fuel vehicle with an internal combustion engine designed to run on more than one fuel, usually gasoline blended with either ethanol or methanol fuel, and both fuels are stored in the same common tank.",
+                  " Modern flex-fuel engines are capable of burning any proportion of the resulting blend in the combustion chamber as fuel injection and spark timing are adjusted automatically according to the actual blend detected by a fuel composition sensor.",
+                  " Flex-fuel vehicles are distinguished from bi-fuel vehicles, where two fuels are stored in separate tanks and the engine runs on one fuel at a time, for example, compressed natural gas (CNG), liquefied petroleum gas (LPG), or hydrogen."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Hydrogen highway (Japan)",
+                "sentences": [
+                  "Japan's hydrogen highway is a network of hydrogen filling stations placed along roadsides that provide fuel for hydrogen fuel cell vehicles (HFCV).",
+                  " An HFCV is a vehicle that uses a fuel cell to convert hydrogen energy into electrical energy.",
+                  " The hydrogen that is used in fuel cell vehicles can be made using fossil or renewable resources.",
+                  " The hydrogen highway is necessary for HFCVs to be used.",
+                  " HFCV reduce tailpipe emissions of greenhouse gases.",
+                  " By May 2016, there were approximately 80 hydrogen fueling stations in Japan."
+                ]
+              },
+              {
+                "title": "Fuel cell vehicle",
+                "sentences": [
+                  "A fuel cell vehicle (FCV) or fuel cell electric vehicle (FCEV) is a type of electric vehicle which uses a fuel cell, instead of a battery, or in combination with a battery or supercapacitor, to power its on-board electric motor.",
+                  " Fuel cells in vehicles generate electricity to power the motor, generally using oxygen from the air and compressed hydrogen.",
+                  " Most fuel cell vehicles are classified as zero-emissions vehicles that emit only water and heat.",
+                  " As compared with internal combustion vehicles, hydrogen vehicles centralize pollutants at the site of the hydrogen production, where hydrogen is typically derived from reformed natural gas.",
+                  " Transporting and storing hydrogen may also create pollutants."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "verification",
+            "reasoning",
+            "retrieval"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 1385,
+              "words": 178,
+              "tokens": 304
+            },
+            {
+              "characters": 1727,
+              "words": 214,
+              "tokens": 350
+            },
+            {
+              "characters": 1884,
+              "words": 214,
+              "tokens": 406
+            }
+          ]
+        },
+        "distributed": {
+          "assignments": [
+            [
+              {
+                "title": "Flexible-fuel vehicles in the United States",
+                "sentences": [
+                  "Flexible-fuel vehicles in the United States are the second largest flex-fuel fleet in the world after Brazil, and there were about 17.4 million flex-fuel cars and light trucks in operation by the end of 2014.",
+                  " Despite the growing fleet of E85 flex-fuel vehicles, actual use of ethanol fuel is limited due to the lack of E85 refueling infrastructure and also because many American flex-fuel car owners were not aware they owned an E85 flex-fuel vehicle.",
+                  " Flex-fuel vehicles are common in the Midwest, where corn is a major crop and is the primary feedstock for ethanol fuel production.",
+                  " Also the U.S. government has been using flex-fuel vehicles for many years."
+                ]
+              },
+              {
+                "title": "Hydrogen vehicle",
+                "sentences": [
+                  "A hydrogen vehicle is a vehicle that uses hydrogen as its onboard fuel for motive power.",
+                  " Hydrogen vehicles include hydrogen fueled space rockets, as well as automobiles and other transportation vehicles.",
+                  " The power plants of such vehicles convert the chemical energy of hydrogen to mechanical energy either by burning hydrogen in an internal combustion engine, or by reacting hydrogen with oxygen in a fuel cell to run electric motors.",
+                  " Widespread use of hydrogen for fueling transportation is a key element of a proposed hydrogen economy."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Hydrogen-powered aircraft",
+                "sentences": [
+                  "A hydrogen-powered aircraft is an aeroplane that uses hydrogen fuel as a power source.",
+                  " Hydrogen can either be burned in some kind of jet engine, or other kind of internal combustion engine, or can be used to power a fuel cell to generate electricity to power a propeller."
+                ]
+              },
+              {
+                "title": "Flexible-fuel vehicle",
+                "sentences": [
+                  "A flexible-fuel vehicle (FFV) or dual-fuel vehicle (colloquially called a flex-fuel vehicle) is an alternative fuel vehicle with an internal combustion engine designed to run on more than one fuel, usually gasoline blended with either ethanol or methanol fuel, and both fuels are stored in the same common tank.",
+                  " Modern flex-fuel engines are capable of burning any proportion of the resulting blend in the combustion chamber as fuel injection and spark timing are adjusted automatically according to the actual blend detected by a fuel composition sensor.",
+                  " Flex-fuel vehicles are distinguished from bi-fuel vehicles, where two fuels are stored in separate tanks and the engine runs on one fuel at a time, for example, compressed natural gas (CNG), liquefied petroleum gas (LPG), or hydrogen."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Hydrogen highway (Japan)",
+                "sentences": [
+                  "Japan's hydrogen highway is a network of hydrogen filling stations placed along roadsides that provide fuel for hydrogen fuel cell vehicles (HFCV).",
+                  " An HFCV is a vehicle that uses a fuel cell to convert hydrogen energy into electrical energy.",
+                  " The hydrogen that is used in fuel cell vehicles can be made using fossil or renewable resources.",
+                  " The hydrogen highway is necessary for HFCVs to be used.",
+                  " HFCV reduce tailpipe emissions of greenhouse gases.",
+                  " By May 2016, there were approximately 80 hydrogen fueling stations in Japan."
+                ]
+              },
+              {
+                "title": "Fuel cell vehicle",
+                "sentences": [
+                  "A fuel cell vehicle (FCV) or fuel cell electric vehicle (FCEV) is a type of electric vehicle which uses a fuel cell, instead of a battery, or in combination with a battery or supercapacitor, to power its on-board electric motor.",
+                  " Fuel cells in vehicles generate electricity to power the motor, generally using oxygen from the air and compressed hydrogen.",
+                  " Most fuel cell vehicles are classified as zero-emissions vehicles that emit only water and heat.",
+                  " As compared with internal combustion vehicles, hydrogen vehicles centralize pollutants at the site of the hydrogen production, where hydrogen is typically derived from reformed natural gas.",
+                  " Transporting and storing hydrogen may also create pollutants."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "verification",
+            "reasoning",
+            "retrieval"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 1743,
+              "words": 217,
+              "tokens": 365
+            },
+            {
+              "characters": 1369,
+              "words": 175,
+              "tokens": 289
+            },
+            {
+              "characters": 1884,
+              "words": 214,
+              "tokens": 406
+            }
+          ]
+        }
+      },
+      "execution_order": [
+        "distributed",
+        "colocated"
+      ],
+      "revision_order": [
+        "nocomm",
+        "broadcast"
+      ]
+    },
+    {
+      "id": "5abfca465542993fe9a41e65",
+      "question": "which league is the 121th season of top-tier competitive football in Switzerland which Ulrich Forte coach FC Zürich in the league ",
+      "type": "bridge",
+      "documents": [
+        {
+          "title": "2013–14 FC Basel season",
+          "sentences": [
+            "The 2013–14 FC Basel season is the 121st season in club history and the club's 19th consecutive season in the top flight of Swiss football.",
+            " Basel are the reigning Super League champions.",
+            " They started their season with various warm-up matches against teams from Switzerland, Serbia and Germany.",
+            " Their 2013–14 Swiss Super League season began on 13 July with the home tie against FC Aarau and after the first six rounds they occupied just the fourth position in the league table, six points behind the leader Young Boys Bern.",
+            " Beating the Young Boys in the seventh round, Basel started a run of 29 league games without defeat.",
+            " At the end of the season Basel won the league championship for the fifth time in a row.",
+            " They started in the 2013–14 Swiss Cup first round on 17 August with the away game against BSC Old Boys.",
+            " Beating the Old Boy (1-0 after extra time) and after beating Münsingen 1–0 in the next round, they faced Tuggen in the third round, winning 3–1.",
+            " In the quarterfinals they played in against FC Le Mont, winning 6–1 and qualified for a semifinal home tie in St. Jakob-Park against Luzern on 26 March.",
+            " They reached the final, but were beaten 2–0 by Zürich after extra time."
+          ]
+        },
+        {
+          "title": "Letzigrund",
+          "sentences": [
+            "   is a stadium in Zürich, Switzerland, and the home of the athletics club LC Zürich, and the football clubs FC Zürich and Grasshopper Club Zürich.",
+            " LC Zürich is a spin-off of FC Zürich whose members constructed the stadium in 1925.",
+            " Grasshopper-Club is using it as their home stadium since 2007.",
+            " The annual athletics meet Weltklasse Zürich—part of the IAAF Diamond League—takes place at the Letzigrund since 1928, as well as frequent open-air concerts.",
+            " On the Letzigrund track on 21 June 1960, Armin Hary was the first human being to run the 100 metres in 10,0 seconds."
+          ]
+        },
+        {
+          "title": "2017–18 Swiss Super League",
+          "sentences": [
+            "The 2017–18 Swiss Super League (referred to as the Raiffeisen Super League for sponsoring reasons) is the 121th season of top-tier competitive football in Switzerland and the 15th under its current name and format.",
+            " Basel are the defending champions."
+          ]
+        },
+        {
+          "title": "Ulrich Forte",
+          "sentences": [
+            "Ulrich \"Uli\" Forte (born 15 September 1974 in Wangen-Brüttisellen) is an Italian football coach and former player.",
+            " He is currently the coach of FC Zürich in the Swiss Super League, having successfully led to club to promotion in the 2016–17 Swiss Challenge League."
+          ]
+        },
+        {
+          "title": "2015–16 Manchester City F.C. season",
+          "sentences": [
+            "The 2015–16 Manchester City season was the club's 114th season of competitive football, its 87th season in the top division of English football and its 19th season in the Premier League since the League creation, with Manchester City as one of the original 22 founder-members.",
+            " Along with the Premier League, the club also competed in the UEFA Champions League, FA Cup and League Cup.",
+            " The season covers the period from 1 July 2015 to 30 June 2016."
+          ]
+        },
+        {
+          "title": "FC Zürich Frauen",
+          "sentences": [
+            "FC Zürich Frauen is a women's football Club from Zürich, Switzerland.",
+            " Its first team plays since the founding of the Swiss national league in 1970 in the first division.",
+            " The team won 20 national championships and won the Cup 12 times."
+          ]
+        }
+      ],
+      "placements": {
+        "colocated": {
+          "assignments": [
+            [
+              {
+                "title": "FC Zürich Frauen",
+                "sentences": [
+                  "FC Zürich Frauen is a women's football Club from Zürich, Switzerland.",
+                  " Its first team plays since the founding of the Swiss national league in 1970 in the first division.",
+                  " The team won 20 national championships and won the Cup 12 times."
+                ]
+              },
+              {
+                "title": "Letzigrund",
+                "sentences": [
+                  "   is a stadium in Zürich, Switzerland, and the home of the athletics club LC Zürich, and the football clubs FC Zürich and Grasshopper Club Zürich.",
+                  " LC Zürich is a spin-off of FC Zürich whose members constructed the stadium in 1925.",
+                  " Grasshopper-Club is using it as their home stadium since 2007.",
+                  " The annual athletics meet Weltklasse Zürich—part of the IAAF Diamond League—takes place at the Letzigrund since 1928, as well as frequent open-air concerts.",
+                  " On the Letzigrund track on 21 June 1960, Armin Hary was the first human being to run the 100 metres in 10,0 seconds."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "2013–14 FC Basel season",
+                "sentences": [
+                  "The 2013–14 FC Basel season is the 121st season in club history and the club's 19th consecutive season in the top flight of Swiss football.",
+                  " Basel are the reigning Super League champions.",
+                  " They started their season with various warm-up matches against teams from Switzerland, Serbia and Germany.",
+                  " Their 2013–14 Swiss Super League season began on 13 July with the home tie against FC Aarau and after the first six rounds they occupied just the fourth position in the league table, six points behind the leader Young Boys Bern.",
+                  " Beating the Young Boys in the seventh round, Basel started a run of 29 league games without defeat.",
+                  " At the end of the season Basel won the league championship for the fifth time in a row.",
+                  " They started in the 2013–14 Swiss Cup first round on 17 August with the away game against BSC Old Boys.",
+                  " Beating the Old Boy (1-0 after extra time) and after beating Münsingen 1–0 in the next round, they faced Tuggen in the third round, winning 3–1.",
+                  " In the quarterfinals they played in against FC Le Mont, winning 6–1 and qualified for a semifinal home tie in St. Jakob-Park against Luzern on 26 March.",
+                  " They reached the final, but were beaten 2–0 by Zürich after extra time."
+                ]
+              },
+              {
+                "title": "2015–16 Manchester City F.C. season",
+                "sentences": [
+                  "The 2015–16 Manchester City season was the club's 114th season of competitive football, its 87th season in the top division of English football and its 19th season in the Premier League since the League creation, with Manchester City as one of the original 22 founder-members.",
+                  " Along with the Premier League, the club also competed in the UEFA Champions League, FA Cup and League Cup.",
+                  " The season covers the period from 1 July 2015 to 30 June 2016."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "2017–18 Swiss Super League",
+                "sentences": [
+                  "The 2017–18 Swiss Super League (referred to as the Raiffeisen Super League for sponsoring reasons) is the 121th season of top-tier competitive football in Switzerland and the 15th under its current name and format.",
+                  " Basel are the defending champions."
+                ]
+              },
+              {
+                "title": "Ulrich Forte",
+                "sentences": [
+                  "Ulrich \"Uli\" Forte (born 15 September 1974 in Wangen-Brüttisellen) is an Italian football coach and former player.",
+                  " He is currently the coach of FC Zürich in the Swiss Super League, having successfully led to club to promotion in the 2016–17 Swiss Challenge League."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "verification",
+            "reasoning",
+            "retrieval"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 1213,
+              "words": 143,
+              "tokens": 301
+            },
+            {
+              "characters": 2473,
+              "words": 328,
+              "tokens": 614
+            },
+            {
+              "characters": 748,
+              "words": 89,
+              "tokens": 182
+            }
+          ]
+        },
+        "distributed": {
+          "assignments": [
+            [
+              {
+                "title": "Letzigrund",
+                "sentences": [
+                  "   is a stadium in Zürich, Switzerland, and the home of the athletics club LC Zürich, and the football clubs FC Zürich and Grasshopper Club Zürich.",
+                  " LC Zürich is a spin-off of FC Zürich whose members constructed the stadium in 1925.",
+                  " Grasshopper-Club is using it as their home stadium since 2007.",
+                  " The annual athletics meet Weltklasse Zürich—part of the IAAF Diamond League—takes place at the Letzigrund since 1928, as well as frequent open-air concerts.",
+                  " On the Letzigrund track on 21 June 1960, Armin Hary was the first human being to run the 100 metres in 10,0 seconds."
+                ]
+              },
+              {
+                "title": "Ulrich Forte",
+                "sentences": [
+                  "Ulrich \"Uli\" Forte (born 15 September 1974 in Wangen-Brüttisellen) is an Italian football coach and former player.",
+                  " He is currently the coach of FC Zürich in the Swiss Super League, having successfully led to club to promotion in the 2016–17 Swiss Challenge League."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "2013–14 FC Basel season",
+                "sentences": [
+                  "The 2013–14 FC Basel season is the 121st season in club history and the club's 19th consecutive season in the top flight of Swiss football.",
+                  " Basel are the reigning Super League champions.",
+                  " They started their season with various warm-up matches against teams from Switzerland, Serbia and Germany.",
+                  " Their 2013–14 Swiss Super League season began on 13 July with the home tie against FC Aarau and after the first six rounds they occupied just the fourth position in the league table, six points behind the leader Young Boys Bern.",
+                  " Beating the Young Boys in the seventh round, Basel started a run of 29 league games without defeat.",
+                  " At the end of the season Basel won the league championship for the fifth time in a row.",
+                  " They started in the 2013–14 Swiss Cup first round on 17 August with the away game against BSC Old Boys.",
+                  " Beating the Old Boy (1-0 after extra time) and after beating Münsingen 1–0 in the next round, they faced Tuggen in the third round, winning 3–1.",
+                  " In the quarterfinals they played in against FC Le Mont, winning 6–1 and qualified for a semifinal home tie in St. Jakob-Park against Luzern on 26 March.",
+                  " They reached the final, but were beaten 2–0 by Zürich after extra time."
+                ]
+              },
+              {
+                "title": "2015–16 Manchester City F.C. season",
+                "sentences": [
+                  "The 2015–16 Manchester City season was the club's 114th season of competitive football, its 87th season in the top division of English football and its 19th season in the Premier League since the League creation, with Manchester City as one of the original 22 founder-members.",
+                  " Along with the Premier League, the club also competed in the UEFA Champions League, FA Cup and League Cup.",
+                  " The season covers the period from 1 July 2015 to 30 June 2016."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "2017–18 Swiss Super League",
+                "sentences": [
+                  "The 2017–18 Swiss Super League (referred to as the Raiffeisen Super League for sponsoring reasons) is the 121th season of top-tier competitive football in Switzerland and the 15th under its current name and format.",
+                  " Basel are the defending champions."
+                ]
+              },
+              {
+                "title": "FC Zürich Frauen",
+                "sentences": [
+                  "FC Zürich Frauen is a women's football Club from Zürich, Switzerland.",
+                  " Its first team plays since the founding of the Swiss national league in 1970 in the first division.",
+                  " The team won 20 national championships and won the Cup 12 times."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "verification",
+            "reasoning",
+            "retrieval"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 1182,
+              "words": 141,
+              "tokens": 303
+            },
+            {
+              "characters": 2473,
+              "words": 328,
+              "tokens": 614
+            },
+            {
+              "characters": 779,
+              "words": 91,
+              "tokens": 180
+            }
+          ]
+        }
+      },
+      "execution_order": [
+        "distributed",
+        "colocated"
+      ],
+      "revision_order": [
+        "nocomm",
+        "broadcast"
+      ]
+    },
+    {
+      "id": "5ac3044f5542990b17b154dc",
+      "question": " Danny Jones and Aleksi Sihvonen are both what?",
+      "type": "comparison",
+      "documents": [
+        {
+          "title": "Lies (McFly song)",
+          "sentences": [
+            "\"Lies\" is the fifteenth single from British pop rock band, McFly, released on 15 September 2008.",
+            " \"Lies\" did not feature on the promotional 10-track copy of the album \"\" which was given away in \"The Mail on Sunday\" in July 2008, however it features as one of the four additional tracks on the retail edition of the album, which was released on 22 September 2008.",
+            " The lead vocals for the song are split between band members Danny Jones and Tom Fletcher, with vocal contributions from bassist Dougie Poynter."
+          ]
+        },
+        {
+          "title": "McFly",
+          "sentences": [
+            "McFly are an English band formed in London in 2003.",
+            " The band took its name from the \"Back to the Future\" character Marty McFly.",
+            " The band consists of Tom Fletcher (lead vocals, guitar and piano), Danny Jones (lead vocals, harmonica and guitar), Dougie Poynter (bass guitar) and Harry Judd (drums).",
+            " They were signed to Island Records from their 2004 launch until December 2007, before creating their own label, Super Records."
+          ]
+        },
+        {
+          "title": "Danny Jones",
+          "sentences": [
+            "Danny Jones (born 12 March 1986) is a British musician who is one of the lead vocalists and guitarists for pop-rock band McFly.",
+            " Jones' fellow band members are Tom Fletcher (guitar and vocals), Dougie Poynter (bass and vocals), and Harry Judd (drums)."
+          ]
+        },
+        {
+          "title": "Harry Judd",
+          "sentences": [
+            "Harry Mark Christopher Judd (born 23 December 1985) is an English musician who is best known as the drummer for British pop rock band McFly, along with fellow band members Tom Fletcher, Dougie Poynter and Danny Jones.",
+            " Judd won the 2011 series of \"Strictly Come Dancing\"."
+          ]
+        },
+        {
+          "title": "Aleksi Sihvonen",
+          "sentences": [
+            "Aleksi Sihvonen is the current vocalist for the Finnish band Medicated.",
+            " He replaced Norther's vocalist Petri Lindroos in 2009, until the group disbanded in 2012.",
+            " He was also the former guitarist and vocalist of Imperanon."
+          ]
+        },
+        {
+          "title": "Love Is Easy (McFly song)",
+          "sentences": [
+            "\"Love Is Easy\" is a song by English pop rock band McFly which serves as the lead single from their second greatest hits album, \"\".",
+            " The song was written by McFly members Tom Fletcher, Danny Jones and Dougie Poynter as well as Antony Brant.",
+            " Its music video was released on 24 October 2012, showing the band performing the song in a stage show that makes references to moments throughout their career."
+          ]
+        }
+      ],
+      "placements": {
+        "colocated": {
+          "assignments": [
+            [
+              {
+                "title": "Danny Jones",
+                "sentences": [
+                  "Danny Jones (born 12 March 1986) is a British musician who is one of the lead vocalists and guitarists for pop-rock band McFly.",
+                  " Jones' fellow band members are Tom Fletcher (guitar and vocals), Dougie Poynter (bass and vocals), and Harry Judd (drums)."
+                ]
+              },
+              {
+                "title": "Aleksi Sihvonen",
+                "sentences": [
+                  "Aleksi Sihvonen is the current vocalist for the Finnish band Medicated.",
+                  " He replaced Norther's vocalist Petri Lindroos in 2009, until the group disbanded in 2012.",
+                  " He was also the former guitarist and vocalist of Imperanon."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Lies (McFly song)",
+                "sentences": [
+                  "\"Lies\" is the fifteenth single from British pop rock band, McFly, released on 15 September 2008.",
+                  " \"Lies\" did not feature on the promotional 10-track copy of the album \"\" which was given away in \"The Mail on Sunday\" in July 2008, however it features as one of the four additional tracks on the retail edition of the album, which was released on 22 September 2008.",
+                  " The lead vocals for the song are split between band members Danny Jones and Tom Fletcher, with vocal contributions from bassist Dougie Poynter."
+                ]
+              },
+              {
+                "title": "McFly",
+                "sentences": [
+                  "McFly are an English band formed in London in 2003.",
+                  " The band took its name from the \"Back to the Future\" character Marty McFly.",
+                  " The band consists of Tom Fletcher (lead vocals, guitar and piano), Danny Jones (lead vocals, harmonica and guitar), Dougie Poynter (bass guitar) and Harry Judd (drums).",
+                  " They were signed to Island Records from their 2004 launch until December 2007, before creating their own label, Super Records."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Love Is Easy (McFly song)",
+                "sentences": [
+                  "\"Love Is Easy\" is a song by English pop rock band McFly which serves as the lead single from their second greatest hits album, \"\".",
+                  " The song was written by McFly members Tom Fletcher, Danny Jones and Dougie Poynter as well as Antony Brant.",
+                  " Its music video was released on 24 October 2012, showing the band performing the song in a stage show that makes references to moments throughout their career."
+                ]
+              },
+              {
+                "title": "Harry Judd",
+                "sentences": [
+                  "Harry Mark Christopher Judd (born 23 December 1985) is an English musician who is best known as the drummer for British pop rock band McFly, along with fellow band members Tom Fletcher, Dougie Poynter and Danny Jones.",
+                  " Judd won the 2011 series of \"Strictly Come Dancing\"."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "reasoning",
+            "retrieval",
+            "verification"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 734,
+              "words": 81,
+              "tokens": 198
+            },
+            {
+              "characters": 1283,
+              "words": 163,
+              "tokens": 326
+            },
+            {
+              "characters": 965,
+              "words": 130,
+              "tokens": 240
+            }
+          ]
+        },
+        "distributed": {
+          "assignments": [
+            [
+              {
+                "title": "McFly",
+                "sentences": [
+                  "McFly are an English band formed in London in 2003.",
+                  " The band took its name from the \"Back to the Future\" character Marty McFly.",
+                  " The band consists of Tom Fletcher (lead vocals, guitar and piano), Danny Jones (lead vocals, harmonica and guitar), Dougie Poynter (bass guitar) and Harry Judd (drums).",
+                  " They were signed to Island Records from their 2004 launch until December 2007, before creating their own label, Super Records."
+                ]
+              },
+              {
+                "title": "Aleksi Sihvonen",
+                "sentences": [
+                  "Aleksi Sihvonen is the current vocalist for the Finnish band Medicated.",
+                  " He replaced Norther's vocalist Petri Lindroos in 2009, until the group disbanded in 2012.",
+                  " He was also the former guitarist and vocalist of Imperanon."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Harry Judd",
+                "sentences": [
+                  "Harry Mark Christopher Judd (born 23 December 1985) is an English musician who is best known as the drummer for British pop rock band McFly, along with fellow band members Tom Fletcher, Dougie Poynter and Danny Jones.",
+                  " Judd won the 2011 series of \"Strictly Come Dancing\"."
+                ]
+              },
+              {
+                "title": "Love Is Easy (McFly song)",
+                "sentences": [
+                  "\"Love Is Easy\" is a song by English pop rock band McFly which serves as the lead single from their second greatest hits album, \"\".",
+                  " The song was written by McFly members Tom Fletcher, Danny Jones and Dougie Poynter as well as Antony Brant.",
+                  " Its music video was released on 24 October 2012, showing the band performing the song in a stage show that makes references to moments throughout their career."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Danny Jones",
+                "sentences": [
+                  "Danny Jones (born 12 March 1986) is a British musician who is one of the lead vocalists and guitarists for pop-rock band McFly.",
+                  " Jones' fellow band members are Tom Fletcher (guitar and vocals), Dougie Poynter (bass and vocals), and Harry Judd (drums)."
+                ]
+              },
+              {
+                "title": "Lies (McFly song)",
+                "sentences": [
+                  "\"Lies\" is the fifteenth single from British pop rock band, McFly, released on 15 September 2008.",
+                  " \"Lies\" did not feature on the promotional 10-track copy of the album \"\" which was given away in \"The Mail on Sunday\" in July 2008, however it features as one of the four additional tracks on the retail edition of the album, which was released on 22 September 2008.",
+                  " The lead vocals for the song are split between band members Danny Jones and Tom Fletcher, with vocal contributions from bassist Dougie Poynter."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "reasoning",
+            "retrieval",
+            "verification"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 985,
+              "words": 107,
+              "tokens": 258
+            },
+            {
+              "characters": 965,
+              "words": 130,
+              "tokens": 240
+            },
+            {
+              "characters": 1032,
+              "words": 137,
+              "tokens": 266
+            }
+          ]
+        }
+      },
+      "execution_order": [
+        "colocated",
+        "distributed"
+      ],
+      "revision_order": [
+        "broadcast",
+        "nocomm"
+      ]
+    },
+    {
+      "id": "5a7c651a55429935c91b5188",
+      "question": "The mulga apple is is often eaten by people who genetic research has inferred a date of habitation as early as when?",
+      "type": "bridge",
+      "documents": [
+        {
+          "title": "Genetic Alliance",
+          "sentences": [
+            "Genetic Alliance is a nonprofit organization, founded in 1986 by Joan O. Weiss, working with Victor A. McKusick, to advocate for health benefits in the accelerating field of genomic research.",
+            " This organization is a network of over 1,000 disease advocacy organizations, universities, government organizations, private companies, and public policy organizations.",
+            " They aim to advance genetic research agendas toward health benefit by engaging a broad range of stakeholders, including healthcare providers, researchers, industry professionals, public policy leaders, as well as individuals, families and communities.",
+            " They create programs using a collaborative approach, and aim to increase efficiency and reduce obstacles in genetic research, while ensuring that voices from the involved disease communities are heard.",
+            " They also promote public policies to advance healthcare.",
+            " Genetic Alliance provides technical support and informational resources to guide disease-specific advocacy organizations in being their own research advocates.",
+            " They also maintain a biobank as a central storage facility for several organizations who otherwise would not have the infrastructure to maintain their own repository."
+          ]
+        },
+        {
+          "title": "Eline Slagboom",
+          "sentences": [
+            "After receiving her Ph.D. Slagboom joined the Department of Vascular and Connective Tissues Research at the Gaubius Laboratory, (TNO-PG, The Netherlands).",
+            " As a post doc she initiated a unit for genetic epidemiological studies aimed at the identification of genetic determinants of multifactorial diseases.",
+            " Slagboom started between 1995 and 1997 a genetic research line on osteoarthritis (OA) including linkage studies in families with early onset OA, genetic association studies in population cohorts and linkage studies in populations of affected sibling-pairs.",
+            " From 1998 on, Slagboom, in collaboration with research groups at different universities, obtained various grants that allowed initiation of a genotyping facility for genome scanning at the Netherlands Organisation for Applied Scientific Research (TNO).",
+            " In 2000, Slagboom was appointed as professor of molecular epidemiology at the Leiden University Medical Center.",
+            " She established a new section of Molecular Epidemiology and Genotyping Center at the department of Medical Statistics and Bioinformatics.",
+            " Slagboom has initiated a masterclass for Statistical Analysis of Genetic Data and Bioinformatics in Genomic Research and is involved in various teaching activities."
+          ]
+        },
+        {
+          "title": "Mulga apple",
+          "sentences": [
+            "The mulga apple is an Australian bush tucker food, often eaten by Aborigines of Central Australia."
+          ]
+        },
+        {
+          "title": "Peanut soup",
+          "sentences": [
+            "Peanut soup or groundnut soup is a soup made from peanuts, often with various other ingredients.",
+            " It is a staple of African cuisine but is also eaten in East Asia (Taiwan), the United States (mainly in Virginia) and other areas around the world.",
+            " In Ghana it is often eaten with fufu.",
+            " Groundnut soup is also a native soup of the Benin (Edo) people in Nigeria and it is often eaten with pounded yam.",
+            " Some of the essential ingredients used in making it are Piper Guineense (uziza seed) and Vernonia Amygdalina (bitter leaf)."
+          ]
+        },
+        {
+          "title": "Indigenous Australians",
+          "sentences": [
+            "Indigenous Australians are the Aboriginal and Torres Strait Islander people of Australia, descended from groups that existed in Australia and surrounding islands prior to British colonisation.",
+            " The time of arrival of the first Indigenous Australians is a matter of debate among researchers.",
+            " The earliest definitely human remains found in Australia are those of Mungo Man LM3 and Mungo Lady, which have been dated to around 50,000 years BP.",
+            " Recent archaeological evidence from the analysis of charcoal and artifacts revealing human use has pushed this date back further to around 65,000 B.P. Luminescence dating has suggested habitation in Arnhem Land as far back as 60,000 years BP.",
+            " Genetic research has inferred a date of habitation as early as 80,000 years BP."
+          ]
+        },
+        {
+          "title": "Jamaican patty",
+          "sentences": [
+            "A Jamaican patty is a pastry that contains various fillings and spices baked inside a flaky shell, often tinted golden yellow with an egg yolk mixture or turmeric.",
+            " It is made like a turnover but is more savoury.",
+            " As its name suggests, it is commonly found in Jamaica, and is also eaten in other areas of the Caribbean, such as the Caribbean coast Nicaragua and Costa Rica.",
+            " It is traditionally filled with seasoned ground beef, but fillings can include chicken, pork, lamb, vegetables, shrimp, lobster, fish, soy, ackee, mixed vegetables or cheese.",
+            " In Jamaica, the patty is often eaten as a full meal, especially when paired with coco bread.",
+            " It can also be made as bite-sized portions called cocktail patties.",
+            " Among the Jamaican diaspora in the UK, the pastry is more like that of a suet crust, and often made with the fat from curry goat which provides the yellow colour."
+          ]
+        }
+      ],
+      "placements": {
+        "colocated": {
+          "assignments": [
+            [
+              {
+                "title": "Jamaican patty",
+                "sentences": [
+                  "A Jamaican patty is a pastry that contains various fillings and spices baked inside a flaky shell, often tinted golden yellow with an egg yolk mixture or turmeric.",
+                  " It is made like a turnover but is more savoury.",
+                  " As its name suggests, it is commonly found in Jamaica, and is also eaten in other areas of the Caribbean, such as the Caribbean coast Nicaragua and Costa Rica.",
+                  " It is traditionally filled with seasoned ground beef, but fillings can include chicken, pork, lamb, vegetables, shrimp, lobster, fish, soy, ackee, mixed vegetables or cheese.",
+                  " In Jamaica, the patty is often eaten as a full meal, especially when paired with coco bread.",
+                  " It can also be made as bite-sized portions called cocktail patties.",
+                  " Among the Jamaican diaspora in the UK, the pastry is more like that of a suet crust, and often made with the fat from curry goat which provides the yellow colour."
+                ]
+              },
+              {
+                "title": "Eline Slagboom",
+                "sentences": [
+                  "After receiving her Ph.D. Slagboom joined the Department of Vascular and Connective Tissues Research at the Gaubius Laboratory, (TNO-PG, The Netherlands).",
+                  " As a post doc she initiated a unit for genetic epidemiological studies aimed at the identification of genetic determinants of multifactorial diseases.",
+                  " Slagboom started between 1995 and 1997 a genetic research line on osteoarthritis (OA) including linkage studies in families with early onset OA, genetic association studies in population cohorts and linkage studies in populations of affected sibling-pairs.",
+                  " From 1998 on, Slagboom, in collaboration with research groups at different universities, obtained various grants that allowed initiation of a genotyping facility for genome scanning at the Netherlands Organisation for Applied Scientific Research (TNO).",
+                  " In 2000, Slagboom was appointed as professor of molecular epidemiology at the Leiden University Medical Center.",
+                  " She established a new section of Molecular Epidemiology and Genotyping Center at the department of Medical Statistics and Bioinformatics.",
+                  " Slagboom has initiated a masterclass for Statistical Analysis of Genetic Data and Bioinformatics in Genomic Research and is involved in various teaching activities."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Mulga apple",
+                "sentences": [
+                  "The mulga apple is an Australian bush tucker food, often eaten by Aborigines of Central Australia."
+                ]
+              },
+              {
+                "title": "Indigenous Australians",
+                "sentences": [
+                  "Indigenous Australians are the Aboriginal and Torres Strait Islander people of Australia, descended from groups that existed in Australia and surrounding islands prior to British colonisation.",
+                  " The time of arrival of the first Indigenous Australians is a matter of debate among researchers.",
+                  " The earliest definitely human remains found in Australia are those of Mungo Man LM3 and Mungo Lady, which have been dated to around 50,000 years BP.",
+                  " Recent archaeological evidence from the analysis of charcoal and artifacts revealing human use has pushed this date back further to around 65,000 B.P. Luminescence dating has suggested habitation in Arnhem Land as far back as 60,000 years BP.",
+                  " Genetic research has inferred a date of habitation as early as 80,000 years BP."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Peanut soup",
+                "sentences": [
+                  "Peanut soup or groundnut soup is a soup made from peanuts, often with various other ingredients.",
+                  " It is a staple of African cuisine but is also eaten in East Asia (Taiwan), the United States (mainly in Virginia) and other areas around the world.",
+                  " In Ghana it is often eaten with fufu.",
+                  " Groundnut soup is also a native soup of the Benin (Edo) people in Nigeria and it is often eaten with pounded yam.",
+                  " Some of the essential ingredients used in making it are Piper Guineense (uziza seed) and Vernonia Amygdalina (bitter leaf)."
+                ]
+              },
+              {
+                "title": "Genetic Alliance",
+                "sentences": [
+                  "Genetic Alliance is a nonprofit organization, founded in 1986 by Joan O. Weiss, working with Victor A. McKusick, to advocate for health benefits in the accelerating field of genomic research.",
+                  " This organization is a network of over 1,000 disease advocacy organizations, universities, government organizations, private companies, and public policy organizations.",
+                  " They aim to advance genetic research agendas toward health benefit by engaging a broad range of stakeholders, including healthcare providers, researchers, industry professionals, public policy leaders, as well as individuals, families and communities.",
+                  " They create programs using a collaborative approach, and aim to increase efficiency and reduce obstacles in genetic research, while ensuring that voices from the involved disease communities are heard.",
+                  " They also promote public policies to advance healthcare.",
+                  " Genetic Alliance provides technical support and informational resources to guide disease-specific advocacy organizations in being their own research advocates.",
+                  " They also maintain a biobank as a central storage facility for several organizations who otherwise would not have the infrastructure to maintain their own repository."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "reasoning",
+            "retrieval",
+            "verification"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 2843,
+              "words": 335,
+              "tokens": 631
+            },
+            {
+              "characters": 1215,
+              "words": 141,
+              "tokens": 252
+            },
+            {
+              "characters": 2354,
+              "words": 267,
+              "tokens": 483
+            }
+          ]
+        },
+        "distributed": {
+          "assignments": [
+            [
+              {
+                "title": "Peanut soup",
+                "sentences": [
+                  "Peanut soup or groundnut soup is a soup made from peanuts, often with various other ingredients.",
+                  " It is a staple of African cuisine but is also eaten in East Asia (Taiwan), the United States (mainly in Virginia) and other areas around the world.",
+                  " In Ghana it is often eaten with fufu.",
+                  " Groundnut soup is also a native soup of the Benin (Edo) people in Nigeria and it is often eaten with pounded yam.",
+                  " Some of the essential ingredients used in making it are Piper Guineense (uziza seed) and Vernonia Amygdalina (bitter leaf)."
+                ]
+              },
+              {
+                "title": "Genetic Alliance",
+                "sentences": [
+                  "Genetic Alliance is a nonprofit organization, founded in 1986 by Joan O. Weiss, working with Victor A. McKusick, to advocate for health benefits in the accelerating field of genomic research.",
+                  " This organization is a network of over 1,000 disease advocacy organizations, universities, government organizations, private companies, and public policy organizations.",
+                  " They aim to advance genetic research agendas toward health benefit by engaging a broad range of stakeholders, including healthcare providers, researchers, industry professionals, public policy leaders, as well as individuals, families and communities.",
+                  " They create programs using a collaborative approach, and aim to increase efficiency and reduce obstacles in genetic research, while ensuring that voices from the involved disease communities are heard.",
+                  " They also promote public policies to advance healthcare.",
+                  " Genetic Alliance provides technical support and informational resources to guide disease-specific advocacy organizations in being their own research advocates.",
+                  " They also maintain a biobank as a central storage facility for several organizations who otherwise would not have the infrastructure to maintain their own repository."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Eline Slagboom",
+                "sentences": [
+                  "After receiving her Ph.D. Slagboom joined the Department of Vascular and Connective Tissues Research at the Gaubius Laboratory, (TNO-PG, The Netherlands).",
+                  " As a post doc she initiated a unit for genetic epidemiological studies aimed at the identification of genetic determinants of multifactorial diseases.",
+                  " Slagboom started between 1995 and 1997 a genetic research line on osteoarthritis (OA) including linkage studies in families with early onset OA, genetic association studies in population cohorts and linkage studies in populations of affected sibling-pairs.",
+                  " From 1998 on, Slagboom, in collaboration with research groups at different universities, obtained various grants that allowed initiation of a genotyping facility for genome scanning at the Netherlands Organisation for Applied Scientific Research (TNO).",
+                  " In 2000, Slagboom was appointed as professor of molecular epidemiology at the Leiden University Medical Center.",
+                  " She established a new section of Molecular Epidemiology and Genotyping Center at the department of Medical Statistics and Bioinformatics.",
+                  " Slagboom has initiated a masterclass for Statistical Analysis of Genetic Data and Bioinformatics in Genomic Research and is involved in various teaching activities."
+                ]
+              },
+              {
+                "title": "Mulga apple",
+                "sentences": [
+                  "The mulga apple is an Australian bush tucker food, often eaten by Aborigines of Central Australia."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Indigenous Australians",
+                "sentences": [
+                  "Indigenous Australians are the Aboriginal and Torres Strait Islander people of Australia, descended from groups that existed in Australia and surrounding islands prior to British colonisation.",
+                  " The time of arrival of the first Indigenous Australians is a matter of debate among researchers.",
+                  " The earliest definitely human remains found in Australia are those of Mungo Man LM3 and Mungo Lady, which have been dated to around 50,000 years BP.",
+                  " Recent archaeological evidence from the analysis of charcoal and artifacts revealing human use has pushed this date back further to around 65,000 B.P. Luminescence dating has suggested habitation in Arnhem Land as far back as 60,000 years BP.",
+                  " Genetic research has inferred a date of habitation as early as 80,000 years BP."
+                ]
+              },
+              {
+                "title": "Jamaican patty",
+                "sentences": [
+                  "A Jamaican patty is a pastry that contains various fillings and spices baked inside a flaky shell, often tinted golden yellow with an egg yolk mixture or turmeric.",
+                  " It is made like a turnover but is more savoury.",
+                  " As its name suggests, it is commonly found in Jamaica, and is also eaten in other areas of the Caribbean, such as the Caribbean coast Nicaragua and Costa Rica.",
+                  " It is traditionally filled with seasoned ground beef, but fillings can include chicken, pork, lamb, vegetables, shrimp, lobster, fish, soy, ackee, mixed vegetables or cheese.",
+                  " In Jamaica, the patty is often eaten as a full meal, especially when paired with coco bread.",
+                  " It can also be made as bite-sized portions called cocktail patties.",
+                  " Among the Jamaican diaspora in the UK, the pastry is more like that of a suet crust, and often made with the fat from curry goat which provides the yellow colour."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "reasoning",
+            "retrieval",
+            "verification"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 2354,
+              "words": 267,
+              "tokens": 483
+            },
+            {
+              "characters": 1750,
+              "words": 194,
+              "tokens": 377
+            },
+            {
+              "characters": 2308,
+              "words": 282,
+              "tokens": 506
+            }
+          ]
+        }
+      },
+      "execution_order": [
+        "distributed",
+        "colocated"
+      ],
+      "revision_order": [
+        "broadcast",
+        "nocomm"
+      ]
+    },
+    {
+      "id": "5a735e9155429901807db00d",
+      "question": "What country is home to both Guadarrama National Park and Doñana National Park? ",
+      "type": "comparison",
+      "documents": [
+        {
+          "title": "Marisma de Hinojos",
+          "sentences": [
+            "The Marisma de Hinojos is a salt marsh about 50 km north of the city of Cadiz, It is in the province of Huelva, in the autonomous region of Andalusia, Spain.",
+            " \"Marisma de Hinojos\" means \"salt marsh of Hinojos\", being Hinojos a town which name means \"fennel plants\".",
+            " It lies within Doñana National Park (Parque Nacional de Doñana) on the Costa de la Luz."
+          ]
+        },
+        {
+          "title": "Retuerta horse",
+          "sentences": [
+            "The Retuertas horse, Spanish: Caballo de las Retuertas or Caballo de las Retuertas de Doñana , is a rare breed of horse indigenous to the Andalusia region of Spain.",
+            " It is said to closely resemble the ancient Iberian horses that populated Spain before being domesticated.",
+            " It is now found only in the Doñana National Park in the provinces of Huelva and Sevilla, and in The Biological Reserve \"Campanarios de Azaba\" in Espeja (Salamanca province) a part of which is the research reserve of the Consejo Superior de Investigaciones Científicas, the Spanish National Research Council.",
+            " According to a genetic study by the CSIC, the Retuertas horse is one of the oldest European breeds., dating to 3000 years BP, and the only one living in the wild and isolated from other populations."
+          ]
+        },
+        {
+          "title": "Guadarrama National Park",
+          "sentences": [
+            "Sierra de Guadarrama National Park (in Spanish: \"Parque Nacional de la Sierra de Guadarrama\") is a national park in Spain, covering nearly 34,000 hectares, the fifth largest in Spain's national parks system.",
+            " The Guadarrama mountain range (\"Sistema Central\") contains some ecologically valuable areas, located in the Community of Madrid and Castile and León (provinces of Segovia and Ávila).",
+            " The law that regulates the recently approved national park was published in the BOE in  26, 2013 (2013--) ."
+          ]
+        },
+        {
+          "title": "The Missing Lynx",
+          "sentences": [
+            "The Missing Lynx (Spanish: El Lince Perdido) is a 2008 Spanish-British computer-animated adventure family action comedy film produced by Spanish studios Kandor Graphics and YaYa!",
+            " Films and producer Antonio Banderas.",
+            " The film is directed by Raul Garcia and Manuel Sicilia, and written by them and Jose E. Machuca.",
+            " It is presented by Banderas himself.",
+            " With the film released in Spain on December 25, 2008 in Spanish, it is released in the United States on March 9, 2012 in English.",
+            " The film is about a bunch of animals from Doñana National Park in Spain, trying to save other animals kidnapped by the bad guys.",
+            " All of the movie takes place in the natural parks of Andalusia.",
+            " The film was developed using IBM's servers.",
+            " \"The Missing Lynx\" received mixed reviews from internet audience polls and it earned $1,445,936 on a $6,500,000 budget.",
+            " \"The Missing Lynx\" was released on DVD in October 15, 2009 by Aurum Productions."
+          ]
+        },
+        {
+          "title": "Doñana disaster",
+          "sentences": [
+            "The Doñana Disaster, also known as the Aznalcollar Disaster or Guadiamar Disaster (Sp: \"Desastre de Aznalcóllar\", \"Desastre del Guadiamar\"), was an industrial accident in Andalusia, southern Spain.",
+            " On 25 April 1998, a holding dam burst at the Los Frailes mine, near Aznalcóllar, Seville Province, releasing 4–5 million cubic metres of mine tailings.",
+            " The acidic tailings, which contained dangerous levels of several heavy metals, quickly reached the nearby River Agrio, and then its affluent the River Guadiamar, travelling about 40 kilometres along these waterways before they could be stopped.",
+            " The Guadiamar is the main water source for the Doñana National Park, a UNESCO World Heritage Site and one of the largest national parks in Europe.",
+            " The cleanup operation took three years, at an estimated cost of €240 million."
+          ]
+        },
+        {
+          "title": "Doñana National Park",
+          "sentences": [
+            "Doñana National Park is a natural reserve in Andalusia, southern Spain, in the provinces of Huelva (most of its territory) and Seville.",
+            " It covers 543 km² , of which 135 km² are a protected area.",
+            " The park is an area of marshes, shallow streams, and sand dunes in Las Marismas, the delta where the Guadalquivir River flows into the Atlantic Ocean.",
+            " It was established as a nature reserve in 1969 when the World Wildlife Fund joined with the Spanish government and purchased a section of marshes to protect it.",
+            " The eco-system has been under constant threat by the draining of the marshes, the use of river water to boost agricultural production by irrigating land along the coast, water pollution by upriver mining, and the expansion of tourist facilities.",
+            " It is named after wife of the seventh Duke of Medina-Sidonia."
+          ]
+        }
+      ],
+      "placements": {
+        "colocated": {
+          "assignments": [
+            [
+              {
+                "title": "Retuerta horse",
+                "sentences": [
+                  "The Retuertas horse, Spanish: Caballo de las Retuertas or Caballo de las Retuertas de Doñana , is a rare breed of horse indigenous to the Andalusia region of Spain.",
+                  " It is said to closely resemble the ancient Iberian horses that populated Spain before being domesticated.",
+                  " It is now found only in the Doñana National Park in the provinces of Huelva and Sevilla, and in The Biological Reserve \"Campanarios de Azaba\" in Espeja (Salamanca province) a part of which is the research reserve of the Consejo Superior de Investigaciones Científicas, the Spanish National Research Council.",
+                  " According to a genetic study by the CSIC, the Retuertas horse is one of the oldest European breeds., dating to 3000 years BP, and the only one living in the wild and isolated from other populations."
+                ]
+              },
+              {
+                "title": "Doñana disaster",
+                "sentences": [
+                  "The Doñana Disaster, also known as the Aznalcollar Disaster or Guadiamar Disaster (Sp: \"Desastre de Aznalcóllar\", \"Desastre del Guadiamar\"), was an industrial accident in Andalusia, southern Spain.",
+                  " On 25 April 1998, a holding dam burst at the Los Frailes mine, near Aznalcóllar, Seville Province, releasing 4–5 million cubic metres of mine tailings.",
+                  " The acidic tailings, which contained dangerous levels of several heavy metals, quickly reached the nearby River Agrio, and then its affluent the River Guadiamar, travelling about 40 kilometres along these waterways before they could be stopped.",
+                  " The Guadiamar is the main water source for the Doñana National Park, a UNESCO World Heritage Site and one of the largest national parks in Europe.",
+                  " The cleanup operation took three years, at an estimated cost of €240 million."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Marisma de Hinojos",
+                "sentences": [
+                  "The Marisma de Hinojos is a salt marsh about 50 km north of the city of Cadiz, It is in the province of Huelva, in the autonomous region of Andalusia, Spain.",
+                  " \"Marisma de Hinojos\" means \"salt marsh of Hinojos\", being Hinojos a town which name means \"fennel plants\".",
+                  " It lies within Doñana National Park (Parque Nacional de Doñana) on the Costa de la Luz."
+                ]
+              },
+              {
+                "title": "The Missing Lynx",
+                "sentences": [
+                  "The Missing Lynx (Spanish: El Lince Perdido) is a 2008 Spanish-British computer-animated adventure family action comedy film produced by Spanish studios Kandor Graphics and YaYa!",
+                  " Films and producer Antonio Banderas.",
+                  " The film is directed by Raul Garcia and Manuel Sicilia, and written by them and Jose E. Machuca.",
+                  " It is presented by Banderas himself.",
+                  " With the film released in Spain on December 25, 2008 in Spanish, it is released in the United States on March 9, 2012 in English.",
+                  " The film is about a bunch of animals from Doñana National Park in Spain, trying to save other animals kidnapped by the bad guys.",
+                  " All of the movie takes place in the natural parks of Andalusia.",
+                  " The film was developed using IBM's servers.",
+                  " \"The Missing Lynx\" received mixed reviews from internet audience polls and it earned $1,445,936 on a $6,500,000 budget.",
+                  " \"The Missing Lynx\" was released on DVD in October 15, 2009 by Aurum Productions."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Guadarrama National Park",
+                "sentences": [
+                  "Sierra de Guadarrama National Park (in Spanish: \"Parque Nacional de la Sierra de Guadarrama\") is a national park in Spain, covering nearly 34,000 hectares, the fifth largest in Spain's national parks system.",
+                  " The Guadarrama mountain range (\"Sistema Central\") contains some ecologically valuable areas, located in the Community of Madrid and Castile and León (provinces of Segovia and Ávila).",
+                  " The law that regulates the recently approved national park was published in the BOE in  26, 2013 (2013--) ."
+                ]
+              },
+              {
+                "title": "Doñana National Park",
+                "sentences": [
+                  "Doñana National Park is a natural reserve in Andalusia, southern Spain, in the provinces of Huelva (most of its territory) and Seville.",
+                  " It covers 543 km² , of which 135 km² are a protected area.",
+                  " The park is an area of marshes, shallow streams, and sand dunes in Las Marismas, the delta where the Guadalquivir River flows into the Atlantic Ocean.",
+                  " It was established as a nature reserve in 1969 when the World Wildlife Fund joined with the Spanish government and purchased a section of marshes to protect it.",
+                  " The eco-system has been under constant threat by the draining of the marshes, the use of river water to boost agricultural production by irrigating land along the coast, water pollution by upriver mining, and the expansion of tourist facilities.",
+                  " It is named after wife of the seventh Duke of Medina-Sidonia."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "reasoning",
+            "retrieval",
+            "verification"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 2085,
+              "words": 265,
+              "tokens": 503
+            },
+            {
+              "characters": 2001,
+              "words": 243,
+              "tokens": 512
+            },
+            {
+              "characters": 1860,
+              "words": 233,
+              "tokens": 441
+            }
+          ]
+        },
+        "distributed": {
+          "assignments": [
+            [
+              {
+                "title": "The Missing Lynx",
+                "sentences": [
+                  "The Missing Lynx (Spanish: El Lince Perdido) is a 2008 Spanish-British computer-animated adventure family action comedy film produced by Spanish studios Kandor Graphics and YaYa!",
+                  " Films and producer Antonio Banderas.",
+                  " The film is directed by Raul Garcia and Manuel Sicilia, and written by them and Jose E. Machuca.",
+                  " It is presented by Banderas himself.",
+                  " With the film released in Spain on December 25, 2008 in Spanish, it is released in the United States on March 9, 2012 in English.",
+                  " The film is about a bunch of animals from Doñana National Park in Spain, trying to save other animals kidnapped by the bad guys.",
+                  " All of the movie takes place in the natural parks of Andalusia.",
+                  " The film was developed using IBM's servers.",
+                  " \"The Missing Lynx\" received mixed reviews from internet audience polls and it earned $1,445,936 on a $6,500,000 budget.",
+                  " \"The Missing Lynx\" was released on DVD in October 15, 2009 by Aurum Productions."
+                ]
+              },
+              {
+                "title": "Marisma de Hinojos",
+                "sentences": [
+                  "The Marisma de Hinojos is a salt marsh about 50 km north of the city of Cadiz, It is in the province of Huelva, in the autonomous region of Andalusia, Spain.",
+                  " \"Marisma de Hinojos\" means \"salt marsh of Hinojos\", being Hinojos a town which name means \"fennel plants\".",
+                  " It lies within Doñana National Park (Parque Nacional de Doñana) on the Costa de la Luz."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Doñana disaster",
+                "sentences": [
+                  "The Doñana Disaster, also known as the Aznalcollar Disaster or Guadiamar Disaster (Sp: \"Desastre de Aznalcóllar\", \"Desastre del Guadiamar\"), was an industrial accident in Andalusia, southern Spain.",
+                  " On 25 April 1998, a holding dam burst at the Los Frailes mine, near Aznalcóllar, Seville Province, releasing 4–5 million cubic metres of mine tailings.",
+                  " The acidic tailings, which contained dangerous levels of several heavy metals, quickly reached the nearby River Agrio, and then its affluent the River Guadiamar, travelling about 40 kilometres along these waterways before they could be stopped.",
+                  " The Guadiamar is the main water source for the Doñana National Park, a UNESCO World Heritage Site and one of the largest national parks in Europe.",
+                  " The cleanup operation took three years, at an estimated cost of €240 million."
+                ]
+              },
+              {
+                "title": "Doñana National Park",
+                "sentences": [
+                  "Doñana National Park is a natural reserve in Andalusia, southern Spain, in the provinces of Huelva (most of its territory) and Seville.",
+                  " It covers 543 km² , of which 135 km² are a protected area.",
+                  " The park is an area of marshes, shallow streams, and sand dunes in Las Marismas, the delta where the Guadalquivir River flows into the Atlantic Ocean.",
+                  " It was established as a nature reserve in 1969 when the World Wildlife Fund joined with the Spanish government and purchased a section of marshes to protect it.",
+                  " The eco-system has been under constant threat by the draining of the marshes, the use of river water to boost agricultural production by irrigating land along the coast, water pollution by upriver mining, and the expansion of tourist facilities.",
+                  " It is named after wife of the seventh Duke of Medina-Sidonia."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Guadarrama National Park",
+                "sentences": [
+                  "Sierra de Guadarrama National Park (in Spanish: \"Parque Nacional de la Sierra de Guadarrama\") is a national park in Spain, covering nearly 34,000 hectares, the fifth largest in Spain's national parks system.",
+                  " The Guadarrama mountain range (\"Sistema Central\") contains some ecologically valuable areas, located in the Community of Madrid and Castile and León (provinces of Segovia and Ávila).",
+                  " The law that regulates the recently approved national park was published in the BOE in  26, 2013 (2013--) ."
+                ]
+              },
+              {
+                "title": "Retuerta horse",
+                "sentences": [
+                  "The Retuertas horse, Spanish: Caballo de las Retuertas or Caballo de las Retuertas de Doñana , is a rare breed of horse indigenous to the Andalusia region of Spain.",
+                  " It is said to closely resemble the ancient Iberian horses that populated Spain before being domesticated.",
+                  " It is now found only in the Doñana National Park in the provinces of Huelva and Sevilla, and in The Biological Reserve \"Campanarios de Azaba\" in Espeja (Salamanca province) a part of which is the research reserve of the Consejo Superior de Investigaciones Científicas, the Spanish National Research Council.",
+                  " According to a genetic study by the CSIC, the Retuertas horse is one of the oldest European breeds., dating to 3000 years BP, and the only one living in the wild and isolated from other populations."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "reasoning",
+            "retrieval",
+            "verification"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 2001,
+              "words": 243,
+              "tokens": 512
+            },
+            {
+              "characters": 2262,
+              "words": 282,
+              "tokens": 540
+            },
+            {
+              "characters": 1683,
+              "words": 216,
+              "tokens": 404
+            }
+          ]
+        }
+      },
+      "execution_order": [
+        "colocated",
+        "distributed"
+      ],
+      "revision_order": [
+        "nocomm",
+        "broadcast"
+      ]
+    },
+    {
+      "id": "5ac540365542994611c8b470",
+      "question": "Loughborough Students' Union serves the students at what public research university that has been a university since 1966, but the institution dates back to 1909?",
+      "type": "bridge",
+      "documents": [
+        {
+          "title": "Loughborough University",
+          "sentences": [
+            "Loughborough University (abbreviated as Lough for post-nominals) is a public research university located in the market town of Loughborough, Leicestershire, in the East Midlands of England.",
+            " It has been a university since 1966, but the institution dates back to 1909, when the then Loughborough Technical Institute began with a focus on skills and knowledge which would be directly applicable in the wider world.",
+            " In March 2013, the university announced it had acquired the former broadcast centre at the Queen Elizabeth Olympic Park which opened as a second campus in 2015.",
+            " It was a member of the 1994 Group until the group was dissolved in November 2013."
+          ]
+        },
+        {
+          "title": "Haslegrave Ground",
+          "sentences": [
+            "Haslegrave Ground is a cricket ground in Loughborough, Leicestershire.",
+            " The ground is based at Loughborough University.",
+            " The first recorded match on the ground was in 1988, when Loughborough Students played the Marylebone Cricket Club.",
+            " The ground held 2 Women's One Day Internationals in 2008, when England women played West Indies women in both matches."
+          ]
+        },
+        {
+          "title": "Loughborough Students RUFC",
+          "sentences": [
+            "Loughborough Students Rugby Union Football Club is the rugby club that represents Loughborough University in rugby union competition.",
+            " Of the British universities, Loughborough has unparalleled success, having won the BUCS championship (in its former guises as the BUSA and UAU championship) on twenty-seven occasions.",
+            " It fields sides in the BUCS league, (inter-university) and in the third tier of the English rugby union system, National League 1.",
+            " The club has fielded over seventy internationals (male and female), many of whom won caps while playing for the club."
+          ]
+        },
+        {
+          "title": "Loughborough University F.C.",
+          "sentences": [
+            "Loughborough University Football Club (also known as Loughborough Students Football Club) is an English football club representing Loughborough University, based in Loughborough, Leicestershire.",
+            " The club are currently members of the Midland League Premier Division and play at the Loughborough University Stadium."
+          ]
+        },
+        {
+          "title": "Loughborough Students (Lightning) RUFC",
+          "sentences": [
+            "Loughborough Students (Lightning) Rugby Union Football Club are a women's rugby union club based in Loughborough, Leicestershire, England.",
+            " They are the women's team of Loughborough Students RUFC and Loughborough University.",
+            " In 2017, they were selected as a franchise for the inaugural Premier 15s season."
+          ]
+        },
+        {
+          "title": "Loughborough Students' Union",
+          "sentences": [
+            "Loughborough Students' Union (otherwise known as LSU) is the students' union serving members from Loughborough University, Loughborough College and the RNIB College Loughborough."
+          ]
+        }
+      ],
+      "placements": {
+        "colocated": {
+          "assignments": [
+            [
+              {
+                "title": "Loughborough Students' Union",
+                "sentences": [
+                  "Loughborough Students' Union (otherwise known as LSU) is the students' union serving members from Loughborough University, Loughborough College and the RNIB College Loughborough."
+                ]
+              },
+              {
+                "title": "Loughborough University",
+                "sentences": [
+                  "Loughborough University (abbreviated as Lough for post-nominals) is a public research university located in the market town of Loughborough, Leicestershire, in the East Midlands of England.",
+                  " It has been a university since 1966, but the institution dates back to 1909, when the then Loughborough Technical Institute began with a focus on skills and knowledge which would be directly applicable in the wider world.",
+                  " In March 2013, the university announced it had acquired the former broadcast centre at the Queen Elizabeth Olympic Park which opened as a second campus in 2015.",
+                  " It was a member of the 1994 Group until the group was dissolved in November 2013."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Loughborough Students RUFC",
+                "sentences": [
+                  "Loughborough Students Rugby Union Football Club is the rugby club that represents Loughborough University in rugby union competition.",
+                  " Of the British universities, Loughborough has unparalleled success, having won the BUCS championship (in its former guises as the BUSA and UAU championship) on twenty-seven occasions.",
+                  " It fields sides in the BUCS league, (inter-university) and in the third tier of the English rugby union system, National League 1.",
+                  " The club has fielded over seventy internationals (male and female), many of whom won caps while playing for the club."
+                ]
+              },
+              {
+                "title": "Loughborough University F.C.",
+                "sentences": [
+                  "Loughborough University Football Club (also known as Loughborough Students Football Club) is an English football club representing Loughborough University, based in Loughborough, Leicestershire.",
+                  " The club are currently members of the Midland League Premier Division and play at the Loughborough University Stadium."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Loughborough Students (Lightning) RUFC",
+                "sentences": [
+                  "Loughborough Students (Lightning) Rugby Union Football Club are a women's rugby union club based in Loughborough, Leicestershire, England.",
+                  " They are the women's team of Loughborough Students RUFC and Loughborough University.",
+                  " In 2017, they were selected as a franchise for the inaugural Premier 15s season."
+                ]
+              },
+              {
+                "title": "Haslegrave Ground",
+                "sentences": [
+                  "Haslegrave Ground is a cricket ground in Loughborough, Leicestershire.",
+                  " The ground is based at Loughborough University.",
+                  " The first recorded match on the ground was in 1988, when Loughborough Students played the Marylebone Cricket Club.",
+                  " The ground held 2 Women's One Day Internationals in 2008, when England women played West Indies women in both matches."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "retrieval",
+            "verification",
+            "reasoning"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 1148,
+              "words": 134,
+              "tokens": 256
+            },
+            {
+              "characters": 1274,
+              "words": 138,
+              "tokens": 276
+            },
+            {
+              "characters": 1112,
+              "words": 110,
+              "tokens": 263
+            }
+          ]
+        },
+        "distributed": {
+          "assignments": [
+            [
+              {
+                "title": "Loughborough University",
+                "sentences": [
+                  "Loughborough University (abbreviated as Lough for post-nominals) is a public research university located in the market town of Loughborough, Leicestershire, in the East Midlands of England.",
+                  " It has been a university since 1966, but the institution dates back to 1909, when the then Loughborough Technical Institute began with a focus on skills and knowledge which would be directly applicable in the wider world.",
+                  " In March 2013, the university announced it had acquired the former broadcast centre at the Queen Elizabeth Olympic Park which opened as a second campus in 2015.",
+                  " It was a member of the 1994 Group until the group was dissolved in November 2013."
+                ]
+              },
+              {
+                "title": "Loughborough Students RUFC",
+                "sentences": [
+                  "Loughborough Students Rugby Union Football Club is the rugby club that represents Loughborough University in rugby union competition.",
+                  " Of the British universities, Loughborough has unparalleled success, having won the BUCS championship (in its former guises as the BUSA and UAU championship) on twenty-seven occasions.",
+                  " It fields sides in the BUCS league, (inter-university) and in the third tier of the English rugby union system, National League 1.",
+                  " The club has fielded over seventy internationals (male and female), many of whom won caps while playing for the club."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Loughborough University F.C.",
+                "sentences": [
+                  "Loughborough University Football Club (also known as Loughborough Students Football Club) is an English football club representing Loughborough University, based in Loughborough, Leicestershire.",
+                  " The club are currently members of the Midland League Premier Division and play at the Loughborough University Stadium."
+                ]
+              },
+              {
+                "title": "Loughborough Students' Union",
+                "sentences": [
+                  "Loughborough Students' Union (otherwise known as LSU) is the students' union serving members from Loughborough University, Loughborough College and the RNIB College Loughborough."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Haslegrave Ground",
+                "sentences": [
+                  "Haslegrave Ground is a cricket ground in Loughborough, Leicestershire.",
+                  " The ground is based at Loughborough University.",
+                  " The first recorded match on the ground was in 1988, when Loughborough Students played the Marylebone Cricket Club.",
+                  " The ground held 2 Women's One Day Internationals in 2008, when England women played West Indies women in both matches."
+                ]
+              },
+              {
+                "title": "Loughborough Students (Lightning) RUFC",
+                "sentences": [
+                  "Loughborough Students (Lightning) Rugby Union Football Club are a women's rugby union club based in Loughborough, Leicestershire, England.",
+                  " They are the women's team of Loughborough Students RUFC and Loughborough University.",
+                  " In 2017, they were selected as a franchise for the inaugural Premier 15s season."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "retrieval",
+            "verification",
+            "reasoning"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 1729,
+              "words": 203,
+              "tokens": 383
+            },
+            {
+              "characters": 693,
+              "words": 69,
+              "tokens": 150
+            },
+            {
+              "characters": 1112,
+              "words": 110,
+              "tokens": 263
+            }
+          ]
+        }
+      },
+      "execution_order": [
+        "distributed",
+        "colocated"
+      ],
+      "revision_order": [
+        "broadcast",
+        "nocomm"
+      ]
+    },
+    {
+      "id": "5abe4a365542993f32c2a0dc",
+      "question": "Rosi Golan's songs were featured in commercials for a brand of Artsana, that's been working for over 50 years, and is present in how many countries?",
+      "type": "bridge",
+      "documents": [
+        {
+          "title": "Rosi Golan",
+          "sentences": [
+            "Rosi Golan is an indie singer-songwriter originally from Israel, now residing in Brooklyn, New York.",
+            " Since 2008 she has released 2 LPs (Lead Balloon and The Drifter & the Gypsy) and an EP (Fortuna).",
+            " Her songs have been featured in feature films such as \"Dear John\" and \"Tiger Eyes\", various TV shows such as \"Vampire Diaries\", \"Grey's Anatomy\", \"Private Practice\", \"Brothers & Sisters\", \"One Tree Hill\", \"Ghost Whisperer\", and numerous commercials for companies such as Chicco, Pantene, J. C. Penney and Walmart."
+          ]
+        },
+        {
+          "title": "Ian Partridge",
+          "sentences": [
+            "Ian Partridge CBE (born 12 June 1938) is a retired English lyric tenor, whose repertoire ranged from Monteverdi, Bach and Handel, the Elizabethan lute songs, German, French and English songs, through to Schoenberg, Weill and Britten, and on to contemporary works.",
+            " He formed a renowned vocal-piano duo with his sister Jennifer Partridge, with whom he worked for over 50 years.",
+            " While concentrating mainly on songs, oratorio and lieder, he also recorded opera, and has an extensive discography.",
+            " He is now a teacher and adjudicator, and conducts master classes in many countries."
+          ]
+        },
+        {
+          "title": "Lynn Goldsmith",
+          "sentences": [
+            "Lynn Goldsmith (born February 11, 1948) is an American recording artist, a film director, a celebrity portrait photographer, and one of the first female rock and roll photographers.",
+            " Lynn's photographs have appeared on the covers and in publications in many countries for the past 50 years.",
+            " She has done over 100 album covers.",
+            " In addition to her editorial work, Goldsmith has also focused on fine art photography with conceptual images.",
+            " Her photographs are in the collections of The Smithsonian among other museums and her 3D videos created in 1982 are in the collection of Moma."
+          ]
+        },
+        {
+          "title": "Kelly Clarkson discography",
+          "sentences": [
+            "American singer Kelly Clarkson has released seven studio albums, four extended plays, one compilation album, one remix album, and 38 singles (including four as a featured artist).",
+            " In 2002, she won the inaugural season of the television competition \"American Idol\" and was immediately signed to a 1 million recording deal with RCA Records.",
+            " She made her chart debut in September 2002 with the double A-side single \"Before Your Love\" / \"A Moment Like This\", which topped the \"Billboard\" Hot 100 chart in the United States by achieving the biggest jump to number one.",
+            " Her debut album, \"Thankful\", was released in April 2003 and debuted atop the \"Billboard\" 200 chart in the United States and was certified in four countries, including a double-platinum certification by the Recording Industry Association of America (RIAA).",
+            " Its lead single, \"Miss Independent\", charted in nine countries, reaching number nine on the \"Billboard\" Hot 100.",
+            " Subsequent singles from the album include \"Low\" and \"The Trouble with Love Is\".",
+            " In 2004, Clarkson released her second album, \"Breakaway\", which incorporated aspects of pop rock.",
+            " \"Breakaway\" debuted at number three on the \"Billboard\" 200 and subsequently became her most successful studio album to date, being certified sextuple-platinum in the United States and twelve million worldwide.",
+            " Its first four singles, \"Breakaway\", \"Since U Been Gone\", \"Behind These Hazel Eyes\", and \"Because of You\", became successful hits worldwide, charting at the top-ten in many countries, and with the latter-most topping the charts in the Netherlands and Switzerland.",
+            " Its final single, \"Walk Away\", became a top-twenty hit in many countries."
+          ]
+        },
+        {
+          "title": "Association football culture",
+          "sentences": [
+            "Association football culture refers to the cultural aspects surrounding the game of association football.",
+            " In many countries, football has ingrained itself into the national culture, and parts of life may revolve around it.",
+            " Many countries have daily football newspapers, as well as football magazines.",
+            " Football players, especially in the top levels of the game, have become role models for people.",
+            " The FIFA World Cup held every four years is the quintessential football event, combining the greatest players in the world and the passion of the fans.",
+            " Football has a long and glorious history, with which a vast and diverse culture has emerged.",
+            " The culture of football can be easily divided into how the players, fans and clubs see the sport."
+          ]
+        },
+        {
+          "title": "Chicco",
+          "sentences": [
+            "Chicco (] ) is a brand of Artsana, that's been working for over 50 years in the field of children's products, and is now present in more than 120 countries worldwide."
+          ]
+        }
+      ],
+      "placements": {
+        "colocated": {
+          "assignments": [
+            [
+              {
+                "title": "Lynn Goldsmith",
+                "sentences": [
+                  "Lynn Goldsmith (born February 11, 1948) is an American recording artist, a film director, a celebrity portrait photographer, and one of the first female rock and roll photographers.",
+                  " Lynn's photographs have appeared on the covers and in publications in many countries for the past 50 years.",
+                  " She has done over 100 album covers.",
+                  " In addition to her editorial work, Goldsmith has also focused on fine art photography with conceptual images.",
+                  " Her photographs are in the collections of The Smithsonian among other museums and her 3D videos created in 1982 are in the collection of Moma."
+                ]
+              },
+              {
+                "title": "Kelly Clarkson discography",
+                "sentences": [
+                  "American singer Kelly Clarkson has released seven studio albums, four extended plays, one compilation album, one remix album, and 38 singles (including four as a featured artist).",
+                  " In 2002, she won the inaugural season of the television competition \"American Idol\" and was immediately signed to a 1 million recording deal with RCA Records.",
+                  " She made her chart debut in September 2002 with the double A-side single \"Before Your Love\" / \"A Moment Like This\", which topped the \"Billboard\" Hot 100 chart in the United States by achieving the biggest jump to number one.",
+                  " Her debut album, \"Thankful\", was released in April 2003 and debuted atop the \"Billboard\" 200 chart in the United States and was certified in four countries, including a double-platinum certification by the Recording Industry Association of America (RIAA).",
+                  " Its lead single, \"Miss Independent\", charted in nine countries, reaching number nine on the \"Billboard\" Hot 100.",
+                  " Subsequent singles from the album include \"Low\" and \"The Trouble with Love Is\".",
+                  " In 2004, Clarkson released her second album, \"Breakaway\", which incorporated aspects of pop rock.",
+                  " \"Breakaway\" debuted at number three on the \"Billboard\" 200 and subsequently became her most successful studio album to date, being certified sextuple-platinum in the United States and twelve million worldwide.",
+                  " Its first four singles, \"Breakaway\", \"Since U Been Gone\", \"Behind These Hazel Eyes\", and \"Because of You\", became successful hits worldwide, charting at the top-ten in many countries, and with the latter-most topping the charts in the Netherlands and Switzerland.",
+                  " Its final single, \"Walk Away\", became a top-twenty hit in many countries."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Chicco",
+                "sentences": [
+                  "Chicco (] ) is a brand of Artsana, that's been working for over 50 years in the field of children's products, and is now present in more than 120 countries worldwide."
+                ]
+              },
+              {
+                "title": "Rosi Golan",
+                "sentences": [
+                  "Rosi Golan is an indie singer-songwriter originally from Israel, now residing in Brooklyn, New York.",
+                  " Since 2008 she has released 2 LPs (Lead Balloon and The Drifter & the Gypsy) and an EP (Fortuna).",
+                  " Her songs have been featured in feature films such as \"Dear John\" and \"Tiger Eyes\", various TV shows such as \"Vampire Diaries\", \"Grey's Anatomy\", \"Private Practice\", \"Brothers & Sisters\", \"One Tree Hill\", \"Ghost Whisperer\", and numerous commercials for companies such as Chicco, Pantene, J. C. Penney and Walmart."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Ian Partridge",
+                "sentences": [
+                  "Ian Partridge CBE (born 12 June 1938) is a retired English lyric tenor, whose repertoire ranged from Monteverdi, Bach and Handel, the Elizabethan lute songs, German, French and English songs, through to Schoenberg, Weill and Britten, and on to contemporary works.",
+                  " He formed a renowned vocal-piano duo with his sister Jennifer Partridge, with whom he worked for over 50 years.",
+                  " While concentrating mainly on songs, oratorio and lieder, he also recorded opera, and has an extensive discography.",
+                  " He is now a teacher and adjudicator, and conducts master classes in many countries."
+                ]
+              },
+              {
+                "title": "Association football culture",
+                "sentences": [
+                  "Association football culture refers to the cultural aspects surrounding the game of association football.",
+                  " In many countries, football has ingrained itself into the national culture, and parts of life may revolve around it.",
+                  " Many countries have daily football newspapers, as well as football magazines.",
+                  " Football players, especially in the top levels of the game, have become role models for people.",
+                  " The FIFA World Cup held every four years is the quintessential football event, combining the greatest players in the world and the passion of the fans.",
+                  " Football has a long and glorious history, with which a vast and diverse culture has emerged.",
+                  " The culture of football can be easily divided into how the players, fans and clubs see the sport."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "retrieval",
+            "verification",
+            "reasoning"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 3188,
+              "words": 376,
+              "tokens": 694
+            },
+            {
+              "characters": 887,
+              "words": 115,
+              "tokens": 227
+            },
+            {
+              "characters": 1992,
+              "words": 228,
+              "tokens": 411
+            }
+          ]
+        },
+        "distributed": {
+          "assignments": [
+            [
+              {
+                "title": "Rosi Golan",
+                "sentences": [
+                  "Rosi Golan is an indie singer-songwriter originally from Israel, now residing in Brooklyn, New York.",
+                  " Since 2008 she has released 2 LPs (Lead Balloon and The Drifter & the Gypsy) and an EP (Fortuna).",
+                  " Her songs have been featured in feature films such as \"Dear John\" and \"Tiger Eyes\", various TV shows such as \"Vampire Diaries\", \"Grey's Anatomy\", \"Private Practice\", \"Brothers & Sisters\", \"One Tree Hill\", \"Ghost Whisperer\", and numerous commercials for companies such as Chicco, Pantene, J. C. Penney and Walmart."
+                ]
+              },
+              {
+                "title": "Kelly Clarkson discography",
+                "sentences": [
+                  "American singer Kelly Clarkson has released seven studio albums, four extended plays, one compilation album, one remix album, and 38 singles (including four as a featured artist).",
+                  " In 2002, she won the inaugural season of the television competition \"American Idol\" and was immediately signed to a 1 million recording deal with RCA Records.",
+                  " She made her chart debut in September 2002 with the double A-side single \"Before Your Love\" / \"A Moment Like This\", which topped the \"Billboard\" Hot 100 chart in the United States by achieving the biggest jump to number one.",
+                  " Her debut album, \"Thankful\", was released in April 2003 and debuted atop the \"Billboard\" 200 chart in the United States and was certified in four countries, including a double-platinum certification by the Recording Industry Association of America (RIAA).",
+                  " Its lead single, \"Miss Independent\", charted in nine countries, reaching number nine on the \"Billboard\" Hot 100.",
+                  " Subsequent singles from the album include \"Low\" and \"The Trouble with Love Is\".",
+                  " In 2004, Clarkson released her second album, \"Breakaway\", which incorporated aspects of pop rock.",
+                  " \"Breakaway\" debuted at number three on the \"Billboard\" 200 and subsequently became her most successful studio album to date, being certified sextuple-platinum in the United States and twelve million worldwide.",
+                  " Its first four singles, \"Breakaway\", \"Since U Been Gone\", \"Behind These Hazel Eyes\", and \"Because of You\", became successful hits worldwide, charting at the top-ten in many countries, and with the latter-most topping the charts in the Netherlands and Switzerland.",
+                  " Its final single, \"Walk Away\", became a top-twenty hit in many countries."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Lynn Goldsmith",
+                "sentences": [
+                  "Lynn Goldsmith (born February 11, 1948) is an American recording artist, a film director, a celebrity portrait photographer, and one of the first female rock and roll photographers.",
+                  " Lynn's photographs have appeared on the covers and in publications in many countries for the past 50 years.",
+                  " She has done over 100 album covers.",
+                  " In addition to her editorial work, Goldsmith has also focused on fine art photography with conceptual images.",
+                  " Her photographs are in the collections of The Smithsonian among other museums and her 3D videos created in 1982 are in the collection of Moma."
+                ]
+              },
+              {
+                "title": "Chicco",
+                "sentences": [
+                  "Chicco (] ) is a brand of Artsana, that's been working for over 50 years in the field of children's products, and is now present in more than 120 countries worldwide."
+                ]
+              }
+            ],
+            [
+              {
+                "title": "Association football culture",
+                "sentences": [
+                  "Association football culture refers to the cultural aspects surrounding the game of association football.",
+                  " In many countries, football has ingrained itself into the national culture, and parts of life may revolve around it.",
+                  " Many countries have daily football newspapers, as well as football magazines.",
+                  " Football players, especially in the top levels of the game, have become role models for people.",
+                  " The FIFA World Cup held every four years is the quintessential football event, combining the greatest players in the world and the passion of the fans.",
+                  " Football has a long and glorious history, with which a vast and diverse culture has emerged.",
+                  " The culture of football can be easily divided into how the players, fans and clubs see the sport."
+                ]
+              },
+              {
+                "title": "Ian Partridge",
+                "sentences": [
+                  "Ian Partridge CBE (born 12 June 1938) is a retired English lyric tenor, whose repertoire ranged from Monteverdi, Bach and Handel, the Elizabethan lute songs, German, French and English songs, through to Schoenberg, Weill and Britten, and on to contemporary works.",
+                  " He formed a renowned vocal-piano duo with his sister Jennifer Partridge, with whom he worked for over 50 years.",
+                  " While concentrating mainly on songs, oratorio and lieder, he also recorded opera, and has an extensive discography.",
+                  " He is now a teacher and adjudicator, and conducts master classes in many countries."
+                ]
+              }
+            ]
+          ],
+          "roles": [
+            "retrieval",
+            "verification",
+            "reasoning"
+          ],
+          "evidence_lengths": [
+            {
+              "characters": 3020,
+              "words": 361,
+              "tokens": 674
+            },
+            {
+              "characters": 1055,
+              "words": 130,
+              "tokens": 247
+            },
+            {
+              "characters": 1992,
+              "words": 228,
+              "tokens": 411
+            }
+          ]
+        }
+      },
+      "execution_order": [
+        "distributed",
+        "colocated"
+      ],
+      "revision_order": [
+        "broadcast",
+        "nocomm"
+      ]
+    }
+  ],
+  "private": {
+    "labels": {
+      "5abace6b5542996cc5e49e99": {
+        "answer": "Che Guevara",
+        "supporting_facts": [
+          [
+            "Arthur Quinlan",
+            0
+          ],
+          [
+            "Arthur Quinlan",
+            1
+          ],
+          [
+            "Che Guevara",
+            1
+          ]
+        ],
+        "support_titles": [
+          "Che Guevara",
+          "Arthur Quinlan"
+        ]
+      },
+      "5a8080365542992097ad2fed": {
+        "answer": "bi-fuel vehicles",
+        "supporting_facts": [
+          [
+            "Flexible-fuel vehicle",
+            2
+          ],
+          [
+            "Hydrogen vehicle",
+            0
+          ]
+        ],
+        "support_titles": [
+          "Flexible-fuel vehicle",
+          "Hydrogen vehicle"
+        ]
+      },
+      "5abfca465542993fe9a41e65": {
+        "answer": "2017–18 Swiss Super League",
+        "supporting_facts": [
+          [
+            "Ulrich Forte",
+            1
+          ],
+          [
+            "2017–18 Swiss Super League",
+            0
+          ]
+        ],
+        "support_titles": [
+          "2017–18 Swiss Super League",
+          "Ulrich Forte"
+        ]
+      },
+      "5ac3044f5542990b17b154dc": {
+        "answer": "vocalist",
+        "supporting_facts": [
+          [
+            "Danny Jones",
+            0
+          ],
+          [
+            "Aleksi Sihvonen",
+            0
+          ],
+          [
+            "Aleksi Sihvonen",
+            2
+          ]
+        ],
+        "support_titles": [
+          "Aleksi Sihvonen",
+          "Danny Jones"
+        ]
+      },
+      "5a7c651a55429935c91b5188": {
+        "answer": "80,000 years BP",
+        "supporting_facts": [
+          [
+            "Mulga apple",
+            0
+          ],
+          [
+            "Indigenous Australians",
+            0
+          ],
+          [
+            "Indigenous Australians",
+            4
+          ]
+        ],
+        "support_titles": [
+          "Mulga apple",
+          "Indigenous Australians"
+        ]
+      },
+      "5a735e9155429901807db00d": {
+        "answer": "Spain",
+        "supporting_facts": [
+          [
+            "Guadarrama National Park",
+            0
+          ],
+          [
+            "Doñana National Park",
+            0
+          ]
+        ],
+        "support_titles": [
+          "Guadarrama National Park",
+          "Doñana National Park"
+        ]
+      },
+      "5ac540365542994611c8b470": {
+        "answer": "Loughborough University",
+        "supporting_facts": [
+          [
+            "Loughborough Students' Union",
+            0
+          ],
+          [
+            "Loughborough University",
+            0
+          ],
+          [
+            "Loughborough University",
+            1
+          ]
+        ],
+        "support_titles": [
+          "Loughborough University",
+          "Loughborough Students' Union"
+        ]
+      },
+      "5abe4a365542993f32c2a0dc": {
+        "answer": "more than 120 countries",
+        "supporting_facts": [
+          [
+            "Rosi Golan",
+            2
+          ],
+          [
+            "Chicco",
+            0
+          ]
+        ],
+        "support_titles": [
+          "Chicco",
+          "Rosi Golan"
+        ]
+      }
+    }
+  },
+  "selection": {
+    "source_questions": 7405,
+    "excluded_exposed": 497,
+    "known_exposure_id_count": 909,
+    "known_exposure_normalized_question_count": 909,
+    "eligible_questions": 1935,
+    "ineligible_reasons": {
+      "annotated_support_article_absent_from_candidates": 4881,
+      "fewer_than_six_candidate_articles": 45,
+      "invalid_annotated_sentence_index": 1,
+      "invalid_or_empty_source_sentences": 46
+    },
+    "sample_type_counts": {
+      "bridge": 6,
+      "comparison": 2
+    },
+    "selected_candidate_title_overlap_with_exposure": 1,
+    "no_document_disjoint_or_unexposed_backbone_claim": true,
+    "selection_rank": "SHA256(seed,sample,id) within proportional type strata; SHA256(seed,order,id) execution order"
+  },
+  "manifest_sha256": "f7181aec0eeb20426d1aef9f47c97a6bb1189b9c034b20cfb7b3c8f18e8e971c"
+}

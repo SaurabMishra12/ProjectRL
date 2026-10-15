@@ -1,0 +1,80 @@
+{
+  "attempt_id": "c5913b53254e481bb2c1b17e96d45973",
+  "request_hash": "410ae377f6af342a4c5c5ba40942ec19f8ff63caddc7be78c01c45d05a83b5f6",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions from Wikipedia source evidence. Use the local evidence and any source evidence supplied in peer messages. Peer answer proposals are unverified. Reconsider a previous response when one is supplied. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs). Cite only source sentences actually shown in this request. Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Loughborough Students (Lightning) Rugby Union Football Club are a women's rugby union club based in Loughborough, Leicestershire, England.\",\"title\":\"Loughborough Students (Lightning) RUFC\"},{\"sentence_id\":1,\"text\":\" They are the women's team of Loughborough Students RUFC and Loughborough University.\",\"title\":\"Loughborough Students (Lightning) RUFC\"},{\"sentence_id\":2,\"text\":\" In 2017, they were selected as a franchise for the inaugural Premier 15s season.\",\"title\":\"Loughborough Students (Lightning) RUFC\"},{\"sentence_id\":0,\"text\":\"Haslegrave Ground is a cricket ground in Loughborough, Leicestershire.\",\"title\":\"Haslegrave Ground\"},{\"sentence_id\":1,\"text\":\" The ground is based at Loughborough University.\",\"title\":\"Haslegrave Ground\"},{\"sentence_id\":2,\"text\":\" The first recorded match on the ground was in 1988, when Loughborough Students played the Marylebone Cricket Club.\",\"title\":\"Haslegrave Ground\"},{\"sentence_id\":3,\"text\":\" The ground held 2 Women's One Day Internationals in 2008, when England women played West Indies women in both matches.\",\"title\":\"Haslegrave Ground\"}],\"peer_messages\":[],\"previous_response\":null,\"question\":\"Loughborough Students' Union serves the students at what public research university that has been a university since 1966, but the institution dates back to 1909?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_limit": 32768,
+    "max_completions": 150,
+    "max_attempts": 180,
+    "max_retries_per_request": 2,
+    "min_interval_seconds": 2.0,
+    "max_estimated_tokens": 2000000,
+    "tokenizer_identity": {
+      "name": "openai/gpt-oss-120b",
+      "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+      "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+    },
+    "study_manifest_hash": "f7181aec0eeb20426d1aef9f47c97a6bb1189b9c034b20cfb7b3c8f18e8e971c",
+    "e7_paid_inference": false
+  },
+  "http_status": 200,
+  "headers": {
+    "x-request-id": "3004802a-62fe-428d-8897-7c73140bdfb3",
+    "x-ratelimit-remaining-requests": "49",
+    "x-ratelimit-remaining-tokens": "49473",
+    "apim-request-id": "93982055-4230-41b3-b3fa-a5d4f853a05e"
+  },
+  "raw": {
+    "id": "642d0a8da442485fa023ef9f13f2df3a",
+    "model": "gpt-oss-120b",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"answer\": \"Loughborough University\",\n  \"citations\": [\n    [\"Loughborough Students (Lightning) RUFC\", 1]\n  ]\n}",
+          "reasoning_content": "We need answer: which public research university? Loughborough Students' Union serves students at Loughborough University. The question: \"Loughborough Students' Union serves the students at what public research university that has been a university since 1966, but the institution dates back to 1909?\" Answer: Loughborough University. Need citation from provided evidence. Evidence includes sentences about Loughborough Students (Lightning) RUFC: they are women's team of Loughborough Students RUFC and Loughborough University. That shows Loughborough University. Use sentence 1 of first evidence: \"They are the women's team of Loughborough Students RUFC and Loughborough University.\" Title \"Loughborough Students (Lightning) RUFC\". So citation: [\"Loughborough Students (Lightning) RUFC\",1]. Also maybe other evidence? Not needed. Provide JSON."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 490,
+      "completion_tokens": 223,
+      "total_tokens": 713,
+      "audio_prompt_tokens": 0
+    },
+    "created": 1792071365,
+    "object": "chat.completion",
+    "prompt_filter_results": null
+  },
+  "latency_seconds": 1.4059614590005367,
+  "metadata": {
+    "question_id": "5ac540365542994611c8b470",
+    "placement": "colocated",
+    "stage": "initial",
+    "node": 2
+  },
+  "content_hash": "a52348e6522519da5657bfb8b9df273ddacaa0e2e4bb7b96a7e7e933bb2d1387"
+}

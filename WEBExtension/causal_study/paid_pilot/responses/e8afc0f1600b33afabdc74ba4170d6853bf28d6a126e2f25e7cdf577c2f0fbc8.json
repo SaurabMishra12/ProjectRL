@@ -1,0 +1,80 @@
+{
+  "attempt_id": "8368dc5597ad40b594f42a38655f338b",
+  "request_hash": "e8afc0f1600b33afabdc74ba4170d6853bf28d6a126e2f25e7cdf577c2f0fbc8",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions from Wikipedia source evidence. Use the local evidence and any source evidence supplied in peer messages. Peer answer proposals are unverified. Reconsider a previous response when one is supplied. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs). Cite only source sentences actually shown in this request. Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The 2017–18 Swiss Super League (referred to as the Raiffeisen Super League for sponsoring reasons) is the 121th season of top-tier competitive football in Switzerland and the 15th under its current name and format.\",\"title\":\"2017–18 Swiss Super League\"},{\"sentence_id\":1,\"text\":\" Basel are the defending champions.\",\"title\":\"2017–18 Swiss Super League\"},{\"sentence_id\":0,\"text\":\"FC Zürich Frauen is a women's football Club from Zürich, Switzerland.\",\"title\":\"FC Zürich Frauen\"},{\"sentence_id\":1,\"text\":\" Its first team plays since the founding of the Swiss national league in 1970 in the first division.\",\"title\":\"FC Zürich Frauen\"},{\"sentence_id\":2,\"text\":\" The team won 20 national championships and won the Cup 12 times.\",\"title\":\"FC Zürich Frauen\"}],\"peer_messages\":[],\"previous_response\":{\"answer\":\"Swiss Super League\",\"citations\":[[\"2017–18 Swiss Super League\",0]]},\"question\":\"which league is the 121th season of top-tier competitive football in Switzerland which Ulrich Forte coach FC Zürich in the league \"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_limit": 32768,
+    "max_completions": 150,
+    "max_attempts": 180,
+    "max_retries_per_request": 2,
+    "min_interval_seconds": 2.0,
+    "max_estimated_tokens": 2000000,
+    "tokenizer_identity": {
+      "name": "openai/gpt-oss-120b",
+      "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+      "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+    },
+    "study_manifest_hash": "f7181aec0eeb20426d1aef9f47c97a6bb1189b9c034b20cfb7b3c8f18e8e971c",
+    "e7_paid_inference": false
+  },
+  "http_status": 200,
+  "headers": {
+    "x-request-id": "afd2db67-337b-4db3-b7f1-56080667a1a9",
+    "x-ratelimit-remaining-requests": "49",
+    "x-ratelimit-remaining-tokens": "49548",
+    "apim-request-id": "807cc4c7-04ca-4730-a70c-84044269f20c"
+  },
+  "raw": {
+    "id": "e1a44c669d874218a203e0184957a4c0",
+    "model": "gpt-oss-120b",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"answer\": \"Swiss Super League\",\n  \"citations\": [\n    [\"2017–18 Swiss Super League\", 0]\n  ]\n}",
+          "reasoning_content": "We need to answer: \"which league is the 121th season of top-tier competitive football in Switzerland which Ulrich Forte coach FC Zürich in the league\". The question seems garbled. It asks: which league is the 121th season of top-tier competitive football in Switzerland which Ulrich Forte coach FC Zürich in the league. Likely they want the name of the league: the 121st season of top-tier competitive football in Switzerland is the Swiss Super League (specifically 2017–18 Swiss Super League). So answer: Swiss Super League. Need citation from evidence: sentence 0 of 2017–18 Swiss Super League says it's the 121th season of top-tier competitive football in Switzerland. So answer \"Swiss Super League\". Provide citation."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 417,
+      "completion_tokens": 200,
+      "total_tokens": 617,
+      "audio_prompt_tokens": 0
+    },
+    "created": 1792071207,
+    "object": "chat.completion",
+    "prompt_filter_results": null
+  },
+  "latency_seconds": 0.6055264130009164,
+  "metadata": {
+    "question_id": "5abfca465542993fe9a41e65",
+    "placement": "distributed",
+    "stage": "nocomm",
+    "node": 2
+  },
+  "content_hash": "f73e899358b8a6d7ae8662840cdf484b4e80bffcd376cf5cb589e13ad7178c33"
+}

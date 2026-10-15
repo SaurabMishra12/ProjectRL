@@ -1,0 +1,80 @@
+{
+  "attempt_id": "2e821c2ca6014d719314523b9fe4fef9",
+  "request_hash": "989c027058060ef0e9ab90bf37a04b5e1e634856fa85632fda3bfd65a7978dc1",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions from Wikipedia source evidence. Use the local evidence and any source evidence supplied in peer messages. Peer answer proposals are unverified. Reconsider a previous response when one is supplied. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs). Cite only source sentences actually shown in this request. Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"A hydrogen-powered aircraft is an aeroplane that uses hydrogen fuel as a power source.\",\"title\":\"Hydrogen-powered aircraft\"},{\"sentence_id\":1,\"text\":\" Hydrogen can either be burned in some kind of jet engine, or other kind of internal combustion engine, or can be used to power a fuel cell to generate electricity to power a propeller.\",\"title\":\"Hydrogen-powered aircraft\"},{\"sentence_id\":0,\"text\":\"A flexible-fuel vehicle (FFV) or dual-fuel vehicle (colloquially called a flex-fuel vehicle) is an alternative fuel vehicle with an internal combustion engine designed to run on more than one fuel, usually gasoline blended with either ethanol or methanol fuel, and both fuels are stored in the same common tank.\",\"title\":\"Flexible-fuel vehicle\"},{\"sentence_id\":1,\"text\":\" Modern flex-fuel engines are capable of burning any proportion of the resulting blend in the combustion chamber as fuel injection and spark timing are adjusted automatically according to the actual blend detected by a fuel composition sensor.\",\"title\":\"Flexible-fuel vehicle\"},{\"sentence_id\":2,\"text\":\" Flex-fuel vehicles are distinguished from bi-fuel vehicles, where two fuels are stored in separate tanks and the engine runs on one fuel at a time, for example, compressed natural gas (CNG), liquefied petroleum gas (LPG), or hydrogen.\",\"title\":\"Flexible-fuel vehicle\"}],\"peer_messages\":[{\"answer\":\"neither\",\"evidence\":[{\"sentence_id\":0,\"text\":\"Flexible-fuel vehicles in the United States are the second largest flex-fuel fleet in the world after Brazil, and there were about 17.4 million flex-fuel cars and light trucks in operation by the end of 2014.\",\"title\":\"Flexible-fuel vehicles in the United States\"},{\"sentence_id\":0,\"text\":\"A hydrogen vehicle is a vehicle that uses hydrogen as its onboard fuel for motive power.\",\"title\":\"Hydrogen vehicle\"}],\"sender\":0},{\"answer\":\"noanswer\",\"evidence\":[],\"sender\":2}],\"previous_response\":{\"answer\":\"Bi-fuel\",\"citations\":[[\"Flexible-fuel vehicle\",2]]},\"question\":\"A vehicle that uses hydrogen as its onboard fuel for motive power is cosidered which, Flex-fuel or Bi-fuel?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_limit": 32768,
+    "max_completions": 150,
+    "max_attempts": 180,
+    "max_retries_per_request": 2,
+    "min_interval_seconds": 2.0,
+    "max_estimated_tokens": 2000000,
+    "tokenizer_identity": {
+      "name": "openai/gpt-oss-120b",
+      "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+      "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+    },
+    "study_manifest_hash": "f7181aec0eeb20426d1aef9f47c97a6bb1189b9c034b20cfb7b3c8f18e8e971c",
+    "e7_paid_inference": false
+  },
+  "http_status": 200,
+  "headers": {
+    "x-request-id": "6017b684-27a3-4a46-8c0a-ee23bea7dd36",
+    "x-ratelimit-remaining-requests": "49",
+    "x-ratelimit-remaining-tokens": "49271",
+    "apim-request-id": "8587f2c1-734c-4926-8df0-7067d936ab6f"
+  },
+  "raw": {
+    "id": "97eb4162fff14ed6b837156af5123996",
+    "model": "gpt-oss-120b",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"answer\": \"Bi-fuel\",\n  \"citations\": [\n    [\"Flexible-fuel vehicle\", 2]\n  ]\n}",
+          "reasoning_content": "We need to answer: \"A vehicle that uses hydrogen as its onboard fuel for motive power is considered which, Flex-fuel or Bi-fuel?\" We have evidence: from Flexible-fuel vehicle article sentence 2: \"Flex-fuel vehicles are distinguished from bi-fuel vehicles, where two fuels are stored in separate tanks and the engine runs on one fuel at a time, for example, compressed natural gas (CNG), liquefied petroleum gas (LPG), or hydrogen.\"\n\nThus hydrogen vehicle uses hydrogen as onboard fuel. That is an example of bi-fuel vehicles (as per example). So answer: Bi-fuel.\n\nWe need to cite the sentence that mentions hydrogen as example of bi-fuel. That's sentence_id 2 from Flexible-fuel vehicle. Provide answer \"Bi-fuel\". JSON with answer and citations.\n\n"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 648,
+      "completion_tokens": 207,
+      "total_tokens": 855,
+      "audio_prompt_tokens": 0
+    },
+    "created": 1792071175,
+    "object": "chat.completion",
+    "prompt_filter_results": null
+  },
+  "latency_seconds": 0.8056817769993359,
+  "metadata": {
+    "question_id": "5a8080365542992097ad2fed",
+    "placement": "distributed",
+    "stage": "broadcast",
+    "node": 1
+  },
+  "content_hash": "84a03c93e2144cbeb42e299e3c09f472d2a4a089cbee281845bfdb3a77d9897f"
+}

@@ -1,0 +1,3777 @@
+{
+  "definitions": {
+    "scope": "OFFLINE_EXPLORATORY_OBSERVATIONAL_SAVED_TRACES; no Azure or network inference",
+    "unit": "One unique question per experiment-condition; never pool seeds/arms/suites as independent questions",
+    "oracle": "Any-agent EM and best-agent F1 are diagnostic upper bounds requiring gold selection, not deployable performance",
+    "aggregation": "Deterministic majority of normalized answers, ties follow fixed node order; E3 is receiver 1, not majority",
+    "f1": "Continuous official answer F1; no arbitrary F1 correctness threshold; EM analyzed separately",
+    "delta": "Final endpoint minus initial endpoint includes revision and selection, not a causal effect of aggregation alone",
+    "mean_candidate_reference": "Final F1 minus candidate-mean F1 describes vote selection relative to uniform candidate sampling; not a measured randomized arm",
+    "intervals": "Descriptive marginal 95% Wilson intervals for question-level counts and 2000-resample question bootstrap for mean F1 change; not multiplicity-adjusted",
+    "unobservable": [
+      "Whether model internally used delivered evidence",
+      "Citation entailment",
+      "Counterfactual outcome without a particular correct proposal",
+      "Azure monetary cost"
+    ]
+  },
+  "summary": [
+    {
+      "experiment": "E1",
+      "condition": "P_CCW",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 7,
+          "observed_n": 300,
+          "percent": 2.3333333333333335,
+          "wilson_ci95_percent": [
+            1.1347660299125235,
+            4.737197226827532
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 48,
+          "observed_n": 300,
+          "percent": 16.0,
+          "wilson_ci95_percent": [
+            12.28535455840995,
+            20.574367484859174
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 9.04000933706816,
+        "final_em": 6.333333333333333,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 31.15013798837328,
+        "oracle_final_f1_minus_endpoint_f1": 22.11012865130512,
+        "final_minus_initial_endpoint_f1": 3.7733002291825826,
+        "final_minus_initial_endpoint_em": 2.6666666666666665,
+        "final_f1_minus_candidate_mean_f1": -4.987741181013663
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        1.393472540531364,
+        6.163492063492064
+      ],
+      "f1_helped": 20,
+      "f1_harmed": 4,
+      "f1_unchanged": 276,
+      "categories": {
+        "correct_proposal_never_produced": 229,
+        "correct_proposal_available_but_rejected_by_majority": 48,
+        "correct_proposal_preserved_and_selected": 17,
+        "correct_proposal_produced_but_lost_during_revision": 4,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E1",
+      "condition": "P_CW",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 69,
+          "observed_n": 300,
+          "percent": 23.0,
+          "wilson_ci95_percent": [
+            18.597181807303016,
+            28.085538638822467
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 49,
+          "observed_n": 300,
+          "percent": 16.333333333333332,
+          "wilson_ci95_percent": [
+            12.58064331944026,
+            20.937316743012502
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 9.132972582972583,
+        "final_em": 6.666666666666667,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 30.926452251452254,
+        "oracle_final_f1_minus_endpoint_f1": 21.793479668479666,
+        "final_minus_initial_endpoint_f1": 3.8662634750870044,
+        "final_minus_initial_endpoint_em": 3.0,
+        "final_f1_minus_candidate_mean_f1": -4.904199477871205
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        1.422353790000849,
+        6.432900432900433
+      ],
+      "f1_helped": 20,
+      "f1_harmed": 5,
+      "f1_unchanged": 275,
+      "categories": {
+        "correct_proposal_never_produced": 227,
+        "correct_proposal_available_but_rejected_by_majority": 49,
+        "correct_proposal_preserved_and_selected": 20,
+        "correct_proposal_produced_but_lost_during_revision": 4
+      }
+    },
+    {
+      "experiment": "E1",
+      "condition": "P_NoComm",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 5.266709107885578,
+        "final_em": 3.6666666666666665,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 31.267574871522243,
+        "oracle_final_f1_minus_endpoint_f1": 26.00086576363666,
+        "final_minus_initial_endpoint_f1": 0.0,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": -7.109514994490916
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "f1_helped": 0,
+      "f1_harmed": 0,
+      "f1_unchanged": 300,
+      "categories": {
+        "correct_proposal_never_produced": 232,
+        "correct_proposal_available_but_rejected_by_majority": 57,
+        "correct_proposal_preserved_and_selected": 11
+      }
+    },
+    {
+      "experiment": "E1",
+      "condition": "P_SelfUpdate",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 6,
+          "observed_n": 300,
+          "percent": 2.0,
+          "wilson_ci95_percent": [
+            0.9197631557703617,
+            4.2939620817860575
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 56,
+          "observed_n": 300,
+          "percent": 18.666666666666668,
+          "wilson_ci95_percent": [
+            14.663748213263132,
+            23.461877983475084
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 5.755597996774467,
+        "final_em": 3.6666666666666665,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 30.677494922231762,
+        "oracle_final_f1_minus_endpoint_f1": 24.921896925457297,
+        "final_minus_initial_endpoint_f1": 0.48888888888888893,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": -6.60512032591496
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -0.6777777777777777,
+        1.777777777777778
+      ],
+      "f1_helped": 6,
+      "f1_harmed": 2,
+      "f1_unchanged": 292,
+      "categories": {
+        "correct_proposal_never_produced": 228,
+        "correct_proposal_available_but_rejected_by_majority": 56,
+        "correct_proposal_preserved_and_selected": 10,
+        "correct_proposal_produced_but_lost_during_revision": 5,
+        "correct_answer_recovered_without_communication": 1
+      }
+    },
+    {
+      "experiment": "E1",
+      "condition": "R_CCW",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 75,
+          "observed_n": 300,
+          "percent": 25.0,
+          "wilson_ci95_percent": [
+            20.436988915825566,
+            30.19515964540173
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 32.83902116402117,
+        "final_em": 24.0,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 34.14343434343434,
+        "oracle_final_f1_minus_endpoint_f1": 1.3044131794131795,
+        "final_minus_initial_endpoint_f1": 1.0912809231436682,
+        "final_minus_initial_endpoint_em": 1.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": 0.4700032916645488
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -0.7523088023088023,
+        3.127652576181988
+      ],
+      "f1_helped": 14,
+      "f1_harmed": 10,
+      "f1_unchanged": 276,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 70,
+        "correct_proposal_available_but_rejected_by_majority": 3,
+        "correct_proposal_produced_but_lost_during_revision": 6,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E1",
+      "condition": "R_CW",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 76,
+          "observed_n": 300,
+          "percent": 25.333333333333332,
+          "wilson_ci95_percent": [
+            20.744975020452642,
+            30.545411559958296
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 32.73249713249713,
+        "final_em": 24.333333333333332,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 34.06566352169245,
+        "oracle_final_f1_minus_endpoint_f1": 1.3331663891953123,
+        "final_minus_initial_endpoint_f1": 0.9847568916196368,
+        "final_minus_initial_endpoint_em": 1.6666666666666667,
+        "final_f1_minus_candidate_mean_f1": 0.5232256878827134
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -0.6687784619157168,
+        2.848217831551165
+      ],
+      "f1_helped": 14,
+      "f1_harmed": 6,
+      "f1_unchanged": 280,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 71,
+        "correct_proposal_available_but_rejected_by_majority": 3,
+        "correct_proposal_produced_but_lost_during_revision": 5,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E1",
+      "condition": "R_NoComm",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 31.747740240877494,
+        "final_em": 22.666666666666668,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 35.72607022607022,
+        "oracle_final_f1_minus_endpoint_f1": 3.9783299851927305,
+        "final_minus_initial_endpoint_f1": 0.0,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": -0.40924033156911843
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "f1_helped": 0,
+      "f1_harmed": 0,
+      "f1_unchanged": 300,
+      "categories": {
+        "correct_proposal_never_produced": 221,
+        "correct_proposal_preserved_and_selected": 68,
+        "correct_proposal_available_but_rejected_by_majority": 11
+      }
+    },
+    {
+      "experiment": "E1",
+      "condition": "R_SelfUpdate",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 78,
+          "observed_n": 300,
+          "percent": 26.0,
+          "wilson_ci95_percent": [
+            21.362060325993486,
+            31.24480229278472
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 9,
+          "observed_n": 300,
+          "percent": 3.0,
+          "wilson_ci95_percent": [
+            1.5861853809432311,
+            5.602253914164096
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 7,
+          "observed_n": 300,
+          "percent": 2.3333333333333335,
+          "wilson_ci95_percent": [
+            1.1347660299125235,
+            4.737197226827532
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 32.088925219776286,
+        "final_em": 23.666666666666668,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 34.96268372285168,
+        "oracle_final_f1_minus_endpoint_f1": 2.8737585030753907,
+        "final_minus_initial_endpoint_f1": 0.34118497889878785,
+        "final_minus_initial_endpoint_em": 1.0,
+        "final_f1_minus_candidate_mean_f1": 0.1229846271936853
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -1.1647954604149848,
+        1.9151260905537084
+      ],
+      "f1_helped": 8,
+      "f1_harmed": 5,
+      "f1_unchanged": 287,
+      "categories": {
+        "correct_proposal_never_produced": 217,
+        "correct_proposal_preserved_and_selected": 69,
+        "correct_proposal_available_but_rejected_by_majority": 7,
+        "correct_proposal_produced_but_lost_during_revision": 5,
+        "correct_answer_recovered_without_communication": 2
+      }
+    },
+    {
+      "experiment": "E2",
+      "condition": "R_CCW",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 75,
+          "observed_n": 300,
+          "percent": 25.0,
+          "wilson_ci95_percent": [
+            20.436988915825566,
+            30.19515964540173
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 32.83902116402117,
+        "final_em": 24.0,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 34.14343434343434,
+        "oracle_final_f1_minus_endpoint_f1": 1.3044131794131795,
+        "final_minus_initial_endpoint_f1": 1.0912809231436682,
+        "final_minus_initial_endpoint_em": 1.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": 0.4700032916645488
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -0.7523088023088023,
+        3.127652576181988
+      ],
+      "f1_helped": 14,
+      "f1_harmed": 10,
+      "f1_unchanged": 276,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 70,
+        "correct_proposal_available_but_rejected_by_majority": 3,
+        "correct_proposal_produced_but_lost_during_revision": 6,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E2",
+      "condition": "R_CW",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 76,
+          "observed_n": 300,
+          "percent": 25.333333333333332,
+          "wilson_ci95_percent": [
+            20.744975020452642,
+            30.545411559958296
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 32.73249713249713,
+        "final_em": 24.333333333333332,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 34.06566352169245,
+        "oracle_final_f1_minus_endpoint_f1": 1.3331663891953123,
+        "final_minus_initial_endpoint_f1": 0.9847568916196368,
+        "final_minus_initial_endpoint_em": 1.6666666666666667,
+        "final_f1_minus_candidate_mean_f1": 0.5232256878827134
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -0.6687784619157168,
+        2.848217831551165
+      ],
+      "f1_helped": 14,
+      "f1_harmed": 6,
+      "f1_unchanged": 280,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 71,
+        "correct_proposal_available_but_rejected_by_majority": 3,
+        "correct_proposal_produced_but_lost_during_revision": 5,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E2",
+      "condition": "R_NoComm",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 31.747740240877494,
+        "final_em": 22.666666666666668,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 35.72607022607022,
+        "oracle_final_f1_minus_endpoint_f1": 3.9783299851927305,
+        "final_minus_initial_endpoint_f1": 0.0,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": -0.40924033156911843
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "f1_helped": 0,
+      "f1_harmed": 0,
+      "f1_unchanged": 300,
+      "categories": {
+        "correct_proposal_never_produced": 221,
+        "correct_proposal_preserved_and_selected": 68,
+        "correct_proposal_available_but_rejected_by_majority": 11
+      }
+    },
+    {
+      "experiment": "E3",
+      "condition": "R_crop",
+      "endpoint": "receiver_1",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": null,
+          "observed_n": 0,
+          "percent": null,
+          "wilson_ci95_percent": null
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 31.490369363625177,
+        "final_em": 23.333333333333332,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 35.65277917603499,
+        "oracle_final_f1_minus_endpoint_f1": 4.162409812409813,
+        "final_minus_initial_endpoint_f1": -0.967259722264778,
+        "final_minus_initial_endpoint_em": 0.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": -0.344191301399844
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -2.399120775864962,
+        0.5556705774097078
+      ],
+      "f1_helped": 8,
+      "f1_harmed": 9,
+      "f1_unchanged": 283,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 68,
+        "correct_proposal_produced_but_lost_during_revision": 2,
+        "correct_proposal_available_elsewhere_but_receiver_incorrect": 9,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E3",
+      "condition": "R_prefix",
+      "endpoint": "receiver_1",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": null,
+          "observed_n": 0,
+          "percent": null,
+          "wilson_ci95_percent": null
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 31.63539100864682,
+        "final_em": 23.333333333333332,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 35.64899129724711,
+        "oracle_final_f1_minus_endpoint_f1": 4.013600288600289,
+        "final_minus_initial_endpoint_f1": -0.8222380772431328,
+        "final_minus_initial_endpoint_em": 0.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": -0.2475102047187473
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -2.2581529581529582,
+        0.6571270021219465
+      ],
+      "f1_helped": 8,
+      "f1_harmed": 9,
+      "f1_unchanged": 283,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 68,
+        "correct_proposal_produced_but_lost_during_revision": 2,
+        "correct_proposal_available_elsewhere_but_receiver_incorrect": 9,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E3-v2",
+      "condition": "R_NoComm_receiver",
+      "endpoint": "receiver_1",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": null,
+          "observed_n": 0,
+          "percent": null,
+          "wilson_ci95_percent": null
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 32.457629085889955,
+        "final_em": 23.0,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 35.72607022607022,
+        "oracle_final_f1_minus_endpoint_f1": 3.2684411401802707,
+        "final_minus_initial_endpoint_f1": 0.0,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": 0.3006485134433413
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "f1_helped": 0,
+      "f1_harmed": 0,
+      "f1_unchanged": 300,
+      "categories": {
+        "correct_proposal_never_produced": 221,
+        "correct_proposal_preserved_and_selected": 69,
+        "correct_proposal_available_elsewhere_but_receiver_incorrect": 10
+      }
+    },
+    {
+      "experiment": "E3-v2",
+      "condition": "R_SelfUpdate_receiver",
+      "endpoint": "receiver_1",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 78,
+          "observed_n": 300,
+          "percent": 26.0,
+          "wilson_ci95_percent": [
+            21.362060325993486,
+            31.24480229278472
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 9,
+          "observed_n": 300,
+          "percent": 3.0,
+          "wilson_ci95_percent": [
+            1.5861853809432311,
+            5.602253914164096
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": null,
+          "observed_n": 0,
+          "percent": null,
+          "wilson_ci95_percent": null
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.747740240877494,
+        "initial_majority_em": 22.666666666666668,
+        "final_f1": 31.42728183159872,
+        "final_em": 23.333333333333332,
+        "oracle_initial_best_f1": 35.72607022607022,
+        "oracle_final_best_f1": 34.96268372285168,
+        "oracle_final_f1_minus_endpoint_f1": 3.5354018912529552,
+        "final_minus_initial_endpoint_f1": -1.030347254291236,
+        "final_minus_initial_endpoint_em": 0.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": -0.5386587609838788
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -2.8598205587645404,
+        0.5913780663780663
+      ],
+      "f1_helped": 8,
+      "f1_harmed": 12,
+      "f1_unchanged": 280,
+      "categories": {
+        "correct_proposal_never_produced": 217,
+        "correct_proposal_preserved_and_selected": 67,
+        "correct_proposal_available_elsewhere_but_receiver_incorrect": 8,
+        "correct_proposal_produced_but_lost_during_revision": 5,
+        "correct_answer_recovered_without_communication": 3
+      }
+    },
+    {
+      "experiment": "E3-v2",
+      "condition": "R_crop",
+      "endpoint": "receiver_1",
+      "n_unique_questions": 299,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 299,
+          "percent": 26.421404682274247,
+          "wilson_ci95_percent": [
+            21.745637806367625,
+            31.695347272401563
+          ]
+        },
+        "final_any_em": {
+          "count": 80,
+          "observed_n": 299,
+          "percent": 26.755852842809364,
+          "wilson_ci95_percent": [
+            22.056171330958435,
+            32.04522530697715
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 299,
+          "percent": 3.678929765886288,
+          "wilson_ci95_percent": [
+            2.0664596110536446,
+            6.466539444400745
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 299,
+          "percent": 0.6688963210702341,
+          "wilson_ci95_percent": [
+            0.1836275671666143,
+            2.4056674557902267
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 3,
+          "observed_n": 299,
+          "percent": 1.0033444816053512,
+          "wilson_ci95_percent": [
+            0.3418031060506071,
+            2.9079034760726286
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": null,
+          "observed_n": 0,
+          "percent": null,
+          "wilson_ci95_percent": null
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.853919974124576,
+        "initial_majority_em": 22.74247491638796,
+        "final_f1": 33.028343353151534,
+        "final_em": 24.08026755852843,
+        "oracle_initial_best_f1": 35.845555410772796,
+        "oracle_final_best_f1": 36.02911794088265,
+        "oracle_final_f1_minus_endpoint_f1": 3.0007745877311094,
+        "final_minus_initial_endpoint_f1": 0.46216032383051164,
+        "final_minus_initial_endpoint_em": 1.0033444816053512,
+        "final_f1_minus_candidate_mean_f1": 0.6097609094199031
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -1.4351170161244664,
+        2.3678336563914235
+      ],
+      "f1_helped": 12,
+      "f1_harmed": 10,
+      "f1_unchanged": 277,
+      "categories": {
+        "correct_proposal_never_produced": 218,
+        "correct_proposal_preserved_and_selected": 70,
+        "correct_answer_recovered_through_communication": 2,
+        "correct_proposal_available_elsewhere_but_receiver_incorrect": 8,
+        "correct_proposal_produced_but_lost_during_revision": 1
+      }
+    },
+    {
+      "experiment": "E3-v2",
+      "condition": "R_prefix",
+      "endpoint": "receiver_1",
+      "n_unique_questions": 299,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 299,
+          "percent": 26.421404682274247,
+          "wilson_ci95_percent": [
+            21.745637806367625,
+            31.695347272401563
+          ]
+        },
+        "final_any_em": {
+          "count": 80,
+          "observed_n": 299,
+          "percent": 26.755852842809364,
+          "wilson_ci95_percent": [
+            22.056171330958435,
+            32.04522530697715
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 299,
+          "percent": 3.678929765886288,
+          "wilson_ci95_percent": [
+            2.0664596110536446,
+            6.466539444400745
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 299,
+          "percent": 0.6688963210702341,
+          "wilson_ci95_percent": [
+            0.1836275671666143,
+            2.4056674557902267
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 5,
+          "observed_n": 299,
+          "percent": 1.6722408026755853,
+          "wilson_ci95_percent": [
+            0.7163424346203942,
+            3.85418726583563
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": null,
+          "observed_n": 0,
+          "percent": null,
+          "wilson_ci95_percent": null
+        }
+      },
+      "means": {
+        "initial_majority_f1": 31.853919974124576,
+        "initial_majority_em": 22.74247491638796,
+        "final_f1": 31.23295005647947,
+        "final_em": 22.40802675585284,
+        "oracle_initial_best_f1": 35.845555410772796,
+        "oracle_final_best_f1": 35.962517874282575,
+        "oracle_final_f1_minus_endpoint_f1": 4.729567817803112,
+        "final_minus_initial_endpoint_f1": -1.3332329728415573,
+        "final_minus_initial_endpoint_em": -0.6688963210702341,
+        "final_f1_minus_candidate_mean_f1": -0.5871679550281429
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -2.9846392534038486,
+        0.14880531949363254
+      ],
+      "f1_helped": 6,
+      "f1_harmed": 13,
+      "f1_unchanged": 280,
+      "categories": {
+        "correct_proposal_never_produced": 218,
+        "correct_proposal_preserved_and_selected": 65,
+        "correct_proposal_available_elsewhere_but_receiver_incorrect": 13,
+        "correct_proposal_produced_but_lost_during_revision": 1,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E4",
+      "condition": "P_final",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 45,
+          "observed_n": 300,
+          "percent": 15.0,
+          "wilson_ci95_percent": [
+            11.403246871185315,
+            19.4817611145329
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 10.771742082207199,
+        "final_em": 7.666666666666667,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 30.8582328090655,
+        "oracle_final_f1_minus_endpoint_f1": 20.0864907268583,
+        "final_minus_initial_endpoint_f1": 5.50503297432162,
+        "final_minus_initial_endpoint_em": 4.0,
+        "final_f1_minus_candidate_mean_f1": -3.848703292004112
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        2.9000594177064767,
+        8.423376623376624
+      ],
+      "f1_helped": 27,
+      "f1_harmed": 5,
+      "f1_unchanged": 268,
+      "categories": {
+        "correct_proposal_never_produced": 227,
+        "correct_proposal_available_but_rejected_by_majority": 45,
+        "correct_proposal_preserved_and_selected": 21,
+        "correct_answer_recovered_through_communication": 2,
+        "correct_proposal_produced_but_lost_during_revision": 5
+      }
+    },
+    {
+      "experiment": "E4",
+      "condition": "P_stopped",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 45,
+          "observed_n": 300,
+          "percent": 15.0,
+          "wilson_ci95_percent": [
+            11.403246871185315,
+            19.4817611145329
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 10.771742082207199,
+        "final_em": 7.666666666666667,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 30.8582328090655,
+        "oracle_final_f1_minus_endpoint_f1": 20.0864907268583,
+        "final_minus_initial_endpoint_f1": 5.50503297432162,
+        "final_minus_initial_endpoint_em": 4.0,
+        "final_f1_minus_candidate_mean_f1": -4.023306466607286
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        2.9000594177064767,
+        8.423376623376624
+      ],
+      "f1_helped": 27,
+      "f1_harmed": 5,
+      "f1_unchanged": 268,
+      "categories": {
+        "correct_proposal_never_produced": 227,
+        "correct_proposal_available_but_rejected_by_majority": 45,
+        "correct_proposal_preserved_and_selected": 21,
+        "correct_answer_recovered_through_communication": 2,
+        "correct_proposal_produced_but_lost_during_revision": 5
+      }
+    },
+    {
+      "experiment": "E4_round",
+      "condition": "P_depth_0",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 5.266709107885578,
+        "final_em": 3.6666666666666665,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 31.267574871522243,
+        "oracle_final_f1_minus_endpoint_f1": 26.00086576363666,
+        "final_minus_initial_endpoint_f1": 0.0,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": -7.109514994490916
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "f1_helped": 0,
+      "f1_harmed": 0,
+      "f1_unchanged": 300,
+      "categories": {
+        "correct_proposal_never_produced": 232,
+        "correct_proposal_available_but_rejected_by_majority": 57,
+        "correct_proposal_preserved_and_selected": 11
+      }
+    },
+    {
+      "experiment": "E4_round",
+      "condition": "P_depth_1",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 69,
+          "observed_n": 300,
+          "percent": 23.0,
+          "wilson_ci95_percent": [
+            18.597181807303016,
+            28.085538638822467
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 49,
+          "observed_n": 300,
+          "percent": 16.333333333333332,
+          "wilson_ci95_percent": [
+            12.58064331944026,
+            20.937316743012502
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 9.132972582972583,
+        "final_em": 6.666666666666667,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 30.926452251452254,
+        "oracle_final_f1_minus_endpoint_f1": 21.793479668479666,
+        "final_minus_initial_endpoint_f1": 3.8662634750870044,
+        "final_minus_initial_endpoint_em": 3.0,
+        "final_f1_minus_candidate_mean_f1": -4.904199477871205
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        1.422353790000849,
+        6.432900432900433
+      ],
+      "f1_helped": 20,
+      "f1_harmed": 5,
+      "f1_unchanged": 275,
+      "categories": {
+        "correct_proposal_never_produced": 227,
+        "correct_proposal_available_but_rejected_by_majority": 49,
+        "correct_proposal_preserved_and_selected": 20,
+        "correct_proposal_produced_but_lost_during_revision": 4
+      }
+    },
+    {
+      "experiment": "E4_round",
+      "condition": "P_depth_2",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 4,
+          "observed_n": 300,
+          "percent": 1.3333333333333333,
+          "wilson_ci95_percent": [
+            0.5196961739358857,
+            3.377553025253262
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 50,
+          "observed_n": 300,
+          "percent": 16.666666666666668,
+          "wilson_ci95_percent": [
+            12.87653312036807,
+            21.299664961268324
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 8.478123728123728,
+        "final_em": 5.666666666666667,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 30.63159215985303,
+        "oracle_final_f1_minus_endpoint_f1": 22.1534684317293,
+        "final_minus_initial_endpoint_f1": 3.2114146202381497,
+        "final_minus_initial_endpoint_em": 2.0,
+        "final_f1_minus_candidate_mean_f1": -4.975251184671475
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.7744440744440744,
+        5.616113624937154
+      ],
+      "f1_helped": 19,
+      "f1_harmed": 5,
+      "f1_unchanged": 276,
+      "categories": {
+        "correct_proposal_never_produced": 227,
+        "correct_proposal_available_but_rejected_by_majority": 50,
+        "correct_proposal_preserved_and_selected": 15,
+        "correct_answer_recovered_through_communication": 2,
+        "correct_proposal_produced_but_lost_during_revision": 6
+      }
+    },
+    {
+      "experiment": "E4_round",
+      "condition": "P_depth_3",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "final_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 45,
+          "observed_n": 300,
+          "percent": 15.0,
+          "wilson_ci95_percent": [
+            11.403246871185315,
+            19.4817611145329
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.266709107885578,
+        "initial_majority_em": 3.6666666666666665,
+        "final_f1": 10.771742082207199,
+        "final_em": 7.666666666666667,
+        "oracle_initial_best_f1": 31.267574871522243,
+        "oracle_final_best_f1": 30.8582328090655,
+        "oracle_final_f1_minus_endpoint_f1": 20.0864907268583,
+        "final_minus_initial_endpoint_f1": 5.50503297432162,
+        "final_minus_initial_endpoint_em": 4.0,
+        "final_f1_minus_candidate_mean_f1": -3.848703292004112
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        2.9000594177064767,
+        8.423376623376624
+      ],
+      "f1_helped": 27,
+      "f1_harmed": 5,
+      "f1_unchanged": 268,
+      "categories": {
+        "correct_proposal_never_produced": 227,
+        "correct_proposal_available_but_rejected_by_majority": 45,
+        "correct_proposal_preserved_and_selected": 21,
+        "correct_answer_recovered_through_communication": 2,
+        "correct_proposal_produced_but_lost_during_revision": 5
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_Broadcast",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 66,
+          "observed_n": 300,
+          "percent": 22.0,
+          "wilson_ci95_percent": [
+            17.68274459698328,
+            27.025261791591294
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 32,
+          "observed_n": 300,
+          "percent": 10.666666666666666,
+          "wilson_ci95_percent": [
+            7.657584904594214,
+            14.670328831736743
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 14.991991341991342,
+        "final_em": 11.333333333333334,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 30.541457061889748,
+        "oracle_final_f1_minus_endpoint_f1": 15.549465719898407,
+        "final_minus_initial_endpoint_f1": 9.932203986188807,
+        "final_minus_initial_endpoint_em": 8.0,
+        "final_f1_minus_candidate_mean_f1": -2.0987877555986523
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        6.806493506493506,
+        13.50937950937951
+      ],
+      "f1_helped": 38,
+      "f1_harmed": 3,
+      "f1_unchanged": 259,
+      "categories": {
+        "correct_proposal_never_produced": 228,
+        "correct_proposal_available_but_rejected_by_majority": 32,
+        "correct_proposal_preserved_and_selected": 32,
+        "correct_answer_recovered_through_communication": 2,
+        "correct_proposal_produced_but_lost_during_revision": 6
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_Learned_seed19",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 48,
+          "observed_n": 300,
+          "percent": 16.0,
+          "wilson_ci95_percent": [
+            12.28535455840995,
+            20.574367484859174
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 9.16515616999488,
+        "final_em": 6.666666666666667,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 31.204400686608928,
+        "oracle_final_f1_minus_endpoint_f1": 22.039244516614044,
+        "final_minus_initial_endpoint_f1": 4.105368814192344,
+        "final_minus_initial_endpoint_em": 3.3333333333333335,
+        "final_f1_minus_candidate_mean_f1": -4.6680823589259655
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        1.7770308123249299,
+        6.583146591970121
+      ],
+      "f1_helped": 17,
+      "f1_harmed": 3,
+      "f1_unchanged": 280,
+      "categories": {
+        "correct_proposal_never_produced": 231,
+        "correct_proposal_available_but_rejected_by_majority": 48,
+        "correct_proposal_preserved_and_selected": 19,
+        "correct_answer_recovered_through_communication": 1,
+        "correct_proposal_produced_but_lost_during_revision": 1
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_Learned_seed31",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 66,
+          "observed_n": 300,
+          "percent": 22.0,
+          "wilson_ci95_percent": [
+            17.68274459698328,
+            27.025261791591294
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 6,
+          "observed_n": 300,
+          "percent": 2.0,
+          "wilson_ci95_percent": [
+            0.9197631557703617,
+            4.2939620817860575
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 49,
+          "observed_n": 300,
+          "percent": 16.333333333333332,
+          "wilson_ci95_percent": [
+            12.58064331944026,
+            20.937316743012502
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 7.52407307008825,
+        "final_em": 5.666666666666667,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 30.252934358785424,
+        "oracle_final_f1_minus_endpoint_f1": 22.72886128869717,
+        "final_minus_initial_endpoint_f1": 2.464285714285714,
+        "final_minus_initial_endpoint_em": 2.3333333333333335,
+        "final_f1_minus_candidate_mean_f1": -5.529109300382869
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.38095238095238093,
+        4.678571428571428
+      ],
+      "f1_helped": 11,
+      "f1_harmed": 4,
+      "f1_unchanged": 285,
+      "categories": {
+        "correct_proposal_never_produced": 231,
+        "correct_proposal_preserved_and_selected": 17,
+        "correct_proposal_available_but_rejected_by_majority": 49,
+        "correct_proposal_produced_but_lost_during_revision": 3
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_Learned_seed7",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 66,
+          "observed_n": 300,
+          "percent": 22.0,
+          "wilson_ci95_percent": [
+            17.68274459698328,
+            27.025261791591294
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 32,
+          "observed_n": 300,
+          "percent": 10.666666666666666,
+          "wilson_ci95_percent": [
+            7.657584904594214,
+            14.670328831736743
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 14.991991341991342,
+        "final_em": 11.333333333333334,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 30.568929589362277,
+        "oracle_final_f1_minus_endpoint_f1": 15.576938247370936,
+        "final_minus_initial_endpoint_f1": 9.932203986188807,
+        "final_minus_initial_endpoint_em": 8.0,
+        "final_f1_minus_candidate_mean_f1": -2.1079452647561614
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        6.806493506493506,
+        13.50937950937951
+      ],
+      "f1_helped": 38,
+      "f1_harmed": 3,
+      "f1_unchanged": 259,
+      "categories": {
+        "correct_proposal_never_produced": 228,
+        "correct_proposal_available_but_rejected_by_majority": 32,
+        "correct_proposal_preserved_and_selected": 32,
+        "correct_answer_recovered_through_communication": 2,
+        "correct_proposal_produced_but_lost_during_revision": 6
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_MatchedRandom_seed19",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 66,
+          "observed_n": 300,
+          "percent": 22.0,
+          "wilson_ci95_percent": [
+            17.68274459698328,
+            27.025261791591294
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 51,
+          "observed_n": 300,
+          "percent": 17.0,
+          "wilson_ci95_percent": [
+            13.173009843992434,
+            21.661426256827603
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 7.066919191919192,
+        "final_em": 5.0,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 30.465368763366477,
+        "oracle_final_f1_minus_endpoint_f1": 23.398449571447284,
+        "final_minus_initial_endpoint_f1": 2.0071318361166557,
+        "final_minus_initial_endpoint_em": 1.6666666666666667,
+        "final_f1_minus_candidate_mean_f1": -6.028994692052754
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.21298235814364844,
+        3.9235773977235073
+      ],
+      "f1_helped": 10,
+      "f1_harmed": 3,
+      "f1_unchanged": 287,
+      "categories": {
+        "correct_proposal_never_produced": 231,
+        "correct_proposal_preserved_and_selected": 15,
+        "correct_proposal_available_but_rejected_by_majority": 51,
+        "correct_proposal_produced_but_lost_during_revision": 3
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_MatchedRandom_seed31",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 69,
+          "observed_n": 300,
+          "percent": 23.0,
+          "wilson_ci95_percent": [
+            18.597181807303016,
+            28.085538638822467
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 6,
+          "observed_n": 300,
+          "percent": 2.0,
+          "wilson_ci95_percent": [
+            0.9197631557703617,
+            4.2939620817860575
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 56,
+          "observed_n": 300,
+          "percent": 18.666666666666668,
+          "wilson_ci95_percent": [
+            14.663748213263132,
+            23.461877983475084
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 6.574988328664799,
+        "final_em": 4.333333333333333,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 31.41685061484833,
+        "oracle_final_f1_minus_endpoint_f1": 24.841862286183527,
+        "final_minus_initial_endpoint_f1": 1.5152009728622633,
+        "final_minus_initial_endpoint_em": 1.0,
+        "final_f1_minus_candidate_mean_f1": -6.579434176315767
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -0.3188044034818229,
+        3.5542114695340503
+      ],
+      "f1_helped": 8,
+      "f1_harmed": 4,
+      "f1_unchanged": 288,
+      "categories": {
+        "correct_proposal_never_produced": 228,
+        "correct_proposal_produced_but_lost_during_revision": 3,
+        "correct_proposal_available_but_rejected_by_majority": 56,
+        "correct_proposal_preserved_and_selected": 13
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_MatchedRandom_seed7",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 66,
+          "observed_n": 300,
+          "percent": 22.0,
+          "wilson_ci95_percent": [
+            17.68274459698328,
+            27.025261791591294
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 12,
+          "observed_n": 300,
+          "percent": 4.0,
+          "wilson_ci95_percent": [
+            2.302732148794231,
+            6.860421203864004
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 32,
+          "observed_n": 300,
+          "percent": 10.666666666666666,
+          "wilson_ci95_percent": [
+            7.657584904594214,
+            14.670328831736743
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 14.991991341991342,
+        "final_em": 11.333333333333334,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 30.568929589362277,
+        "oracle_final_f1_minus_endpoint_f1": 15.576938247370936,
+        "final_minus_initial_endpoint_f1": 9.932203986188807,
+        "final_minus_initial_endpoint_em": 8.0,
+        "final_f1_minus_candidate_mean_f1": -1.9079452647561614
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        6.806493506493506,
+        13.50937950937951
+      ],
+      "f1_helped": 38,
+      "f1_harmed": 3,
+      "f1_unchanged": 259,
+      "categories": {
+        "correct_proposal_never_produced": 228,
+        "correct_proposal_available_but_rejected_by_majority": 32,
+        "correct_proposal_preserved_and_selected": 32,
+        "correct_answer_recovered_through_communication": 2,
+        "correct_proposal_produced_but_lost_during_revision": 6
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_NoComm",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 5.059787355802536,
+        "final_em": 3.3333333333333335,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 30.81524201918939,
+        "oracle_final_f1_minus_endpoint_f1": 25.75545466338685,
+        "final_minus_initial_endpoint_f1": 0.0,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": -7.1419420125810165
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "f1_helped": 0,
+      "f1_harmed": 0,
+      "f1_unchanged": 300,
+      "categories": {
+        "correct_proposal_never_produced": 233,
+        "correct_proposal_available_but_rejected_by_majority": 57,
+        "correct_proposal_preserved_and_selected": 10
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_SelfUpdate",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 68,
+          "observed_n": 300,
+          "percent": 22.666666666666668,
+          "wilson_ci95_percent": [
+            18.291950380328576,
+            27.73253204661327
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 4,
+          "observed_n": 300,
+          "percent": 1.3333333333333333,
+          "wilson_ci95_percent": [
+            0.5196961739358857,
+            3.377553025253262
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 56,
+          "observed_n": 300,
+          "percent": 18.666666666666668,
+          "wilson_ci95_percent": [
+            14.663748213263132,
+            23.461877983475084
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 6.216059757236228,
+        "final_em": 4.0,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 31.169299092296807,
+        "oracle_final_f1_minus_endpoint_f1": 24.953239335060577,
+        "final_minus_initial_endpoint_f1": 1.1562724014336918,
+        "final_minus_initial_endpoint_em": 0.6666666666666666,
+        "final_f1_minus_candidate_mean_f1": -6.232595212810137
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -0.14301075268817207,
+        2.566666666666667
+      ],
+      "f1_helped": 7,
+      "f1_harmed": 2,
+      "f1_unchanged": 291,
+      "categories": {
+        "correct_proposal_never_produced": 228,
+        "correct_proposal_available_but_rejected_by_majority": 56,
+        "correct_proposal_preserved_and_selected": 12,
+        "correct_proposal_produced_but_lost_during_revision": 4
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "P_Static",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 67,
+          "observed_n": 300,
+          "percent": 22.333333333333332,
+          "wilson_ci95_percent": [
+            17.987135808006236,
+            27.379108599751966
+          ]
+        },
+        "final_any_em": {
+          "count": 66,
+          "observed_n": 300,
+          "percent": 22.0,
+          "wilson_ci95_percent": [
+            17.68274459698328,
+            27.025261791591294
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 57,
+          "observed_n": 300,
+          "percent": 19.0,
+          "wilson_ci95_percent": [
+            14.963485033440666,
+            23.820379182481183
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 4,
+          "observed_n": 300,
+          "percent": 1.3333333333333333,
+          "wilson_ci95_percent": [
+            0.5196961739358857,
+            3.377553025253262
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 53,
+          "observed_n": 300,
+          "percent": 17.666666666666668,
+          "wilson_ci95_percent": [
+            13.767670929949633,
+            22.383241209237674
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 5.059787355802536,
+        "initial_majority_em": 3.3333333333333335,
+        "final_f1": 6.420856025694736,
+        "final_em": 4.333333333333333,
+        "oracle_initial_best_f1": 30.81524201918939,
+        "oracle_final_best_f1": 30.135323465524326,
+        "oracle_final_f1_minus_endpoint_f1": 23.714467439829594,
+        "final_minus_initial_endpoint_f1": 1.3610686698921994,
+        "final_minus_initial_endpoint_em": 1.0,
+        "final_f1_minus_candidate_mean_f1": -6.741473164980979
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -0.6976911976911977,
+        3.3968253968253967
+      ],
+      "f1_helped": 10,
+      "f1_harmed": 6,
+      "f1_unchanged": 284,
+      "categories": {
+        "correct_proposal_never_produced": 229,
+        "correct_proposal_produced_but_lost_during_revision": 5,
+        "correct_proposal_available_but_rejected_by_majority": 53,
+        "correct_proposal_preserved_and_selected": 13
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_Broadcast",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 76,
+          "observed_n": 300,
+          "percent": 25.333333333333332,
+          "wilson_ci95_percent": [
+            20.744975020452642,
+            30.545411559958296
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 6,
+          "observed_n": 300,
+          "percent": 2.0,
+          "wilson_ci95_percent": [
+            0.9197631557703617,
+            4.2939620817860575
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 31.65100872639572,
+        "final_em": 23.333333333333332,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 33.98369351666565,
+        "oracle_final_f1_minus_endpoint_f1": 2.3326847902699295,
+        "final_minus_initial_endpoint_f1": -0.663029563029563,
+        "final_minus_initial_endpoint_em": 0.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": -0.3309256212795792
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -2.5289173789173787,
+        1.216955266955267
+      ],
+      "f1_helped": 12,
+      "f1_harmed": 12,
+      "f1_unchanged": 276,
+      "categories": {
+        "correct_proposal_never_produced": 218,
+        "correct_proposal_preserved_and_selected": 68,
+        "correct_proposal_available_but_rejected_by_majority": 6,
+        "correct_proposal_produced_but_lost_during_revision": 6,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_Learned_seed19",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 80,
+          "observed_n": 300,
+          "percent": 26.666666666666668,
+          "wilson_ci95_percent": [
+            21.980599244000377,
+            31.942739413145095
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 9,
+          "observed_n": 300,
+          "percent": 3.0,
+          "wilson_ci95_percent": [
+            1.5861853809432311,
+            5.602253914164096
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 31.96587534126234,
+        "final_em": 23.666666666666668,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 35.60761385531207,
+        "oracle_final_f1_minus_endpoint_f1": 3.641738514049727,
+        "final_minus_initial_endpoint_f1": -0.34816294816294807,
+        "final_minus_initial_endpoint_em": 0.6666666666666666,
+        "final_f1_minus_candidate_mean_f1": -0.19582344472393037
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -2.033522033522033,
+        1.155011655011655
+      ],
+      "f1_helped": 9,
+      "f1_harmed": 7,
+      "f1_unchanged": 284,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 70,
+        "correct_proposal_available_but_rejected_by_majority": 9,
+        "correct_proposal_produced_but_lost_during_revision": 1,
+        "correct_answer_recovered_through_communication": 1
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_Learned_seed31",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 78,
+          "observed_n": 300,
+          "percent": 26.0,
+          "wilson_ci95_percent": [
+            21.362060325993486,
+            31.24480229278472
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 1,
+          "observed_n": 300,
+          "percent": 0.3333333333333333,
+          "wilson_ci95_percent": [
+            0.05886577218511581,
+            1.8636693694531237
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 3,
+          "observed_n": 300,
+          "percent": 1.0,
+          "wilson_ci95_percent": [
+            0.3406618437715286,
+            2.898349336233983
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 31.76959384498084,
+        "final_em": 22.666666666666668,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 35.104218004218005,
+        "oracle_final_f1_minus_endpoint_f1": 3.3346241592371624,
+        "final_minus_initial_endpoint_f1": -0.5444444444444444,
+        "final_minus_initial_endpoint_em": -0.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": -0.6050336965713643
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -1.6777777777777778,
+        0.34444444444444455
+      ],
+      "f1_helped": 1,
+      "f1_harmed": 3,
+      "f1_unchanged": 296,
+      "categories": {
+        "correct_proposal_never_produced": 220,
+        "correct_proposal_preserved_and_selected": 68,
+        "correct_proposal_available_but_rejected_by_majority": 10,
+        "correct_proposal_produced_but_lost_during_revision": 2
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_Learned_seed7",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 80,
+          "observed_n": 300,
+          "percent": 26.666666666666668,
+          "wilson_ci95_percent": [
+            21.980599244000377,
+            31.942739413145095
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 4,
+          "observed_n": 300,
+          "percent": 1.3333333333333333,
+          "wilson_ci95_percent": [
+            0.5196961739358857,
+            3.377553025253262
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 6,
+          "observed_n": 300,
+          "percent": 2.0,
+          "wilson_ci95_percent": [
+            0.9197631557703617,
+            4.2939620817860575
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 7,
+          "observed_n": 300,
+          "percent": 2.3333333333333335,
+          "wilson_ci95_percent": [
+            1.1347660299125235,
+            4.737197226827532
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 32.58960037783567,
+        "final_em": 24.333333333333332,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 35.51405925229455,
+        "oracle_final_f1_minus_endpoint_f1": 2.924458874458874,
+        "final_minus_initial_endpoint_f1": 0.27556208841038565,
+        "final_minus_initial_endpoint_em": 1.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": 0.25934618901536133
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -1.7094818837852892,
+        2.133596022140914
+      ],
+      "f1_helped": 13,
+      "f1_harmed": 7,
+      "f1_unchanged": 280,
+      "categories": {
+        "correct_proposal_never_produced": 217,
+        "correct_proposal_preserved_and_selected": 71,
+        "correct_proposal_produced_but_lost_during_revision": 3,
+        "correct_proposal_available_but_rejected_by_majority": 7,
+        "correct_answer_recovered_through_communication": 2
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_MatchedRandom_seed19",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 80,
+          "observed_n": 300,
+          "percent": 26.666666666666668,
+          "wilson_ci95_percent": [
+            21.980599244000377,
+            31.942739413145095
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 6,
+          "observed_n": 300,
+          "percent": 2.0,
+          "wilson_ci95_percent": [
+            0.9197631557703617,
+            4.2939620817860575
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 9,
+          "observed_n": 300,
+          "percent": 3.0,
+          "wilson_ci95_percent": [
+            1.5861853809432311,
+            5.602253914164096
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 32.362723077812596,
+        "final_em": 23.666666666666668,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 35.43782634434809,
+        "oracle_final_f1_minus_endpoint_f1": 3.075103266535492,
+        "final_minus_initial_endpoint_f1": 0.04868478838730557,
+        "final_minus_initial_endpoint_em": 0.6666666666666666,
+        "final_f1_minus_candidate_mean_f1": 0.16305790399005612
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -1.7743475949425604,
+        1.957444005270092
+      ],
+      "f1_helped": 7,
+      "f1_harmed": 8,
+      "f1_unchanged": 285,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 70,
+        "correct_proposal_available_but_rejected_by_majority": 9,
+        "correct_proposal_produced_but_lost_during_revision": 1,
+        "correct_answer_recovered_through_communication": 1
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_MatchedRandom_seed31",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 76,
+          "observed_n": 300,
+          "percent": 25.333333333333332,
+          "wilson_ci95_percent": [
+            20.744975020452642,
+            30.545411559958296
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 1,
+          "observed_n": 300,
+          "percent": 0.3333333333333333,
+          "wilson_ci95_percent": [
+            0.05886577218511581,
+            1.8636693694531237
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 6,
+          "observed_n": 300,
+          "percent": 2.0,
+          "wilson_ci95_percent": [
+            0.9197631557703617,
+            4.2939620817860575
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 9,
+          "observed_n": 300,
+          "percent": 3.0,
+          "wilson_ci95_percent": [
+            1.5861853809432311,
+            5.602253914164096
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 32.05618444736092,
+        "final_em": 22.333333333333332,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 34.48848802269855,
+        "oracle_final_f1_minus_endpoint_f1": 2.432303575337631,
+        "final_minus_initial_endpoint_f1": -0.25785384206436834,
+        "final_minus_initial_endpoint_em": -0.6666666666666666,
+        "final_f1_minus_candidate_mean_f1": -0.19187344979143042
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -1.4762360446570975,
+        0.8802641802641803
+      ],
+      "f1_helped": 3,
+      "f1_harmed": 4,
+      "f1_unchanged": 293,
+      "categories": {
+        "correct_proposal_never_produced": 220,
+        "correct_proposal_preserved_and_selected": 67,
+        "correct_proposal_available_but_rejected_by_majority": 9,
+        "correct_proposal_produced_but_lost_during_revision": 4
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_MatchedRandom_seed7",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 77,
+          "observed_n": 300,
+          "percent": 25.666666666666668,
+          "wilson_ci95_percent": [
+            21.053333722579364,
+            30.895290877015196
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 8,
+          "observed_n": 300,
+          "percent": 2.6666666666666665,
+          "wilson_ci95_percent": [
+            1.357306980864708,
+            5.172894295058982
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 32.10756019579549,
+        "final_em": 23.0,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 34.647366880339014,
+        "oracle_final_f1_minus_endpoint_f1": 2.5398066845435268,
+        "final_minus_initial_endpoint_f1": -0.2064780936297964,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": -0.08569406053814012
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -1.5777777777777777,
+        1.1737373737373737
+      ],
+      "f1_helped": 8,
+      "f1_harmed": 7,
+      "f1_unchanged": 285,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 68,
+        "correct_proposal_available_but_rejected_by_majority": 8,
+        "correct_proposal_produced_but_lost_during_revision": 4,
+        "correct_answer_recovered_through_communication": 1
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_NoComm",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 32.314038289425284,
+        "final_em": 23.0,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 35.41107781107781,
+        "oracle_final_f1_minus_endpoint_f1": 3.0970395216525244,
+        "final_minus_initial_endpoint_f1": 0.0,
+        "final_minus_initial_endpoint_em": 0.0,
+        "final_f1_minus_candidate_mean_f1": -0.2535685020727044
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        0.0,
+        0.0
+      ],
+      "f1_helped": 0,
+      "f1_harmed": 0,
+      "f1_unchanged": 300,
+      "categories": {
+        "correct_proposal_never_produced": 221,
+        "correct_proposal_preserved_and_selected": 69,
+        "correct_proposal_available_but_rejected_by_majority": 10
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_SelfUpdate",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 77,
+          "observed_n": 300,
+          "percent": 25.666666666666668,
+          "wilson_ci95_percent": [
+            21.053333722579364,
+            30.895290877015196
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 0,
+          "observed_n": 300,
+          "percent": 0.0,
+          "wilson_ci95_percent": [
+            8.673617379884035e-17,
+            1.2642971224546034
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 9,
+          "observed_n": 300,
+          "percent": 3.0,
+          "wilson_ci95_percent": [
+            1.5861853809432311,
+            5.602253914164096
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 31.844611528822053,
+        "final_em": 22.666666666666668,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 34.65474209885974,
+        "oracle_final_f1_minus_endpoint_f1": 2.810130570037691,
+        "final_minus_initial_endpoint_f1": -0.46942676060323124,
+        "final_minus_initial_endpoint_em": -0.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": 0.07866093195130543
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -2.2335257335257337,
+        1.043331069801658
+      ],
+      "f1_helped": 11,
+      "f1_harmed": 7,
+      "f1_unchanged": 282,
+      "categories": {
+        "correct_proposal_never_produced": 218,
+        "correct_proposal_preserved_and_selected": 66,
+        "correct_proposal_available_but_rejected_by_majority": 9,
+        "correct_proposal_produced_but_lost_during_revision": 5,
+        "correct_answer_recovered_without_communication": 2
+      }
+    },
+    {
+      "experiment": "E5",
+      "condition": "R_Static",
+      "endpoint": "majority",
+      "n_unique_questions": 300,
+      "binary": {
+        "initial_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "final_any_em": {
+          "count": 79,
+          "observed_n": 300,
+          "percent": 26.333333333333332,
+          "wilson_ci95_percent": [
+            21.671150294236003,
+            31.59395034372583
+          ]
+        },
+        "initial_vote_rejected_correct_candidate": {
+          "count": 10,
+          "observed_n": 300,
+          "percent": 3.3333333333333335,
+          "wilson_ci95_percent": [
+            1.820494733885481,
+            6.026182580405482
+          ]
+        },
+        "new_correct_proposal_after_communication": {
+          "count": 2,
+          "observed_n": 300,
+          "percent": 0.6666666666666666,
+          "wilson_ci95_percent": [
+            0.18301483579117855,
+            2.3977583250306975
+          ]
+        },
+        "any_initial_correct_agent_became_incorrect": {
+          "count": 5,
+          "observed_n": 300,
+          "percent": 1.6666666666666667,
+          "wilson_ci95_percent": [
+            0.713947735063333,
+            3.8415394833094503
+          ]
+        },
+        "aggregator_rejected_correct_candidate": {
+          "count": 11,
+          "observed_n": 300,
+          "percent": 3.6666666666666665,
+          "wilson_ci95_percent": [
+            2.059530516285303,
+            6.445384817189296
+          ]
+        }
+      },
+      "means": {
+        "initial_majority_f1": 32.314038289425284,
+        "initial_majority_em": 23.0,
+        "final_f1": 31.30848273386973,
+        "final_em": 22.666666666666668,
+        "oracle_initial_best_f1": 35.41107781107781,
+        "oracle_final_best_f1": 35.67539555960608,
+        "oracle_final_f1_minus_endpoint_f1": 4.366912825736355,
+        "final_minus_initial_endpoint_f1": -1.0055555555555555,
+        "final_minus_initial_endpoint_em": -0.3333333333333333,
+        "final_f1_minus_candidate_mean_f1": -0.7587657314426285
+      },
+      "final_minus_initial_endpoint_f1_ci95": [
+        -2.7666666666666666,
+        0.5333333333333333
+      ],
+      "f1_helped": 6,
+      "f1_harmed": 7,
+      "f1_unchanged": 287,
+      "categories": {
+        "correct_proposal_never_produced": 219,
+        "correct_proposal_preserved_and_selected": 68,
+        "correct_proposal_available_but_rejected_by_majority": 11,
+        "correct_proposal_produced_but_lost_during_revision": 2
+      }
+    }
+  ],
+  "not_observed": [
+    {
+      "experiment": "E3-v2",
+      "id": "5a8cfee555429941ae14df5c",
+      "condition": "R_prefix",
+      "status": "NOT_RUN_INELIGIBLE_NO_SENDER_EVIDENCE"
+    },
+    {
+      "experiment": "E3-v2",
+      "id": "5a8cfee555429941ae14df5c",
+      "condition": "R_crop",
+      "status": "NOT_RUN_INELIGIBLE_NO_SENDER_EVIDENCE"
+    }
+  ],
+  "physical_inference_attempts": 0
+}

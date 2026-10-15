@@ -1,0 +1,80 @@
+{
+  "attempt_id": "ab9a426cc9b7422e9e0919e7d069c731",
+  "request_hash": "cffd5600099c2a926176075c3dedbfe8ea54896e9aed4c817450d8165dff73a0",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions from Wikipedia source evidence. Use the local evidence and any source evidence supplied in peer messages. Peer answer proposals are unverified. Reconsider a previous response when one is supplied. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs). Cite only source sentences actually shown in this request. Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"McFly are an English band formed in London in 2003.\",\"title\":\"McFly\"},{\"sentence_id\":1,\"text\":\" The band took its name from the \\\"Back to the Future\\\" character Marty McFly.\",\"title\":\"McFly\"},{\"sentence_id\":2,\"text\":\" The band consists of Tom Fletcher (lead vocals, guitar and piano), Danny Jones (lead vocals, harmonica and guitar), Dougie Poynter (bass guitar) and Harry Judd (drums).\",\"title\":\"McFly\"},{\"sentence_id\":3,\"text\":\" They were signed to Island Records from their 2004 launch until December 2007, before creating their own label, Super Records.\",\"title\":\"McFly\"},{\"sentence_id\":0,\"text\":\"Aleksi Sihvonen is the current vocalist for the Finnish band Medicated.\",\"title\":\"Aleksi Sihvonen\"},{\"sentence_id\":1,\"text\":\" He replaced Norther's vocalist Petri Lindroos in 2009, until the group disbanded in 2012.\",\"title\":\"Aleksi Sihvonen\"},{\"sentence_id\":2,\"text\":\" He was also the former guitarist and vocalist of Imperanon.\",\"title\":\"Aleksi Sihvonen\"}],\"peer_messages\":[{\"answer\":\"noanswer\",\"evidence\":[],\"sender\":1},{\"answer\":\"noanswer\",\"evidence\":[],\"sender\":2}],\"previous_response\":{\"answer\":\"vocalists\",\"citations\":[[\"McFly\",2],[\"Aleksi Sihvonen\",0]]},\"question\":\" Danny Jones and Aleksi Sihvonen are both what?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_limit": 32768,
+    "max_completions": 150,
+    "max_attempts": 180,
+    "max_retries_per_request": 2,
+    "min_interval_seconds": 2.0,
+    "max_estimated_tokens": 2000000,
+    "tokenizer_identity": {
+      "name": "openai/gpt-oss-120b",
+      "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+      "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+    },
+    "study_manifest_hash": "f7181aec0eeb20426d1aef9f47c97a6bb1189b9c034b20cfb7b3c8f18e8e971c",
+    "e7_paid_inference": false
+  },
+  "http_status": 200,
+  "headers": {
+    "x-request-id": "3ae6f47b-5b75-449c-9b12-b6f3cb4a5ec5",
+    "x-ratelimit-remaining-requests": "49",
+    "x-ratelimit-remaining-tokens": "49486",
+    "apim-request-id": "b5c99e08-dc9e-4a72-be6a-d0bfecc5ffa6"
+  },
+  "raw": {
+    "id": "56a3e2304a2e47b1bd0113a7a62216a9",
+    "model": "gpt-oss-120b",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"answer\":\"vocalists\",\"citations\":[[\"McFly\",2],[\"Aleksi Sihvonen\",0]]}",
+          "reasoning_content": "We need to answer: \"Danny Jones and Aleksi Sihvonen are both what?\" We have evidence: Danny Jones is a member of McFly, listed as \"lead vocals, harmonica and guitar\". So he is a vocalist (lead vocals). Aleksi Sihvonen is \"the current vocalist for the Finnish band Medicated.\" So both are vocalists. So answer: \"vocalists\". Need citations: For Danny Jones being vocalist: sentence 2 of McFly: \"The band consists of Tom Fletcher (lead vocals, guitar and piano), Danny Jones (lead vocals, harmonica and guitar), Dougie Poynter (bass guitar) and Harry Judd (drums).\" That's evidence that Danny Jones does lead vocals. For Aleksi Sihvonen being vocalist: sentence 0 of Aleksi Sihvonen: \"Aleksi Sihvonen is the current vocalist for the Finnish band Medicated.\" So answer \"vocalists\". Provide JSON with answer and citations list.\n\nMake sure format: {\"answer\":\"vocalists\",\"citations\":[[\"McFly\",2],[\"Aleksi Sihvonen\",0]]}"
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 515,
+      "completion_tokens": 275,
+      "total_tokens": 790,
+      "audio_prompt_tokens": 0
+    },
+    "created": 1792071257,
+    "object": "chat.completion",
+    "prompt_filter_results": null
+  },
+  "latency_seconds": 0.7314641190005204,
+  "metadata": {
+    "question_id": "5ac3044f5542990b17b154dc",
+    "placement": "distributed",
+    "stage": "broadcast",
+    "node": 0
+  },
+  "content_hash": "6fe158b8b194fe171b293e7a1696b8ee49eb99977be1993b2ed0963170e99e9d"
+}

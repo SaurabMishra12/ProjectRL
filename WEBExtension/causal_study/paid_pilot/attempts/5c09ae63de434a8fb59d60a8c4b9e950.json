@@ -1,0 +1,80 @@
+{
+  "attempt_id": "5c09ae63de434a8fb59d60a8c4b9e950",
+  "request_hash": "991ae5cf07341fd6b13b0c4d948526922879de2945f2ed68daed39d058427b1d",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions from Wikipedia source evidence. Use the local evidence and any source evidence supplied in peer messages. Peer answer proposals are unverified. Reconsider a previous response when one is supplied. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs). Cite only source sentences actually shown in this request. Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Danny Jones (born 12 March 1986) is a British musician who is one of the lead vocalists and guitarists for pop-rock band McFly.\",\"title\":\"Danny Jones\"},{\"sentence_id\":1,\"text\":\" Jones' fellow band members are Tom Fletcher (guitar and vocals), Dougie Poynter (bass and vocals), and Harry Judd (drums).\",\"title\":\"Danny Jones\"},{\"sentence_id\":0,\"text\":\"Aleksi Sihvonen is the current vocalist for the Finnish band Medicated.\",\"title\":\"Aleksi Sihvonen\"},{\"sentence_id\":1,\"text\":\" He replaced Norther's vocalist Petri Lindroos in 2009, until the group disbanded in 2012.\",\"title\":\"Aleksi Sihvonen\"},{\"sentence_id\":2,\"text\":\" He was also the former guitarist and vocalist of Imperanon.\",\"title\":\"Aleksi Sihvonen\"}],\"peer_messages\":[],\"previous_response\":null,\"question\":\" Danny Jones and Aleksi Sihvonen are both what?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "context_limit": 32768,
+    "max_completions": 150,
+    "max_attempts": 180,
+    "max_retries_per_request": 2,
+    "min_interval_seconds": 2.0,
+    "max_estimated_tokens": 2000000,
+    "tokenizer_identity": {
+      "name": "openai/gpt-oss-120b",
+      "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+      "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+    },
+    "study_manifest_hash": "f7181aec0eeb20426d1aef9f47c97a6bb1189b9c034b20cfb7b3c8f18e8e971c",
+    "e7_paid_inference": false
+  },
+  "http_status": 200,
+  "headers": {
+    "x-request-id": "e2b1bcde-69c1-41e9-99e9-60e53e35843e",
+    "x-ratelimit-remaining-requests": "49",
+    "x-ratelimit-remaining-tokens": "49601",
+    "apim-request-id": "9933e7f0-439d-4c48-8122-3545e8007a7a"
+  },
+  "raw": {
+    "id": "7859ca0aca6547a3b63379cd2ceaa851",
+    "model": "gpt-oss-120b",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"answer\": \"vocalists\",\n  \"citations\": [\n    [\"Danny Jones\", 0],\n    [\"Aleksi Sihvonen\", 0]\n  ]\n}",
+          "reasoning_content": "We need to answer: \"Danny Jones and Aleksi Sihuronen are both what?\" Based on evidence: Danny Jones is a British musician, lead vocalist and guitarist for pop-rock band McFly. Aleksi Sihvonen is the current vocalist for Finnish band Medicated, former guitarist and vocalist of Imperanon. So both are vocalists (and also guitarists). The question likely expects \"vocalists\". Could also be \"musicians\". Both are musicians. Which is more precise? The evidence: Danny Jones is a British musician, one of the lead vocalists and guitarists. Aleksi Sihvonen is a vocalist. So both are vocalists. Provide answer \"vocalists\". Cite sentences: Danny Jones sentence 0 says \"Danny Jones ... is a British musician who is one of the lead vocalists and guitarists\". That indicates vocalist. Aleksi Sihvonen sentence 0 says \"Aleksi Sihvonen is the current vocalist for the Finnish band Medicated.\" So answer: \"vocalists\". Provide citations: [\"Danny Jones\",0] and [\"Aleksi Sihvonen\",0]."
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 404,
+      "completion_tokens": 285,
+      "total_tokens": 689,
+      "audio_prompt_tokens": 0
+    },
+    "created": 1792071233,
+    "object": "chat.completion",
+    "prompt_filter_results": null
+  },
+  "latency_seconds": 0.8075128139989829,
+  "metadata": {
+    "question_id": "5ac3044f5542990b17b154dc",
+    "placement": "colocated",
+    "stage": "initial",
+    "node": 0
+  },
+  "content_hash": "e387e7b85b88d42193063dfd6bca1a63ad2e507a9e40c40df0abd87d0d2f41dc"
+}

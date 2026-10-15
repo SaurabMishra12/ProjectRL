@@ -1,0 +1,76 @@
+{
+  "key": "6e62deb5dd6e231858f91176990d87598e5cbed941da1894828159bd667c90a7",
+  "attempt_id": "bbd701975f1d4ff8911c36f695a5398a",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Illinois Army National Guard is a component of the United States Army and the United States National Guard.\",\"title\":\"Illinois Army National Guard\"},{\"sentence_id\":1,\"text\":\" With the Illinois Air National Guard it is part of the Illinois National Guard.\",\"title\":\"Illinois Army National Guard\"},{\"sentence_id\":2,\"text\":\" National coordination of various state National Guard units are maintained through the National Guard Bureau.\",\"title\":\"Illinois Army National Guard\"},{\"sentence_id\":3,\"text\":\" The Illinois Army National Guard is composed of approximately 10,000 soldiers.\",\"title\":\"Illinois Army National Guard\"},{\"sentence_id\":0,\"text\":\"The Oklahoma Air National Guard (OK ANG) is the air force militia of the State of Oklahoma, United States of America.\",\"title\":\"Oklahoma Air National Guard\"},{\"sentence_id\":1,\"text\":\" It is, along with the Oklahoma Army National Guard, an element of the Oklahoma National Guard.\",\"title\":\"Oklahoma Air National Guard\"}],\"peer_messages\":[\"Unverified peer answer: noanswer\",\"Unverified peer answer: noanswer\"],\"previous_answer\":\"noanswer\",\"question\":\"Thunderbirds was a film featuring the exploits of what part of the Oklahoma Army National Guard?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "19ea1e24d143451581be5684b6f932f4",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Thunderbirds was a film featuring the exploits of what part of the Oklahoma Army National Guard?\" Need to find from evidence. The evidence given includes only about Illinois Army National Guard and Oklahoma Air National Guard. No mention of Thunderbirds film. So we cannot answer. Should output \"noanswer\". Need citations: none? But must provide citations list; if no answer, maybe empty list. According to instructions: return JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). If answer is noanswer, citations likely empty list. Provide empty list."
+        }
+      }
+    ],
+    "created": 1791993311,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 167,
+      "prompt_tokens": 404,
+      "total_tokens": 571,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.951088300000265,
+  "metadata": {
+    "qid": "5adde99b5542992200553ba1",
+    "stage": "controller_update",
+    "node": 2
+  },
+  "content_hash": "b8dd6d406f2f3f56e7e83da9fa3980f722d277184fe74555f3f7d8ce2120dfa6"
+}

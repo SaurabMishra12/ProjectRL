@@ -1,0 +1,77 @@
+{
+  "key": "59d73bd80d2e7b8d04a8fa3430e56cfc3b372d28680c980bfa5721eb33385ef7",
+  "attempt_id": "bfa853b4da03409997f9f53221c7363e",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Kermode bear (\\\"Ursus americanus kermodei\\\"), also known as the \\\"spirit bear\\\" (particularly in British Columbia), is a rare subspecies of the American black bear living in the Central and North Coast regions of British Columbia, Canada.\",\"title\":\"Kermode bear\"},{\"sentence_id\":1,\"text\":\" It is the official provincial mammal of British Columbia.\",\"title\":\"Kermode bear\"},{\"sentence_id\":2,\"text\":\" It is noted for about one-tenth of its population having white or cream-coloured coats like polar bears.\",\"title\":\"Kermode bear\"},{\"sentence_id\":3,\"text\":\" This colour is due to a double recessive gene unique in the subspecies.\",\"title\":\"Kermode bear\"},{\"sentence_id\":4,\"text\":\" They are not albinos and not any more related to polar bears or the \\\"blonde\\\" brown bears of Alaska's \\\"ABC Islands\\\" than other members of their species.\",\"title\":\"Kermode bear\"},{\"sentence_id\":5,\"text\":\" Sometimes, a mother black bear can have a white cub.\",\"title\":\"Kermode bear\"},{\"sentence_id\":0,\"text\":\"The Newfoundland black bear (\\\"Ursus americanus hamiltoni\\\") is a morphologically distinct subspecies of the American black bear which is endemic to the island of Newfoundland in Atlantic Canada.\",\"title\":\"Newfoundland black bear\"},{\"sentence_id\":1,\"text\":\" The Newfoundland black bear is generally larger than its mainland relatives, ranging in size from 90 to and averaging 135 kg .\",\"title\":\"Newfoundland black bear\"},{\"sentence_id\":2,\"text\":\" It also has one of the longest hibernation periods of any bear in North America.\",\"title\":\"Newfoundland black bear\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"What is the genus and species of the bear in which the Florida black bear is a subspecies of?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "af40fc473cf44a1cb29d2bd0c73a335f",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Ursus americanus\",\n  \"citations\": [\n    [\"Kermode bear\", 0],\n    [\"Newfoundland black bear\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"What is the genus and species of the bear in which the Florida black bear is a subspecies of?\" So we need genus and species of the bear that the Florida black bear is a subspecies of. The Florida black bear is a subspecies of the American black bear, which is Ursus americanus. So genus Ursus, species americanus. Need evidence from provided evidence. The evidence includes Kermode bear: \"Ursus americanus kermodei\" indicates genus Ursus, species americanus. Also Newfoundland black bear: \"Ursus americanus hamiltoni\". Both show genus Ursus, species americanus. So we can cite those. Use sentence IDs: Kermode bear sentence_id 0: \"The Kermode bear (\"Ursus americanus kermodei\")\". That includes genus and species. Also Newfoundland black bear sentence_id 0: \"The Newfoundland black bear (\"Ursus americanus hamiltoni\")\". That also includes. So answer: \"Ursus americanus\". Provide citations list with title and sentence index. Use both. Provide JSON."
+        }
+      }
+    ],
+    "created": 1791994394,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 284,
+      "prompt_tokens": 556,
+      "total_tokens": 840,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.2775965699984226,
+  "metadata": {
+    "qid": "5ae1e4095542997283cd22bf",
+    "regime": "P",
+    "stage": "initial",
+    "node": 0
+  },
+  "content_hash": "d8e1e886b862320b8dd7b4dc89cda060a51f927543a4b3987f120a9b9675498f"
+}

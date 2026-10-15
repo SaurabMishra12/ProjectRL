@@ -1,0 +1,76 @@
+{
+  "key": "6e3042fef726352c1d29ee7cd0c36cccfe9e84765502450fc3488c857df7adf4",
+  "attempt_id": "dd713d4dd8d749ad831dcee581f554f1",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a reasoning specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Florida black bear (\\\"Ursus americanus floridanus\\\") is a subspecies of the American black bear that has historically ranged throughout most of Florida and southern portions of Alabama, Georgia, and Mississippi.\",\"title\":\"Florida black bear\"},{\"sentence_id\":1,\"text\":\" The large black-furred bears live mainly in forested areas and have seen recent habitat reduction throughout the state.\",\"title\":\"Florida black bear\"},{\"sentence_id\":0,\"text\":\"The Japanese black bear (\\\"Ursus thibetanus japonicus\\\") is a subspecies of the Asian black bear that lives on three main islands of Japan: Honshu, Shikoku and Kyushu.\",\"title\":\"Japanese black bear\"},{\"sentence_id\":1,\"text\":\" There are said to be 10,000 black bears on Japan.\",\"title\":\"Japanese black bear\"},{\"sentence_id\":2,\"text\":\" The population of black bears on Shikoku and Kyushu may be endangered or extinct.\",\"title\":\"Japanese black bear\"},{\"sentence_id\":3,\"text\":\" There is a high price on bear parts in the black market, which threatens all bear populations in Japan.\",\"title\":\"Japanese black bear\"},{\"sentence_id\":4,\"text\":\" This particular species of bear are typically smaller with males only reaching 60-120 Kg and females only weighing about 40-100 Kg.\",\"title\":\"Japanese black bear\"},{\"sentence_id\":5,\"text\":\" Their body length is about 120–140 cm long.\",\"title\":\"Japanese black bear\"}],\"peer_messages\":[],\"previous_answer\":\"Ursus americanus\",\"question\":\"What is the genus and species of the bear in which the Florida black bear is a subspecies of?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "6f4c0f1ebeab494b8524c41c9c3f26a9",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Ursus americanus\",\n  \"citations\": [\n    [\"Florida black bear\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"What is the genus and species of the bear in which the Florida black bear is a subspecies of?\" The Florida black bear is a subspecies of the American black bear. The genus and species of the American black bear is Ursus americanus. So answer: \"Ursus americanus\". Need citation: from evidence: first sentence: \"The Florida black bear (\"Ursus americanus floridanus\") is a subspecies of the American black bear...\" That gives genus and species. So citation: title \"Florida black bear\", sentence_id 0. Provide JSON with answer and citations list."
+        }
+      }
+    ],
+    "created": 1791994405,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 168,
+      "prompt_tokens": 505,
+      "total_tokens": 673,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 0.7018689579999773,
+  "metadata": {
+    "qid": "5ae1e4095542997283cd22bf",
+    "stage": "self_update",
+    "node": 2
+  },
+  "content_hash": "dceb36ca9de1256608ade90989a943ece8141d0c8b6a68fabd259dd12c4b8dac"
+}

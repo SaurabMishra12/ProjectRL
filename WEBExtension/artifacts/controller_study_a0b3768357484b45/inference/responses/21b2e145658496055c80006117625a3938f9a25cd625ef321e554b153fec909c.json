@@ -1,0 +1,76 @@
+{
+  "key": "21b2e145658496055c80006117625a3938f9a25cd625ef321e554b153fec909c",
+  "attempt_id": "a57f3d63f8e64163a1db7d4400202bdd",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Lucas Terrier is a small breed of dog of the terrier type which originated in England in the late 1940s.\",\"title\":\"Lucas Terrier\"},{\"sentence_id\":1,\"text\":\" The breed was named by Sir Jocelyn Lucas, 4th Baronet and all living Lucas Terriers in the UK can trace their ancestry back to a small number of his original Lucas Terriers.\",\"title\":\"Lucas Terrier\"},{\"sentence_id\":0,\"text\":\"In Canadian law, a peace bond is an order from a criminal court that requires a person to keep the peace and be on good behaviour for a period of time.\",\"title\":\"Peace bond\"},{\"sentence_id\":1,\"text\":\" This essentially means that the person who signs a peace bond must not be charged with any additional criminal offences during its duration.\",\"title\":\"Peace bond\"},{\"sentence_id\":2,\"text\":\" Peace bonds often have other conditions as well, such as not having any weapons or staying away from a particular person or place.\",\"title\":\"Peace bond\"},{\"sentence_id\":3,\"text\":\" Peace bonds are similar to a civil court restraining order, and are also based on the lesser burden of proof of civil law.\",\"title\":\"Peace bond\"}],\"peer_messages\":[],\"previous_answer\":\"noanswer\",\"question\":\"Are both Pomeranian and Sporting Lucas Terrier named after a particular person?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "4a6557db65cd4539ae727a1d594fcb50",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"noanswer\",\n  \"citations\": []\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"Are both Pomeranian and Sporting Lucas Terrier named after a particular person?\" We have evidence about Lucas Terrier (named by Sir Jocelyn Lucas). No evidence about Pomeranian. Also about Sporting Lucas Terrier? Not in evidence. The question asks if both Pomeranian and Sporting Lucas Terrier are named after a particular person. We have evidence that Lucas Terrier is named after Sir Jocelyn Lucas. But we have no evidence about Pomeranian being named after a person. Also no evidence about Sporting Lucas Terrier. So cannot confirm. Answer likely \"noanswer\". Need citations? If answer is noanswer, citations list empty."
+        }
+      }
+    ],
+    "created": 1791993720,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 160,
+      "prompt_tokens": 435,
+      "total_tokens": 595,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.221683571999165,
+  "metadata": {
+    "qid": "5a8f7e785542992414482ae6",
+    "stage": "self_update",
+    "node": 2
+  },
+  "content_hash": "b14794514b3303c8156616b4da978502b904f4ddb4873f47b657394469312080"
+}

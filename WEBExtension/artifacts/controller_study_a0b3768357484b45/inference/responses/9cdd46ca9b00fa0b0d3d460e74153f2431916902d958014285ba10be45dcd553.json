@@ -1,0 +1,77 @@
+{
+  "key": "9cdd46ca9b00fa0b0d3d460e74153f2431916902d958014285ba10be45dcd553",
+  "attempt_id": "7486c655687b4e37a51c93ff9765387a",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a verification specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"Carnival Eats is a Canadian television series about various eating establishments at carnivals in Canada and the United States.\",\"title\":\"Carnival Eats\"},{\"sentence_id\":1,\"text\":\" The series features host Noah Cappe as he travels to the many carnivals, state fairs and festivals to sample a variety of unique culinary creations available only at these aptly named \\\"gastronomic freak shows\\\".\",\"title\":\"Carnival Eats\"},{\"sentence_id\":2,\"text\":\" The show premiered on August 18, 2014 and airs on Fridays at 8:00 p.m. EDT.\",\"title\":\"Carnival Eats\"},{\"sentence_id\":0,\"text\":\"Dancing with the Stars is an American dance competition television series that premiered on June 1, 2005, on ABC.\",\"title\":\"Dancing with the Stars (U.S. TV series)\"},{\"sentence_id\":1,\"text\":\" It is the US version of the UK series \\\"Strictly Come Dancing\\\".\",\"title\":\"Dancing with the Stars (U.S. TV series)\"},{\"sentence_id\":2,\"text\":\" The show is hosted by Tom Bergeron, alongside Erin Andrews, who became co-host in season eighteen.\",\"title\":\"Dancing with the Stars (U.S. TV series)\"},{\"sentence_id\":3,\"text\":\" Lisa Canning was co-host in the first season, Samantha Harris co-hosted seasons two through nine and Brooke Burke-Charvet in seasons ten through seventeen.\",\"title\":\"Dancing with the Stars (U.S. TV series)\"},{\"sentence_id\":4,\"text\":\" On May 12, 2017, it was announced that the series has been renewed for season twenty six.\",\"title\":\"Dancing with the Stars (U.S. TV series)\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"What dance competition television series features host and NFL reporter Erin Andrews?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "6cc75a7b988940e98bfb322f4dbb51ef",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Dancing with the Stars\",\n  \"citations\": [\n    [\"Dancing with the Stars (U.S. TV series)\", 2]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"What dance competition television series features host and NFL reporter Erin Andrews?\" Use evidence. The evidence includes Dancing with the Stars (U.S. TV series) sentences: sentence 2 says \"The show is hosted by Tom Bergeron, alongside Erin Andrews, who became co-host in season eighteen.\" So answer: Dancing with the Stars. Provide JSON with answer and citations. Need citation list as list of [document title, zero-based sentence index] pairs. The relevant sentence is sentence_id 2 in \"Dancing with the Stars (U.S. TV series)\". So citation: [\"Dancing with the Stars (U.S. TV series)\", 2]. Provide answer string: \"Dancing with the Stars\". Ensure nonempty concise string. Return JSON only."
+        }
+      }
+    ],
+    "created": 1791994973,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 207,
+      "prompt_tokens": 543,
+      "total_tokens": 750,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.1916204750014003,
+  "metadata": {
+    "qid": "5adee8ff55429975fa854fb8",
+    "regime": "P",
+    "stage": "initial",
+    "node": 2
+  },
+  "content_hash": "7b17533b669945502fcfe67b394be6353aa04ba409193627ca44b3fdbf73e4fe"
+}

@@ -1,0 +1,77 @@
+{
+  "key": "8b915667c30e8683d07e6941163274bea03ba02c960be5d2c609abf091e1d625",
+  "attempt_id": "a1dc4107be4b49079405161783851c8a",
+  "request": {
+    "model": "gpt-oss-120b",
+    "temperature": 0.0,
+    "max_tokens": 8192,
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a retrieval specialist answering multi-hop questions using the supplied Wikipedia evidence. Treat peer claims as unverified; verify them against quoted evidence. Return ONLY JSON with answer (a nonempty concise string, or \"noanswer\" if unknown) and citations (a list of [document title, zero-based sentence index] pairs supporting your answer). Do not invent citations. Do not include explanations or confidence scores."
+      },
+      {
+        "role": "user",
+        "content": "{\"evidence\":[{\"sentence_id\":0,\"text\":\"The Baluchistan bear, also called the Pakistan black bear (\\\"Ursus thibetanus gedrosianus\\\") is a subspecies of the Asian black bear found in the Baluchistan Mountains of southern Pakistan and Iran.\",\"title\":\"Baluchistan bear\"},{\"sentence_id\":1,\"text\":\" It has an unusually thin coat for an Asian black bear, but this is because it is found in a warmer climate than most of the other subspecies, which are found in the much colder Himalayan Mountains.\",\"title\":\"Baluchistan bear\"},{\"sentence_id\":2,\"text\":\" It is also more frugivorous than the other subspecies, and it loves to eat figs and bananas.\",\"title\":\"Baluchistan bear\"},{\"sentence_id\":0,\"text\":\"The Haida Gwaii black bear (\\\"Ursus americanus carlottae\\\") is a morphologically distinct subspecies of the American black bear.\",\"title\":\"Ursus americanus carlottae\"},{\"sentence_id\":1,\"text\":\" The most significant morphological differences are its large size, massive cranium, and large molars.\",\"title\":\"Ursus americanus carlottae\"},{\"sentence_id\":2,\"text\":\" This subspecies is endemic to the Haida Gwaii (Queen Charlotte Islands) and is considered a \\\"keystone species\\\" because of the bears transportation of salmon remains into surrounding forests of Haida Gwaii.\",\"title\":\"Ursus americanus carlottae\"}],\"peer_messages\":[],\"previous_answer\":null,\"question\":\"What is the genus and species of the bear in which the Florida black bear is a subspecies of?\"}"
+      }
+    ]
+  },
+  "identity": {
+    "provider": "azure_v1",
+    "model": "gpt-oss-120b",
+    "model_revision": "deployment_alias:gpt-oss-120b; immutable provider snapshot not exposed",
+    "base_url": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1",
+    "api_version": "v1",
+    "replicate_id": "controller_frozen_environment",
+    "endpoint": "https://vaibhavka43-0128-resource.services.ai.azure.com/openai/v1"
+  },
+  "tokenizer": {
+    "name": "openai/gpt-oss-120b",
+    "revision": "b5c939de8f754692c1647ca79fbf85e8c1e70f8a",
+    "backend_hash": "5d166cf76a735006c818d9bbd4e4052ec03011c243969a1b6d6697685bc77b70"
+  },
+  "response": {
+    "id": "abf71bc220294f01b7d0f634962ff1c7",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "{\n  \"answer\": \"Ursus americanus\",\n  \"citations\": [\n    [\"Ursus americanus carlottae\", 0]\n  ]\n}",
+          "refusal": null,
+          "role": "assistant",
+          "annotations": null,
+          "audio": null,
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "We need to answer: \"What is the genus and species of the bear in which the Florida black bear is a subspecies of?\" So we need to know the taxonomic classification: Florida black bear is a subspecies of which species? Likely Ursus americanus (American black bear). The genus is Ursus, species americanus. Need evidence from provided evidence. The evidence includes two entries: Baluchistan bear (Ursus thibetanus gedrosianus) and Haida Gwaii black bear (Ursus americanus carlottae). The Haida Gwaii black bear is a subspecies of American black bear (Ursus americanus). That shows genus Ursus, species americanus. That can support answer: genus Ursus, species americanus. The question: \"What is the genus and species of the bear in which the Florida black bear is a subspecies of?\" So answer: Ursus americanus. Provide citation: from Haida Gwaii black bear evidence: sentence 0: \"The Haida Gwaii black bear (\"Ursus americanus carlottae\") is a morphologically distinct subspecies of the American black bear.\" That indicates species American black bear = Ursus americanus. So citation: title \"Ursus americanus carlottae\", sentence 0. Also maybe need genus and species: \"Ursus americanus\". That is enough.\n\nReturn JSON with answer \"Ursus americanus\" and citations list.\n\n"
+        }
+      }
+    ],
+    "created": 1791994395,
+    "model": "gpt-oss-120b",
+    "object": "chat.completion",
+    "moderation": null,
+    "service_tier": null,
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 356,
+      "prompt_tokens": 501,
+      "total_tokens": 857,
+      "completion_tokens_details": null,
+      "prompt_tokens_details": null,
+      "audio_prompt_tokens": 0
+    },
+    "prompt_filter_results": null
+  },
+  "provider_http_status": 200,
+  "latency_seconds": 1.5876920270020491,
+  "metadata": {
+    "qid": "5ae1e4095542997283cd22bf",
+    "regime": "P",
+    "stage": "initial",
+    "node": 1
+  },
+  "content_hash": "e19f19c5ed3e3ea2507af4ee48651fb22b19849f2ccd79f55f3e8efd20139936"
+}

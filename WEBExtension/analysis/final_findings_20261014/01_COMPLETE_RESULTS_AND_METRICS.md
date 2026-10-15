@@ -3,7 +3,7 @@
 **E3 record update — 15 October 2026:** E3-v2 is the current content-intervention record. Original E3 is retained as `E3_original` / historical 256-token answer-and-citation slicing, with 298/300 identical pairs. E3-v2 is a distinct protocol: 300 screened IDs, 299 eligible distinct exact-128-token evidence-bank pairs, and one explicit no-document case. These are the same question identities, not 299 additional independent test questions. It is an exploratory follow-up after original held-out results were inspected. The pre-update bundle is preserved separately.
 
 
-Snapshot generated 2026-10-14T21:16:36.088149+00:00. Scope: completed frozen WEBExtension E1–E5 plus corrected exploratory E3-v2, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Original experiments use the same 300 held-out identities; E3-v2 screens all 300 and pairs 299 eligible evidence-bearing questions; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
+Snapshot generated 2026-10-14T21:18:49.043266+00:00. Scope: completed frozen WEBExtension E1–E5 plus corrected exploratory E3-v2, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Original experiments use the same 300 held-out identities; E3-v2 screens all 300 and pairs 299 eligible evidence-bearing questions; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.
 
 Run identifiers: `run_f6aa61bac2c3dfae`, `controller_study_a0b3768357484b45`, split `controller_splits_2e025f8ae3d9815e`. Input hashes and final artifact hashes are in `final_manifest.json`.
 
@@ -71,7 +71,7 @@ R means every agent sees the same BM25 top-six candidate articles. P means those
 
 F1 summary intervals use 5,000 question-bootstrap resamples (seed 42); EM uses a Wilson interval. A per-arm interval is not a paired contrast test. Below, canonical completed contrast reports use 10,000 resamples and 10,000 Monte Carlo sign randomizations, with the (1+k)/(B+1) p-value correction. These p-values are not exact enumeration. Original family-specific Holm corrections are preserved.
 
-## E1–E4 canonical paired effects
+## Frozen E1–E4 effects and current exploratory E3-v2 effects
 
 | experiment | regime | metric | contrast | n | effect | CI95 | raw_p | Holm_p | helped | harmed | ties |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -83,8 +83,11 @@ F1 summary intervals use 5,000 question-bootstrap resamples (seed 42); EM uses a
 | E1 |  | answer F1 | R_CW - R_SelfUpdate | 300 | 0.643572 | [-0.870582611832612, 2.2149882209988596] | 0.420958 | NA (unknown) | 13 | 6 | 281 |
 | E1 |  | answer F1 | P_CW - P_SelfUpdate | 300 | 3.37737 | [0.8490954715219422, 6.052734487734487] | 0.0109989 | NA (unknown) | 18 | 7 | 275 |
 | E2 |  | answer F1 | R_CW - R_CCW | 300 | -0.106524 | [-1.4761482730232731, 1.147305934805935] | 0.880112 | NA (unknown) | 10 | 6 | 284 |
-| E3 |  | answer F1 | R_prefix - R_crop | 300 | 0.145022 | [-0.13636363636363635, 0.5714285714285714] | 1 | NA (unknown) | 1 | 1 | 298 |
+| E3_original |  | answer F1 | R_prefix - R_crop | 300 | 0.145022 | [-0.13636363636363635, 0.5714285714285714] | 1 | NA (unknown) | 1 | 1 | 298 |
 | E4 |  | answer F1 | P_stopped - P_final | 300 | 0 | [0.0, 0.0] | 1 | NA (unknown) | 0 | 0 | 300 |
+| E3_v2 |  | f1 | R_prefix - R_crop | 299 | -1.79539 | [-4.197328083964913, 0.47078098088328013] | 0.140186 | NA (unknown) | 8 | 18 | 273 |
+| E3_v2 |  | em | R_prefix - R_crop | 299 | -1.67224 | [-4.013377926421405, 0.6688963210702341] | 0.273873 | NA (unknown) | 4 | 9 | 286 |
+| E3_v2 |  | answer_support_recall | R_prefix - R_crop | 299 | -0.00529543 | [-0.023690078037904124, 0.013935340022296542] | 0.610139 | NA (unknown) | 14 | 22 | 263 |
 
 ## Current E3-v2: complete results, resources and eligibility
 

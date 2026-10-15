@@ -1,0 +1,7 @@
+# Paper information update — 15 October 2026
+
+All four reports, HTML exports, combined condition/scalar/raw-numeric tables, subgroup catalogs, physical cost records, E3 diagnostic plots, figure gallery, notebook and artifact manifests now include E3-v2. Original E3 records are historical `E3_original`; no scientific raw file was rewritten. The prior report/data/figure snapshot is in the sibling `final_findings_20261014_before_E3_v2_20261015` directory, with preparation-code exceptions explicitly documented.
+
+E3-v2 screens the same 300 question IDs, pairs 299 evidence-bearing questions, retains one zero-document ineligible record, and sends distinct exact-128-token slices to the same receiver. Prefix F1 31.23295005647947; crop F1 33.02834335315154. Prefix minus crop −1.795393296672069; CI [−4.197328083964913,0.47078098088328013]; p .1401859814018598. This exploratory comparison does not establish superiority or equivalence, semantic evidence quality or novel-evidence transfer. No additional independent test cohort is claimed.
+
+New tables preserve all recorded scalar/nested numeric outputs and full precision. Lower-bound physical usage adds 601 attempts / 598 returned responses / 3 rate-limit rejections, 902605 known input tokens, 166539 known output tokens with six missing output-usage values, six refusals, and zero uncertain attempts. Original archived unknown costs remain unknown. Analysis issued no inference requests.

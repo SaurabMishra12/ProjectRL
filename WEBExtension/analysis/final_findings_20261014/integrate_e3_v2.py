@@ -1,5 +1,5 @@
 """Offline E3-v2 integration; preserve original records and update paper bundle."""
-import csv,json,hashlib,shutil,sys,importlib.util
+import csv,json,hashlib,shutil,sys,importlib.util,os
 from pathlib import Path
 from datetime import datetime,timezone
 import numpy as np,pandas as pd
@@ -119,15 +119,29 @@ def prepare_tables():
  successes=[r for r in physical if r['outcome']=='success'];usage={'pipeline':'E3_v2','successes':len(successes),'reported_input_tokens':sum(r['input_tokens_reported'] or 0 for r in successes),'successful_inputs_missing':sum(r['input_tokens_reported'] is None for r in successes),'reported_output_tokens_lower_bound':sum(r['output_tokens_reported'] or 0 for r in successes),'successful_outputs_missing':sum(r['output_tokens_reported'] is None for r in successes),'original_unresolved_attempts':sum(r['outcome']=='uncertain' for r in physical),'attempts':len(physical)}
  d=pd.read_csv(ARCHIVE/'tables/active_pipeline_physical_usage.csv');pd.concat([d,pd.DataFrame([usage])],ignore_index=True).to_csv(O/'tables/active_pipeline_physical_usage.csv',index=False)
  audits=json.loads((O/'audit_metrics.json').read_text());audits['physical_usage_global'].update(unique_attempts=len(phys),outcomes=phys.outcome.value_counts().to_dict(),reported_input_tokens_lower_bound=int(phys.input_tokens_reported.sum()),reported_output_tokens_lower_bound=int(phys.output_tokens_reported.sum()),attempts_missing_input_usage=int(phys.input_tokens_reported.isna().sum()),attempts_missing_output_usage=int(phys.output_tokens_reported.isna().sum()),refusals=int(phys.provider_refusal.sum()))
+ dump(O/'physical_usage_lower_bounds.json',audits['physical_usage_global'])
+ audits['manipulation_versions']={'E3_original':{'distinct_pairs':2,'identical_pairs':298,'screened':300,'source':'answer_and_generated_citations','cap':256,'role':'HISTORICAL'},'E3_v2':{'distinct_pairs':299,'equal_128_token_pairs':299,'screened':300,'ineligible':1,'source':'all_sender_visible_evidence','role':'CURRENT_EXPLORATORY'}}
+ for e in audits['complete_effects']:
+  if e['experiment']=='E3':e['experiment']='E3_original'
+ audits['complete_effects']=[e for e in audits['complete_effects'] if e['experiment']!='E3_v2']+effects
+ dump(O/'paired_effects.json',audits['complete_effects'])
  audits['E3_v2']={'screened':300,'eligible':299,'result_sha256':status['sha256'],'status':'COMPLETE_EXPLORATORY','scope':'FOLLOWUP_AFTER_ORIGINAL_TEST_INSPECTION'};dump(O/'audit_metrics.json',audits)
  timings=[]
  for session in sorted((D/'runtime_sessions').iterdir()):
   end=session/'session_end.json'
   timings.append({'session':session.name,'status':json.loads(end.read_text())['status'] if end.exists() else 'END_NOT_RECORDED','wall_seconds':json.loads(end.read_text())['wall_seconds'] if end.exists() else None})
  pd.DataFrame(timings).to_csv(O/'tables/E3_v2_session_timings.csv',index=False)
- out={'report':rep,'physical_usage':usage,'paired_answers_identical_normalized':int(P.same_normalized_answer.sum()),'paired_answers_changed_normalized':int((~P.same_normalized_answer).sum()),'F1_ties':int(P.same_F1.sum()),'subgroups':sub,'completion_verification':{'scores':'PASS','payload_counts':'PASS','raw_cache_checksums':'PASS','source_hashes':'PASS'},'scope':'EXPLORATORY FOLLOWUP; primary paired F1; no superiority/equivalence conclusion','run_dir':str(D),'cases':sorted(cases,key=lambda r:abs(r['prefix_F1']-r['crop_F1']),reverse=True)[:12]};dump(O/'E3_v2_updated_analysis.json',out)
+ out={'report':rep,'physical_usage':usage,'paired_answers_identical_normalized':int(P.same_normalized_answer.sum()),'paired_answers_changed_normalized':int((~P.same_normalized_answer).sum()),'F1_ties':int(P.same_F1.sum()),'subgroups':sub,'completion_verification':{'scores':'PASS','payload_counts':'PASS','raw_cache_checksums':'PASS','source_hashes':'PASS'},'scope':'EXPLORATORY FOLLOWUP; primary paired F1; no superiority/equivalence conclusion','run_dir':str(D),'cases':sorted(cases,key=lambda r:abs(r['prefix_F1']-r['crop_F1']),reverse=True)[:12]};dump(O/'E3_v2_updated_analysis.json',out);dump(O/'E3_v2_raw_output_casebook.json',out['cases'])
  for n in ['report.json','REPORT.md','completion_gate_verified.json','frozen_manifest.json','preflight.json']:shutil.copyfile(D/n,O/'original_reports'/('E3_v2_'+n))
  shutil.copyfile(D/'source_snapshot/e3_corrected.py',O/'sources/e3_corrected.py');shutil.copyfile(D/'source_snapshot/analysis/durable_runtime.py',O/'sources/E3_v2_durable_runtime.py')
+ # Ensure all subgroup catalogs identify the current and historical E3 records.
+ for group in ['type','stratum']:
+  full=pd.read_csv(O/'tables/all_condition_question_metrics.csv');catalog=[]
+  for (exp,label,value),g in full.groupby(['experiment','condition',group]):
+   catalog.append({'experiment':exp,'condition':label,group:value,'n':len(g),'F1':g.f1.mean(),'EM':g.em.mean(),'payload':g.payload_tokens.mean(),'calls':g.logical_calls.mean(),'support_recall':g.answer_support_recall.mean(),'refused_questions':int(g.provider_refusal_question.sum())})
+  pd.DataFrame(catalog).to_csv(O/'tables'/('all_arms_by_'+group+'.csv'),index=False)
+ # Existing figures already match this verified result; optional skip avoids redundant export.
+ if os.environ.get('E3_SKIP_UNCHANGED_FIGURES')=='1' and (O/'figures/67_E3_v2_complete_facts.pdf').exists():return out
  # Figure: distinguish historical failure from corrected outcome; do not pool protocols.
  fig,axs=plt.subplots(1,2,figsize=(11,4),layout='constrained');axs[0].bar(['Original distinct','Original identical','v2 distinct','v2 ineligible'],[2,298,299,1],color=['#777','#bbb','#2166ac','#bbb']);axs[0].tick_params(axis='x',rotation=20);axs[0].set(ylabel='Questions',title='E3 intervention checks, by version')
  e=rep['paired_prefix_minus_crop']['f1'];axs[1].errorbar([e['effect']],[0],xerr=[[e['effect']-e['ci95'][0]],[e['ci95'][1]-e['effect']]],fmt='o',capsize=5);axs[1].axvline(0,color='gray');axs[1].set(yticks=[0],yticklabels=['v2 prefix − crop'],xlabel='Paired answer F1 difference; 95% CI',title='299 eligible pairs; exploratory');plot(fig,'07_content_intervention')
@@ -156,7 +170,9 @@ def update_reports(reports,table,figure):
   text=text.replace("Keep E3's ineffective manipulation visible instead of deleting its null result.","Keep original E3's ineffective manipulation as historical context and show corrected E3-v2's distinct intervention and inconclusive contrast.")
   text=text.replace("that does not repair E3's ineffective manipulation or small subgroups.","E3-v2 repairs the original identical-input manipulation, while its contrast remains inconclusive and small subgroups remain uncertain.")
   text=text.replace('## E3: content selection at exact token count','## Original E3 (historical): content selection at exact token count')
-  text=text.replace('278/300','278/300')
+  text=text.replace('and 298 prefix/crop pairs are identical.', 'and the original content intervention produced 298 identical pairs. A corrected exploratory follow-up produced 299 distinct equal-128-token pairs; prefix minus crop was −1.80 F1 points (95% CI −4.20 to 0.47), without establishing superiority or equivalence.')
+  text=text.replace('The apparent content comparison is also weak because most paired payloads are identical.', 'The original content intervention was ineffective because most payloads were identical. E3-v2 corrects this failure, but its exploratory paired F1 contrast remains inconclusive and measures evidence presentation when the receiver already has the shared documents.')
+  text=text.replace('E3 uses a designated receiver and exact token-count matching, but 298/300', 'Historical E3 uses a designated receiver and exact token-count matching, but 298/300')
   # Version notice directly after title, so old references cannot be mistaken for current evidence.
   title,rest=text.split('\n',1);reports[name]=title+'\n\n'+version+rest
  n1='01_COMPLETE_RESULTS_AND_METRICS.md';n2='02_DEEP_RAW_OUTPUT_FINDINGS.md';n3='03_PAPER_NARRATIVE_AND_REVISION_PLAN.md';n4='04_TECHNICAL_METHODS_AND_PSEUDOCODE.md'

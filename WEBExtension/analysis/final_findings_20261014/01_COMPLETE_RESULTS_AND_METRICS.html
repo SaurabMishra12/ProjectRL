@@ -1,6 +1,6 @@
 <!doctype html><html><head><meta charset="utf-8"><title>01_COMPLETE_RESULTS_AND_METRICS.md</title><style>body{font:16px/1.6 system-ui,sans-serif;color:#18242f;max-width:1400px;margin:40px auto;padding:0 28px}h1{font-size:30px}h2{border-top:1px solid #d5dce1;padding-top:24px;margin-top:40px}table{border-collapse:collapse;display:block;overflow-x:auto;margin:20px 0;font-size:13px}th,td{border:1px solid #d5dce1;padding:7px 10px;text-align:left;vertical-align:top}th{background:#edf2f6}img{max-width:100%;height:auto}pre{background:#f4f6f8;padding:18px;overflow:auto;white-space:pre-wrap}a{color:#175b86}nav{display:flex;flex-wrap:wrap;gap:18px}code{font-size:.9em}@media print{body{margin:0;font-size:10pt}table{font-size:8pt}h2{break-before:auto}img{max-height:230mm;object-fit:contain}}</style></head><body><nav><a href="index.html">All reports</a></nav><h1>1. Complete results and metric register</h1>
 <p><strong>E3 record update — 15 October 2026:</strong> E3-v2 is the current content-intervention record. Original E3 is retained as <code>E3_original</code> / historical 256-token answer-and-citation slicing, with 298/300 identical pairs. E3-v2 is a distinct protocol: 300 screened IDs, 299 eligible distinct exact-128-token evidence-bank pairs, and one explicit no-document case. These are the same question identities, not 299 additional independent test questions. It is an exploratory follow-up after original held-out results were inspected. The pre-update bundle is preserved separately.</p>
-<p>Snapshot generated 2026-10-14T21:16:36.088149+00:00. Scope: completed frozen WEBExtension E1–E5 plus corrected exploratory E3-v2, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Original experiments use the same 300 held-out identities; E3-v2 screens all 300 and pairs 299 eligible evidence-bearing questions; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.</p>
+<p>Snapshot generated 2026-10-14T21:18:49.043266+00:00. Scope: completed frozen WEBExtension E1–E5 plus corrected exploratory E3-v2, controller training/validation/pilot, operational cost evidence, and the supplied 13-page manuscript. Original experiments use the same 300 held-out identities; E3-v2 screens all 300 and pairs 299 eligible evidence-bearing questions; the unit of inference is the question, not the arm, agent, seed, or repeated epoch. All analysis is offline; no inference calls were issued. Earlier raw artifacts and the 129-question audit are preserved. Display tables round to six significant digits; CSV/JSON files retain machine-readable precision. NA is unknown or inapplicable, never an invented zero.</p>
 <p>Run identifiers: <code>run_f6aa61bac2c3dfae</code>, <code>controller_study_a0b3768357484b45</code>, split <code>controller_splits_2e025f8ae3d9815e</code>. Input hashes and final artifact hashes are in <code>final_manifest.json</code>.</p>
 <h2>Evidence status and interpretation</h2>
 <p>The completed E1–E5 files have 300 distinct test IDs each, identical question sets, matching completion SHA256 values, and unchanged frozen scientific source/checkpoint hashes. Answer F1 and EM were recomputed with the locally preserved official HotpotQA evaluator; all stored scores matched. All distinct transmitted payloads were recounted with the pinned tokenizer. This is strong internal consistency/provenance evidence, not external certification of the Azure deployment snapshot or an independent rerun.</p>
@@ -601,7 +601,7 @@
 </tbody>
 </table>
 <p>F1 summary intervals use 5,000 question-bootstrap resamples (seed 42); EM uses a Wilson interval. A per-arm interval is not a paired contrast test. Below, canonical completed contrast reports use 10,000 resamples and 10,000 Monte Carlo sign randomizations, with the (1+k)/(B+1) p-value correction. These p-values are not exact enumeration. Original family-specific Holm corrections are preserved.</p>
-<h2>E1–E4 canonical paired effects</h2>
+<h2>Frozen E1–E4 effects and current exploratory E3-v2 effects</h2>
 <table>
 <thead>
 <tr>
@@ -733,7 +733,7 @@
 <td>284</td>
 </tr>
 <tr>
-<td>E3</td>
+<td>E3_original</td>
 <td></td>
 <td>answer F1</td>
 <td>R_prefix - R_crop</td>
@@ -759,6 +759,48 @@
 <td>0</td>
 <td>0</td>
 <td>300</td>
+</tr>
+<tr>
+<td>E3_v2</td>
+<td></td>
+<td>f1</td>
+<td>R_prefix - R_crop</td>
+<td>299</td>
+<td>-1.79539</td>
+<td>[-4.197328083964913, 0.47078098088328013]</td>
+<td>0.140186</td>
+<td>NA (unknown)</td>
+<td>8</td>
+<td>18</td>
+<td>273</td>
+</tr>
+<tr>
+<td>E3_v2</td>
+<td></td>
+<td>em</td>
+<td>R_prefix - R_crop</td>
+<td>299</td>
+<td>-1.67224</td>
+<td>[-4.013377926421405, 0.6688963210702341]</td>
+<td>0.273873</td>
+<td>NA (unknown)</td>
+<td>4</td>
+<td>9</td>
+<td>286</td>
+</tr>
+<tr>
+<td>E3_v2</td>
+<td></td>
+<td>answer_support_recall</td>
+<td>R_prefix - R_crop</td>
+<td>299</td>
+<td>-0.00529543</td>
+<td>[-0.023690078037904124, 0.013935340022296542]</td>
+<td>0.610139</td>
+<td>NA (unknown)</td>
+<td>14</td>
+<td>22</td>
+<td>263</td>
 </tr>
 </tbody>
 </table>

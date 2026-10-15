@@ -60,7 +60,7 @@ R means every agent sees the same BM25 top-six candidate articles. P means those
 
 F1 summary intervals use 5,000 question-bootstrap resamples (seed 42); EM uses a Wilson interval. A per-arm interval is not a paired contrast test. Below, canonical completed contrast reports use 10,000 resamples and 10,000 Monte Carlo sign randomizations, with the (1+k)/(B+1) p-value correction. These p-values are not exact enumeration. Original family-specific Holm corrections are preserved.
 
-## E1–E4 canonical paired effects
+## Frozen E1–E4 effects and current exploratory E3-v2 effects
 
 '''+effecttable(a['complete_effects'])+'\n\n## E5 canonical whole-policy effects: all F1 and utility contrasts\n\n'+effecttable(e5['effects'])+'''
 
@@ -543,6 +543,7 @@ nb=nbformat.v4.new_notebook();nb.cells=[nbformat.v4.new_markdown_cell('# Complet
 for name in reports:nb.cells.append(nbformat.v4.new_markdown_cell(f'[{name}]({name})'))
 for fig in ['02_paired_effects','10_E5_complete_quality','15_E5_subgroups','16_prefix_drift','07_content_intervention','65_E3_v2_quality','66_E3_v2_transitions','67_E3_v2_complete_facts']:nb.cells.append(nbformat.v4.new_code_cell(f"display(Image(filename=str(root/'figures/{fig}.png')))"))
 nbformat.write(nb,O/'FINAL_FINDINGS.ipynb')
+import refresh_context_figures
 # Snapshot all scientific input references; fail if they changed during analysis.
 inputs={}
 for e in ['E1','E2','E3','E4','E5']:
@@ -556,4 +557,6 @@ E3V=Path(e3_v2_analysis['run_dir'])
 for name in ['E3.jsonl','frozen_manifest.json','report.json','payload_plan.json','completion_gate_verified.json']:
  p=E3V/name;inputs[str(p)]=hashlib.sha256(p.read_bytes()).hexdigest()
 manifest={'created_utc':now,'scope':'Four updated reports: original E1–E5 plus corrected exploratory E3-v2; original E3 historical and legacy manuscript values separately labeled','inference_calls_issued':0,'result_counts':{**{e:a['integrity'][e]['n'] for e in a['integrity']},'E3_v2_screened':300,'E3_v2_eligible':299},'score_mismatches':len(a['score_mismatches']),'payload_token_mismatches':len(a['token_count_mismatches']),'inputs_sha256':inputs,'derived_artifacts':{str(p.relative_to(O)):hashlib.sha256(p.read_bytes()).hexdigest() for p in O.rglob('*') if p.is_file() and p.name not in ['final_manifest.json','analysis_artifact_manifest.json']}}
-(O/'final_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n');print(json.dumps({'reports':list(reports),'figures':len(list((O/'figures').glob('*.png'))),'tables':len(list((O/'tables').glob('*.csv'))),'score_mismatches':manifest['score_mismatches'],'token_mismatches':manifest['payload_token_mismatches']},indent=2))
+(O/'final_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+(O/'analysis_artifact_manifest.json').write_text(json.dumps({'utc':now,'status':'CURRENT_E3_V2_INTEGRATED','canonical_manifest':'final_manifest.json','derived_artifacts':manifest['derived_artifacts']},indent=2)+'\n')
+print(json.dumps({'reports':list(reports),'figures':len(list((O/'figures').glob('*.png'))),'tables':len(list((O/'tables').glob('*.csv'))),'score_mismatches':manifest['score_mismatches'],'token_mismatches':manifest['payload_token_mismatches']},indent=2))

@@ -10,3 +10,19 @@ def proposal_body(atom=None,status='partial',answer=None):
 def backend_config(**changes):
     from WEBExtension.web_reasoning.config import validate_config
     return validate_config(changes)
+
+def w1_case(n_agents,directory):
+    import json
+    from WEBExtension.web_reasoning.data import from_2wiki,allocate
+    from WEBExtension.web_reasoning.tokenization import UTF8FixtureTokenizer
+    from WEBExtension.web_reasoning.backend import DurableBackend
+    r=wiki_row();r['context'] += [[f'Doc{i}',[f'Mira has attribute {i}.']] for i in range(5)]
+    p=from_2wiki(r,{}).public;t=UTF8FixtureTokenizer()
+    def send(request,attempt):
+        payload=json.loads(request['messages'][-1]['content']);atoms=payload['visible_sources']
+        b=proposal_body(None,'partial' if atoms else 'no_evidence')
+        b['facts']=[{'fact_id':a['atom_id'],'document_id':a['document_id'],'sentence_id':a['sentence_id'],'quote':a['text'],'claim':'Observed fact'} for a in atoms[:4]]
+        if payload['output_schema']['properties'].get('program') is not None:b.update(program=[],operand_sources=[])
+        return 200,{}, {'choices':[{'finish_reason':'stop','message':{'content':json.dumps(b)}}],'usage':{'prompt_tokens':t.count(json.dumps(request['messages'])),'completion_tokens':t.count(json.dumps(b))}}
+    c=backend_config(packet_cap=1000,metadata_cap=96,max_completions=1000,max_attempts=1100,max_input_tokens=10000000,max_output_tokens=3000000)
+    return p,allocate(p,n_agents,'P',c.seed,t.count),0,DurableBackend(directory,c,send,t),c

@@ -4,9 +4,15 @@ import json
 import os
 from pathlib import Path
 import tempfile
+from dataclasses import asdict,is_dataclass
 
 
-def canonical(obj):return json.dumps(obj,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False)
+def json_default(obj):
+    if is_dataclass(obj):return asdict(obj)
+    raise TypeError('unsupported_canonical_object:'+type(obj).__name__)
+
+
+def canonical(obj):return json.dumps(obj,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False,default=json_default)
 def digest(obj):return hashlib.sha256(canonical(obj).encode()).hexdigest()
 
 

@@ -6,3 +6,7 @@ def finqa_row():
 
 def proposal_body(atom=None,status='partial',answer=None):
     return {'status':status,'answer':answer,'facts':([] if atom is None else [{'fact_id':atom.atom_id,'document_id':atom.document_id,'sentence_id':atom.sentence_id,'quote':atom.text,'claim':'Observed fact'}]),'entity_tags':['Mira'],'needs':[],'derivation':[],'conflicts':[]}
+
+def backend_config(**changes):
+    from WEBExtension.web_reasoning.config import validate_config
+    return validate_config(changes)

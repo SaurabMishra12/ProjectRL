@@ -83,3 +83,11 @@ def test_attempt_audit_recomputes_each_dispatch_reservation(tmp_path):
     events[0]['reserved_input']=0
     path.write_text(''.join(canonical(e)+'\n' for e in events))
     with pytest.raises(AssertionError):audit().verify_attempts(tmp_path,cfg,tok)
+
+
+def test_historical_gate_excludes_later_contract_failures(tmp_path):
+    from WEBExtension.web_reasoning.storage import atomic_json
+    (tmp_path/'responses').mkdir()
+    atomic_json(tmp_path/'responses/pilot.json',{'raw':{'choices':[{'finish_reason':'stop','message':{'content':'{"answer":"yes"}'}}]}})
+    atomic_json(tmp_path/'responses/later.json',{'raw':{'choices':[{'finish_reason':'length','message':{'content':'{"answer":"yes"}'}}]}})
+    assert audit().historical_contract_failures(tmp_path,[{'event':'success','key':'pilot'}])==0

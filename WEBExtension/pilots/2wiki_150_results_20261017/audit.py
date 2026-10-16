@@ -141,6 +141,12 @@ def verify_attempts(inference,config,tokenizer,partial=False):
             'dispatch_reservations_recomputed':len(starts),'in_flight_attempts':len(starts)-len(closed)}
 
 
+def historical_contract_failures(inference,events):
+    keys={e['key'] for e in events if e['event']=='success'}
+    return sum(core.parse(json.loads((Path(inference)/'responses'/(key+'.json')).read_text())['raw'])['kind']!='valid'
+               for key in keys)
+
+
 def main(partial=False):
     manifest=driver.verify(); config=validate_config(manifest['config'])
     tokenizer=make_tokenizer(config,manifest['descriptor'])
@@ -174,8 +180,7 @@ def main(partial=False):
     origin_events=[json.loads(l) for l in (driver.ORIGIN/'inference/calls.jsonl').read_text().splitlines()]
     origin_refs=[json.loads(l) for l in (driver.ORIGIN/'inference/logical_refs.jsonl').read_text().splitlines()]
     pilot_usage=cost_summary(origin_events,origin_refs)
-    pilot_usage['contract_failures']=sum(core.parse(json.loads((RUN/'inference'/name).read_text())['raw'])['kind']!='valid'
-        for name in manifest['cache_import'] if name.startswith('responses/'))
+    pilot_usage['contract_failures']=historical_contract_failures(RUN/'inference',origin_events)
     assert core.gate(rows[:20],pilot_usage)==manifest['historical_gate']
     audit={'status':'VERIFIED_PARTIAL_OFFLINE' if partial else 'VERIFIED_150_OFFLINE',
         'sealed_questions':len(rows),'readouts_checked':checks,**attempt_audit,
@@ -188,11 +193,16 @@ def main(partial=False):
     backend=DurableBackend(RUN/'inference',config,None,tokenizer)
     summary=driver.report(rows,backend,manifest,'COMPLETE_150',final=True)
     for cohort,group in [('pilot',rows[:20]),('additional',rows[20:]),('pooled',rows)]:
+        for arm in core.ARMS:
+            summary['stats'][cohort][arm]['directed_deliveries']=sum(len(r['arms'][arm]['edges']) for r in group)
+            summary['stats'][cohort][arm]['recipient_calls']=sum(len({t for _,t in r['arms'][arm]['edges']}) for r in group)
         for rule in core.READOUTS:
             summary['contrasts'][cohort+':instar-random:'+rule]={metric:paired(
                 {r['question_key']:r['arms']['instar']['readouts'][rule][metric] for r in group},
                 {r['question_key']:r['arms']['random']['readouts'][rule][metric] for r in group},binary=metric=='em') for metric in ('em','f1')}
     summary['contrasts_note']='All paired comparisons exploratory; intervals are marginal and p-values unadjusted. In-Star/Dense Sink-1 equality follows request identity.'
+    summary['complementary_k_by_cohort']={cohort:dict(Counter(len(r['router_choices']['complementary']) for r in group))
+        for cohort,group in [('pilot',rows[:20]),('additional',rows[20:]),('pooled',rows)]}
     failures=[{'question_key':r['question_key'],'question':r['question'],'gold':targets[r['question_key']]['answer'],
                'needs':r['initial'][1]['missing_entities'],'choices':r['router_choices'],
                'sink_scores':{a:r['arms'][a]['readouts']['sink1'] for a in core.ARMS}}
@@ -210,6 +220,10 @@ def main(partial=False):
     for arm in core.ARMS:
         s=summary['stats']['additional'][arm]; aa=s['readouts']['abstention_aware']; sink=s['readouts']['sink1']
         lines.append(f'- {arm}: abstention-aware {aa["correct"]}/130 correct, F1 {aa["f1"]:.2f}; Sink-1 {sink["correct"]}/130 correct, F1 {sink["f1"]:.2f}.')
+    star=summary['stats']['additional']['instar'];dense=summary['stats']['additional']['dense']
+    star_tokens=star['known_input_tokens']+star['known_output_tokens']
+    dense_tokens=dense['known_input_tokens']+dense['known_output_tokens']
+    lines += ['',f'For these additional 130 questions, In-Star uses {star["directed_deliveries"]} directed deliveries and {star["recipient_calls"]} recipient calls, versus {dense["directed_deliveries"]} and {dense["recipient_calls"]} for Dense. Known logical model-token references are {star_tokens:,} versus {dense_tokens:,} ({100*(1-star_tokens/dense_tokens):.2f}% fewer). These are distinct cost measures; the fixed-sink equality does not imply equality under abstention-aware voting.']
     lines += ['','## Audited scope','',
         f'- Reconstructed all arm requests and officially rescored {checks} readouts from saved responses; 150/150 In-Star and Dense Sink-1 requests match byte for byte.',
         '- Sink equality is guaranteed by the one-round incoming message identity and physical response reuse. It is not an independent noninferiority result.',

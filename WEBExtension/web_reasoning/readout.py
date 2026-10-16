@@ -10,6 +10,14 @@ def normalize(answer):
 
 
 def abstention_vote(states,node_order):
+    return vote(states,node_order,exclude_abstentions=True)
+
+
+def original_vote(states,node_order):
+    return vote(states,node_order,exclude_abstentions=False)
+
+
+def vote(states,node_order,exclude_abstentions):
     mapping={s.agent_id:s for s in states}
     if set(node_order)!=set(mapping) or len(node_order)!=len(mapping):raise ValueError('invalid_node_order')
     pool=[]
@@ -17,6 +25,7 @@ def abstention_vote(states,node_order):
         outcome=mapping[node].outcome
         if outcome.kind in ('invalid','unresolved'):raise ValueError('incomplete_readout_cell')
         if outcome.proposal and outcome.proposal.answer is not None:pool.append(outcome.proposal.answer)
+        elif not exclude_abstentions:pool.append('noanswer')
     if not pool:return 'noanswer'
     counts=Counter(normalize(a) for a in pool)
     return max(pool,key=lambda a:counts[normalize(a)])

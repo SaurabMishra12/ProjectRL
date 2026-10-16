@@ -12,3 +12,8 @@ def test_abstentions_do_not_outvote_substantive_answer():
     from WEBExtension.web_reasoning.contracts import Outcome
     assert abstention_vote(states(),(0,1,2))=='Delta'
     with pytest.raises(ValueError):abstention_vote((replace(states()[0],outcome=Outcome('invalid')),), (0,))
+
+def test_original_vote_is_retained_as_diagnostic():
+    from WEBExtension.web_reasoning.readout import original_vote,abstention_vote
+    assert original_vote(states(),(0,1,2))=='noanswer'
+    assert abstention_vote(states(),(0,1,2))=='Delta'

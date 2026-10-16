@@ -25,3 +25,10 @@ def test_one_copy_of_received_source_in_model_input(tmp_path):
     payload=json.loads(request['messages'][-1]['content'])
     assert len(payload['visible_sources'])==len({x['atom_id'] for x in payload['visible_sources']})
     assert all('source' not in x for packet in payload['incoming_packets'] for x in packet['facts'])
+
+def test_routing_timings_are_measured_with_scope(tmp_path):
+    from WEBExtension.web_reasoning.runner import run_w1
+    p,a,s,b,c=w1_case(3,tmp_path);r=run_w1(p,a,s,b,c)
+    assert r.timings['client_wall_seconds']>=0
+    assert r.timings['routing_wall_seconds']>=0 and r.timings['routing_python_peak_bytes']>0
+    assert 'excludes native' in r.timings['memory_scope']

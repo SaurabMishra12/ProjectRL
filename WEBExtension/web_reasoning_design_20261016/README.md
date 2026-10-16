@@ -1,6 +1,6 @@
 # SparseComm for distributed Web evidence: design for review
 
-Date: 2026-10-16. Status: **design approved for implementation planning by the user's “Continue”; implementation plan awaiting review. Runtime changes and new experiments have not been implemented or executed.**
+Date: 2026-10-16. Status: **implemented locally following the user's “Continue”.** See the [runner and usage instructions](../web_reasoning/README.md) and [implementation validation](../web_reasoning/IMPLEMENTATION_STATUS.md). Historical design validation and source snapshots below retain their original scope. No new benchmark performance result is claimed.
 
 User-selected priority: **2WikiMultihopQA primary; FinQA secondary.** The requested outcome is a credible Web evaluation and concrete improvements to SparseComm, with compact prompts that make useful evidence easier to transmit. Performance improvements remain hypotheses.
 
@@ -33,4 +33,4 @@ User-selected priority: **2WikiMultihopQA primary; FinQA secondary.** The reques
 
 The current evidence does not establish a positive new Web result or a quadratic-to-linear empirical scaling law. The matched-readout HotpotQA comparison is 62 versus 65 correct, not 62 versus 34. The legacy scaling summary contains N=2,4,5; the plotting script inserts N=3 from another benchmark and estimates its total tokens. The new design therefore tests these claims prospectively.
 
-No old paper, result, checkpoint, existing experiment gate, or provider configuration is changed by this proposal. No new API requests or training runs were made. The next step is review of the implementation plan and selection of its execution method.
+Old papers, results, checkpoints, experiment gates, and provider configurations are preserved. Local implementation tests use synthetic fixtures, including an engineering-only scorer training test. No paid provider requests or benchmark training/evaluation runs were made. A real 20-question pilot requires separately reviewed inputs and spending limits.

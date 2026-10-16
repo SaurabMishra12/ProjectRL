@@ -145,4 +145,10 @@ class DurableBackend:
                 visible.append(Atom(**{**item,'context':tuple(item.get('context',{}).items())}))
             return parse_outcome(saved['raw'],tuple(visible),request.decoding['dataset'],variant=request.decoding.get('prompt_variant','enhanced'))
 
-    def summary(self):return cost_summary(self._read(),self.references)
+    def summary(self):
+        result=cost_summary(self._read(),self.logical.read())
+        result['session_logical_references']=len(self.references)
+        result['mode']=self.config.mode
+        result['accounting_units']='fixture UTF-8 bytes, not observed provider tokens' if self.config.mode=='MOCK' else 'reported provider tokens, with explicit missing usage'
+        result['logical_reference_scope']='persistent reference events; interrupted question replays may repeat references'
+        return result

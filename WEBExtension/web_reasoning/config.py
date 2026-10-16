@@ -31,6 +31,7 @@ class RunConfig:
     include_answer: bool = True
     stopping: bool = True
     router_checkpoint: str = ''
+    provider_base_url: str = ''
 
     def to_dict(self):
         return asdict(self)

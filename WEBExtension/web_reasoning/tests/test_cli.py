@@ -1,0 +1,68 @@
+import hashlib,json
+from pathlib import Path
+import pytest
+from .fixtures import wiki_row
+
+def prepared(tmp_path):
+    from WEBExtension.web_reasoning.cli import prepare_run
+    data=tmp_path/'data.json';data.write_text(json.dumps([wiki_row()]))
+    config=tmp_path/'config.json';config.write_text('{}')
+    source=tmp_path/'source.json';source.write_text(json.dumps({'dataset':'2wiki','provenance':'synthetic','train':{'path':str(data),'sha256':hashlib.sha256(data.read_bytes()).hexdigest()},'sample_sizes':{'pilot':1,'development':0,'evaluation':0,'scaling':0}}))
+    return prepare_run(config,source,tmp_path/'run')
+
+def test_prepare_forecast_mock_resume_and_verify_without_network(tmp_path,monkeypatch):
+    import socket
+    def forbidden(*a,**k):raise AssertionError('network forbidden')
+    monkeypatch.setattr(socket.socket,'connect',forbidden)
+    from WEBExtension.web_reasoning.cli import main,verify_run
+    manifest=prepared(tmp_path)
+    assert main(['forecast','--manifest',str(manifest)])==0
+    assert main(['run','--manifest',str(manifest),'--mode','mock'])==0
+    ledger=manifest.parent/'inference'/'calls.jsonl';before=ledger.read_bytes()
+    assert main(['run','--manifest',str(manifest),'--mode','mock'])==0 and ledger.read_bytes()==before
+    assert verify_run(manifest.parent)['status']=='PASS'
+    assert main(['report','--run',str(manifest.parent),'--engineering'])==0
+    with pytest.raises(ValueError):main(['report','--run',str(manifest.parent),'--scientific'])
+
+def test_live_requires_reviewed_exact_permit_before_sdk(tmp_path,monkeypatch):
+    from WEBExtension.web_reasoning.cli import main
+    manifest=prepared(tmp_path)
+    with pytest.raises(PermissionError):main(['run','--manifest',str(manifest),'--mode','live'])
+
+def test_modified_inputs_rejected(tmp_path):
+    from WEBExtension.web_reasoning.cli import verify_run
+    manifest=prepared(tmp_path)
+    (manifest.parent/'pilot_inputs.json').write_text('[]')
+    with pytest.raises(ValueError):verify_run(manifest.parent)
+
+def test_resumed_usage_summary_preserves_reference_history(tmp_path):
+    from WEBExtension.web_reasoning.cli import main
+    manifest=prepared(tmp_path)
+    main(['run','--manifest',str(manifest),'--mode','mock'])
+    before=json.loads((manifest.parent/'usage_summary.json').read_text())
+    main(['run','--manifest',str(manifest),'--mode','mock'])
+    after=json.loads((manifest.parent/'usage_summary.json').read_text())
+    assert before['logical_references']==after['logical_references']==12
+
+def test_provider_secret_fields_rejected_before_manifest_write(tmp_path):
+    from WEBExtension.web_reasoning.preparation import prepare_run
+    data=tmp_path/'d.json';data.write_text(json.dumps([wiki_row()]))
+    config=tmp_path/'c.json';config.write_text('{}')
+    source={'dataset':'2wiki','provenance':'synthetic','provider':{'api_key':'NEVER_SAVE_THIS'},'train':{'path':str(data),'sha256':hashlib.sha256(data.read_bytes()).hexdigest()},'sample_sizes':{'pilot':1,'development':0,'evaluation':0,'scaling':0}}
+    with pytest.raises(ValueError):prepare_run(config,source,tmp_path/'bad')
+    assert not (tmp_path/'bad'/'manifest.json').exists()
+
+@pytest.mark.parametrize('experiment',['W1','W2'])
+def test_all_n_manifest_workflow_resumes_without_transport(experiment,tmp_path):
+    from WEBExtension.web_reasoning.preparation import prepare_run,verify_run
+    from WEBExtension.web_reasoning.workflow import run_manifest
+    row=wiki_row();data=tmp_path/'evaluation.json';data.write_text(json.dumps([row]))
+    config=tmp_path/'config.json';config.write_text(json.dumps({'experiment':experiment,'max_completions':300,'max_attempts':350,'max_input_tokens':10000000,'max_output_tokens':1000000}))
+    descriptor={'dataset':'2wiki','provenance':'synthetic','evaluation':{'path':str(data),'sha256':hashlib.sha256(data.read_bytes()).hexdigest()},'sample_sizes':{'pilot':0,'development':0,'evaluation':1,'scaling':1}}
+    path=prepare_run(config,descriptor,tmp_path/'run')
+    runs=run_manifest(path,cohort='scaling')
+    assert [r.n_agents for r in runs]==[2,3,4,5]
+    ledger=path.parent/'inference/calls.jsonl';before=ledger.read_bytes()
+    run_manifest(path,cohort='scaling')
+    assert ledger.read_bytes()==before
+    assert verify_run(path.parent)['status']=='PASS'

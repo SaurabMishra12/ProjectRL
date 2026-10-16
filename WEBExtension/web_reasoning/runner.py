@@ -1,8 +1,10 @@
 """Frozen-state comparisons. Targets cannot enter this module's call signatures."""
-from dataclasses import dataclass,replace
+from dataclasses import dataclass,replace,field
 import hashlib
 import json
 from pathlib import Path
+import time
+import tracemalloc
 from .contracts import AgentState
 from .backend import Request
 from .prompts import build_messages
@@ -34,11 +36,13 @@ class QuestionRun:
     transmissions:tuple
     mode:str
     contract_hash:str=''
+    timings:dict=field(default_factory=dict)
+    policy_metadata:dict=field(default_factory=dict)
 
 
 def call(public,visible,previous,incoming,request,stage,backend,config,slot):
     messages=build_messages(public.question,visible,previous,incoming,request,public.dataset,stage,variant=config.prompt_variant)
-    req=Request(messages,{'model':config.model,'revision':config.deployment_revision},backend.tokenizer.identity,
+    req=Request(messages,{'model':config.model,'revision':config.deployment_revision,'base_url':config.provider_base_url},backend.tokenizer.identity,
                 {'dataset':public.dataset,'max_tokens':config.max_output_per_call,'temperature':0,
                  'prompt_version':config.prompt_version,'schema_version':config.schema_version,'replicate_id':config.replicate_id,
                  'prompt_variant':config.prompt_variant})
@@ -84,6 +88,7 @@ def control_packets(initial,tokenizer,cap):
 
 
 def run_w1(public,assignments,sink,backend,config):
+    started=time.perf_counter();cpu_started=time.process_time();routing_wall=routing_cpu=0.;routing_peak=0
     n=len(assignments)
     if n not in (2,3,4,5) or not 0<=sink<n:raise ValueError('invalid_team')
     expected={a.atom_id for source in public.sources for a in source.atoms}
@@ -92,7 +97,17 @@ def run_w1(public,assignments,sink,backend,config):
     metadata,controls=control_packets(initial,backend.tokenizer,config.metadata_cap)
     arms={'nocomm':ArmResult('nocomm',initial,sink,initial[sink].outcome,(),controls)}
     for name in ('private','static','random','selected','instar','dense'):
-        senders=route_senders(name,metadata,sink,max(1,n//2),public.question,config,set()) if name in ('static','random','selected') else ()
+        senders=()
+        if name in ('static','random','selected'):
+            owned_trace=not tracemalloc.is_tracing()
+            if owned_trace:tracemalloc.start()
+            wall=time.perf_counter();cpu=time.process_time()
+            try:
+                senders=route_senders(name,metadata,sink,max(1,n//2),public.question,config,set())
+                routing_wall+=time.perf_counter()-wall;routing_cpu+=time.process_time()-cpu
+                routing_peak=max(routing_peak,tracemalloc.get_traced_memory()[1])
+            finally:
+                if owned_trace:tracemalloc.stop()
         schedule=one_round_schedule(name,n,sink,senders)
         states,packets,refs=update(public,initial,schedule,backend,config,name)
         # Routing notices are explicit charged control frames, not model prompts.
@@ -109,7 +124,22 @@ def run_w1(public,assignments,sink,backend,config):
     if digest(initial)!=before:raise ValueError('initial_state_mutated')
     return QuestionRun(public.key,public.dataset,n,initial,arms,tuple(backend.references[start:]),
                        tuple(p for arm in arms.values() for p in arm.transmissions),config.mode,
-                       contract_hash(public,assignments,sink,config,backend.tokenizer.identity))
+                       contract_hash(public,assignments,sink,config,backend.tokenizer.identity),
+                       {'client_wall_seconds':time.perf_counter()-started,'client_cpu_seconds':time.process_time()-cpu_started,
+                        'routing_wall_seconds':routing_wall,'routing_cpu_seconds':routing_cpu,'routing_python_peak_bytes':routing_peak,
+                        'memory_scope':'Python-traced peak; excludes native tensor and GPU allocations; preexisting tracing may include other allocations'},
+                       policy_metadata(config))
+
+
+def policy_metadata(config):
+    if not config.router_checkpoint:
+        return {'kind':'deterministic_metadata_heuristic','training_costs':None}
+    from .learned import FEATURE_VERSION
+    from .training import load_checkpoint
+    _,meta=load_checkpoint(config.router_checkpoint,FEATURE_VERSION,config.prompt_version,mode=config.mode)
+    return {'kind':'learned_utility_regression','checkpoint_sha256':hashlib.sha256(Path(config.router_checkpoint).read_bytes()).hexdigest(),
+            'training_costs':meta['costs'],'training_cost_scope':'training and validation outcome collection; offline optimizer compute excluded',
+            'record_sha256':meta['record_sha256'],'settings_sha256':meta['settings_sha256'],'mode':meta['mode']}
 
 
 def contract_hash(public,assignments,sink,config,tokenizer_identity):

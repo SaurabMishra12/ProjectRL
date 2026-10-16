@@ -38,6 +38,7 @@ class QuestionRun:
     contract_hash:str=''
     timings:dict=field(default_factory=dict)
     policy_metadata:dict=field(default_factory=dict)
+    cohort:str=''
 
 
 def call(public,visible,previous,incoming,request,stage,backend,config,slot):

@@ -7,6 +7,7 @@ class RunConfig:
     schema_version: str = 'web_evidence_v1'
     prompt_version: str = 'web_prompt_v1'
     experiment: str = 'W1'
+    execution_protocol: str = 'auto'
     seed: int = 20261016
     team_sizes: tuple[int, ...] = (2,3,4,5)
     regime: str = 'P'
@@ -61,4 +62,16 @@ def validate_config(config):
         raise ValueError('real_identity_required')
     if c.packet_mode not in ('atomic','prefix') or c.prompt_variant not in ('enhanced','legacy') or type(c.include_answer) is not bool or type(c.stopping) is not bool:
         raise ValueError('invalid_ablation_configuration')
+    if c.execution_protocol not in ('auto','fixed','adaptive') or (c.execution_protocol=='adaptive' and c.experiment in ('W1','W3')) or (c.execution_protocol=='fixed' and c.experiment=='W2'):
+        raise ValueError('inconsistent_execution_protocol')
     return c
+
+
+def uses_adaptive(config):
+    return config.experiment=='W2' or config.execution_protocol=='adaptive'
+
+
+def logical_call_ceiling(config,n):
+    base=5*n+4*max(1,n//2)+10 if uses_adaptive(config) else 2*n+6
+    # W4 stopping effects are paired on the very same initial states within a run.
+    return base+(max(1,n//2)+2 if config.experiment=='W4' and uses_adaptive(config) else 0)

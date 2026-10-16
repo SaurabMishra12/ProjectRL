@@ -122,18 +122,23 @@ def finqa_prediction(proposal,question_key=''):
     return {'id':question_key,'predicted':list(proposal.program)}
 
 
-def score_official_program(proposal,targets,public,module):
+def score_official_program(proposal,targets,public,module,visible_atoms=None):
     if public is None:return {'execution_accuracy':None,'program_accuracy':None,'status':'INCOMPLETE','reason':'source_registry_required'}
+    if visible_atoms is None:return {'execution_accuracy':None,'program_accuracy':None,'status':'INCOMPLETE','reason':'endpoint_visibility_required'}
     if not targets.program or not targets.answer:return {'execution_accuracy':None,'program_accuracy':None,'status':'INCOMPLETE','reason':'reference_labels_missing'}
-    visible=tuple(a for s in public.sources for a in s.atoms)
+    registry={a.atom_id:a for s in public.sources for a in s.atoms};visible=tuple(visible_atoms)
+    if any(registry.get(a.atom_id)!=a for a in visible):raise ValueError('endpoint_source_registry_mismatch')
+    citation_atoms={f.atom_id for f in proposal.facts}
+    try:
+        if any(f.atom_id not in {a.atom_id for a in visible} or registry[f.atom_id].text!=f.quote for f in proposal.facts):raise ValueError('invalid_citation')
+        validate_operands(proposal.program,proposal.operand_sources,tuple(a for a in visible if a.atom_id in citation_atoms))
+    except ValueError as error:
+        return {'execution_accuracy':None,'program_accuracy':None,'status':'INCOMPLETE','reason':str(error),'operand_provenance_valid':False}
     predicted=execute_program(proposal.program,visible)
     if not predicted.valid:
         bounded=predicted.reason in ('exponent_ceiling','numerical_ceiling','nonfinite_or_oversized_operand')
         return {'execution_accuracy':None if bounded else 0.,'program_accuracy':None if bounded else 0.,
                 'status':'INCOMPLETE' if bounded else 'COMPLETE','program_error':predicted.reason}
-    citation_atoms={f.atom_id for f in proposal.facts}
-    try:validate_operands(proposal.program,proposal.operand_sources,tuple(a for a in visible if a.atom_id in citation_atoms));source_valid=True
-    except ValueError:source_valid=False
     table_atoms=[a for a in visible if a.kind=='table_row'];table=[]
     if table_atoms:
         table=[json.loads(dict(table_atoms[0].context)['header'])]+[json.loads(dict(a.context)['row']) for a in table_atoms]
@@ -144,8 +149,8 @@ def score_official_program(proposal,targets,public,module):
     correct=not invalid and value==gold
     gold_tokens=module.program_tokenization(targets.program)
     # Validate the trusted reference structure too before invoking symbolic equivalence.
-    valid_gold=execute_program(gold_tokens,visible).valid
+    valid_gold=execute_program(gold_tokens,tuple(registry.values())).valid
     program_correct=bool(module.equal_program(gold_tokens,list(proposal.program))) if valid_gold else False
     if program_correct and not correct:raise ValueError('inconsistent_official_reference')
     return {'execution_accuracy':100.*correct,'program_accuracy':100.*program_correct,
-            'status':'COMPLETE','operand_provenance_valid':source_valid}
+            'status':'COMPLETE','operand_provenance_valid':True}

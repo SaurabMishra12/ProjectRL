@@ -4,7 +4,7 @@ from dataclasses import asdict,replace
 import hashlib
 import json
 from pathlib import Path
-from .config import validate_config
+from .config import validate_config,logical_call_ceiling
 from .data import load_verified,allocate
 from .splits import freeze_splits,balanced_sinks,normalize
 from .storage import atomic_json,digest
@@ -140,7 +140,7 @@ def verify_run(run_dir):
 
 def forecast(manifest):
     c=validate_config(manifest['config']);counts=manifest['counts']
-    def per(n):return 2*n+6 if c.experiment!='W2' else 5*n+4*max(1,n//2)+10
+    def per(n):return logical_call_ceiling(c,n)
     return {'logical_completion_ceilings':{**{k:counts[k]*per(3) for k in COHORTS},
               'scaling_before_reuse':len(manifest['scaling_keys'])*sum(per(n) for n in c.team_sizes)},
             'nested_n3_logical_reuse':len(manifest['scaling_keys'])*per(3) if 3 in c.team_sizes else 0,

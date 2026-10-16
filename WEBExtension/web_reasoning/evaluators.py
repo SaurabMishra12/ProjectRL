@@ -34,14 +34,14 @@ class OfficialEvaluator:
         if alias_file is not None:
             raw=Path(alias_file).read_bytes();self.alias_sha256=hashlib.sha256(raw).hexdigest()
 
-    def score(self,public_key,outcome,targets,public=None):
+    def score(self,public_key,outcome,targets,public=None,visible_atoms=None):
         if outcome.kind in ('invalid','unresolved'):
             return {'em':None,'f1':None,'status':'INCOMPLETE','reason':outcome.reason}
         prediction=outcome.proposal.answer if outcome.proposal and outcome.proposal.answer else 'noanswer'
         if self.dataset=='finqa':
-            if not outcome.proposal or not outcome.proposal.program:return {'execution_accuracy':0.,'program_accuracy':0.,'status':'COMPLETE'}
+            if not outcome.proposal or outcome.proposal.status!='supported' or not outcome.proposal.program:return {'execution_accuracy':0.,'program_accuracy':0.,'status':'COMPLETE'}
             from .finqa import score_official_program
-            return score_official_program(outcome.proposal,targets,public,self.module)
+            return score_official_program(outcome.proposal,targets,public,self.module,visible_atoms)
         golds=(targets.answer,)+targets.aliases
         answer_scores=[self.module.eval_answer(prediction,gold) for gold in golds]
         result={'em':100.*max(x[0] for x in answer_scores),'f1':100.*max(x[1] for x in answer_scores),

@@ -37,4 +37,4 @@ def run_from_dict(obj):
         arms[name]=ArmResult(a['name'],tuple(state_from_dict(x) for x in a['states']),a['sink'],outcome_from_dict(a['outcome']),
                              tuple(a['references']),tuple(packet_from_dict(x) for x in a['transmissions']),a['stop_reason'])
     return QuestionRun(obj['question_key'],obj['dataset'],obj['n_agents'],tuple(state_from_dict(s) for s in obj['initial']),
-                       arms,tuple(obj['logical_refs']),tuple(packet_from_dict(x) for x in obj['transmissions']),obj['mode'],obj['contract_hash'],obj.get('timings',{}),obj.get('policy_metadata',{}))
+                       arms,tuple(obj['logical_refs']),tuple(packet_from_dict(x) for x in obj['transmissions']),obj['mode'],obj['contract_hash'],obj.get('timings',{}),obj.get('policy_metadata',{}),obj.get('cohort',''))

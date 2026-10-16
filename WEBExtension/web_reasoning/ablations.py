@@ -8,7 +8,8 @@ def ablation_variants(base_config):
     base=validate_config(base_config)
     return tuple(validate_config(replace(base,experiment='W4',**change)) for change in (
         {},{'prompt_variant':'legacy'},{'packet_mode':'prefix'},
-        {'include_answer':False},{'stopping':False},{'regime':'R'}))
+        {'include_answer':False},{'execution_protocol':'adaptive','stopping':True},
+        {'execution_protocol':'adaptive','stopping':False},{'regime':'R'}))
 
 
 def compile_variant(base_state,variant,config,n_agents=3,placement='natural',token_count=len):

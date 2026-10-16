@@ -34,3 +34,18 @@ def test_followup_really_executes_and_dense_comparator_runs(tmp_path):
     dense=run_adaptive(p,initial,s,b,c,'dense',always_run=True)
     assert len(dense.references)==12
     assert len([x for x in result.transmissions if x.kind=='control'])>4
+
+@pytest.mark.parametrize('n',[2,3,4,5])
+@pytest.mark.parametrize('phases',[1,2,3])
+def test_fixed_controls_ignore_initial_supported_answer(n,phases,tmp_path):
+    from dataclasses import replace
+    from WEBExtension.web_reasoning.runner import initialize
+    from WEBExtension.web_reasoning.adaptive import run_adaptive
+    from WEBExtension.web_reasoning.contracts import Outcome,Proposal,Fact
+    p,a,s,b,c=w1_case(n,tmp_path);c=replace(c,max_phases=phases)
+    initial=list(initialize(p,a,b,c));atom=initial[s].visible_atoms[0]
+    initial[s]=replace(initial[s],outcome=Outcome('valid',Proposal('supported','Delta',(Fact(atom.atom_id,atom.text,'Observed'),))))
+    private=run_adaptive(p,tuple(initial),s,b,c,'private')
+    assert len(private.references)==sum((1,max(1,n//2),1)[:phases])
+    dense=run_adaptive(p,tuple(initial),s,b,c,'dense')
+    assert len(dense.references)==n*phases

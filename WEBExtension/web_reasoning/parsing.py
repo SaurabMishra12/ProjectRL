@@ -70,6 +70,12 @@ def parse_outcome(raw,visible_atoms,dataset,variant='enhanced'):
                           tuple(json.dumps(s,sort_keys=True) for s in obj['derivation']),
                           tuple(json.dumps(s,sort_keys=True) for s in obj['conflicts']),
                           tuple(obj.get('program',())),tuple(json.dumps(s,sort_keys=True) for s in obj.get('operand_sources',())))
+        if dataset=='finqa':
+            if proposal.status!='supported' and proposal.program:raise ValueError('unresolved_endpoint_cannot_execute_program')
+            if proposal.status=='supported':
+                from .finqa import validate_operands
+                if not proposal.program:raise ValueError('supported_financial_program_required')
+                validate_operands(proposal.program,proposal.operand_sources,tuple(a for a in visible_atoms if a.atom_id in seen))
         return Outcome('valid',proposal,digest,usage)
     except (ValueError,TypeError,KeyError,IndexError) as error:
         return Outcome('invalid',raw_sha256=digest,usage=usage,reason=str(error))

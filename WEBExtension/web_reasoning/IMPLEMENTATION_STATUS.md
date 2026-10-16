@@ -4,7 +4,7 @@ Date: 2026-10-16. Branch: `codex/web-reasoning`. Scope: the new Web experiment p
 
 ## Verification
 
-- Local suite: 98 tests passed, including all-N W1/W2 CLI integration and learned-policy overhead reporting.
+- Final local suite: **125 passed**: 119 package tests and six existing protocol tests. Includes all-N W1/W2 execution/resume, fixed supported-state controls, actual adaptive W4 dispatch and same-state stopping pairs, cohort isolation, interrupted-run coverage, FinQA endpoint visibility, and learned-policy overhead reporting.
 - Python compilation and CLI help succeeded. Existing `WEBExtension/tests/test_protocol.py`: 6 passed.
 - W1 and adaptive unit/integration tests exercise N=2,3,4,5. CLI tests block network access, reject scientific reports for mocks, reject unpermitted live dispatch, verify source/manifest integrity, and check durable resume.
 - A complete 20-question synthetic N=3 W1 pilot produced 240 logical references and 190 physical mock completions. Frozen-file verification passed; repeating the workflow produced no additional transport invocations. Usage counts are fixture bytes, not provider tokens.
@@ -29,4 +29,6 @@ Native allocation/scoring bounds and theoretical edge counts are distinct from m
 
 ## Final review
 
-Pending the fresh whole-branch code review. No merge or push has been performed.
+The fresh reviewer found five Important issues and no Critical or Minor issues. All five were reproduced by failing tests and corrected in one pass; the full 125-test suite passed afterward. The original review verdict was not ready to merge. No second review approval is claimed: the fixes are verified by regression tests and the full suite. See [findings and response](REVIEW_AND_RESPONSE.md). No merge or push has been performed.
+
+The review's untested areas remain explicit rulings: real-data adapter/split feasibility (risk: corrections or sampling amendments), pinned-tokenizer packet fit (risk: omitted atoms), live provider/revision/usage compatibility (risk: deployment mismatch), empirical performance/scaling/generalization (risk: no improvement), and unrelated research changes (outside this review's assurance). No minor findings were deferred.

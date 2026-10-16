@@ -38,10 +38,18 @@ def referenced_cost(refs):
             'interpretation':'logical reference sums are not additive billed cost across arms; physical attempts live in source ledgers'}
 
 
-def write_report(question_runs,targets,output_dir,scientific=False,publics=None,provenance=None):
-    if not question_runs:raise ValueError('nonempty_run_required')
-    if len({r.dataset for r in question_runs})!=1:raise ValueError('do_not_pool_benchmarks')
-    if scientific and any(r.mode!='REAL' for r in question_runs):raise ValueError('mock_is_not_scientific_evidence')
+def write_report(question_runs,targets,output_dir,scientific=False,publics=None,provenance=None,
+                 expected_cells=None,cohort=None,dataset=None,mode=None,expected_arms=None):
+    datasets={r.dataset for r in question_runs}|({dataset} if dataset else set())
+    if len(datasets)!=1:raise ValueError('one_explicit_benchmark_required')
+    dataset=next(iter(datasets))
+    if scientific and (any(r.mode!='REAL' for r in question_runs) or (mode is not None and mode!='REAL') or (not question_runs and mode!='REAL')):
+        raise ValueError('mock_is_not_scientific_evidence')
+    saved={(r.question_key,r.n_agents):r for r in question_runs}
+    if len(saved)!=len(question_runs):raise ValueError('duplicate_report_cell')
+    expected=list(expected_cells) if expected_cells is not None else list(saved)
+    if not expected or len(set(expected))!=len(expected) or not set(saved)<=set(expected):raise ValueError('invalid_expected_report_population')
+    if cohort and any(r.cohort not in ('', 'evaluation' if cohort=='scaling' else cohort) for r in question_runs):raise ValueError('report_cohort_mismatch')
     directory=Path(output_dir);directory.mkdir(parents=True,exist_ok=True)
     records=[];paired=[]
     for run in question_runs:
@@ -60,28 +68,41 @@ def write_report(question_runs,targets,output_dir,scientific=False,publics=None,
                   'complete_delivered_atoms':sum(len(p.facts) for p in arm.transmissions),
                   'omitted_atoms':sum(len(p.omitted_atom_ids) for p in arm.transmissions),'stop_reason':arm.stop_reason}
             if scientific:
-                item['sink']=evaluator.score(run.question_key,arm.outcome,target,public=public)
+                sink_state=next(s for s in arm.states if s.agent_id==arm.sink)
+                item['sink']=evaluator.score(run.question_key,arm.outcome,target,public=public,visible_atoms=sink_state.visible_atoms)
                 for label,rule in (('abstention_vote',abstention_vote),('original_vote_diagnostic',original_vote)):
                     try:
                         vote=rule(arm.states,tuple(s.agent_id for s in arm.states))
-                        winner=next((s.outcome for s in arm.states if s.outcome.proposal and s.outcome.proposal.answer is not None and normalize(s.outcome.proposal.answer)==normalize(vote)),
-                                    Outcome('valid',Proposal('no_evidence',None)))
-                        item[label]=evaluator.score(run.question_key,winner,target,public=public)
+                        winner=next((s for s in arm.states if s.outcome.proposal and s.outcome.proposal.answer is not None and normalize(s.outcome.proposal.answer)==normalize(vote)),None)
+                        item[label]=evaluator.score(run.question_key,winner.outcome if winner else Outcome('valid',Proposal('no_evidence',None)),target,
+                                                    public=public,visible_atoms=winner.visible_atoms if winner else ())
                     except ValueError:item[label]={'status':'INCOMPLETE','em':None,'f1':None}
                 visible={(a.title,a.sentence_id) for s in arm.states if s.agent_id==arm.sink for a in s.visible_atoms}
                 item['annotated_support_visible_to_sink']=set(target.supporting_locators)<=visible if target.supporting_locators else None
             arms[name]=item
-        records.append({'question_key':run.question_key,'team_size':run.n_agents,'mode':run.mode,'arms':arms,'timings':run.timings})
+        records.append({'question_key':run.question_key,'team_size':run.n_agents,'cohort':cohort or run.cohort,'mode':run.mode,'status':'SAVED','arms':arms,'timings':run.timings})
         if scientific:
             metric='em' if run.dataset=='2wiki' else 'execution_accuracy'
             paired.append({'question_key':run.question_key,'team_size':run.n_agents,'mode':run.mode,
                            'arms':{name:{'em':item['sink'].get(metric)} for name,item in arms.items()}})
-    contrasts={}
+    arm_names=tuple(expected_arms or ('nocomm','private','static','random','selected','instar','dense','full_union'))
+    arm_names=tuple(dict.fromkeys(arm_names+tuple(name for run in question_runs for name in run.arms)))
+    for key,n in sorted(set(expected)-set(saved)):
+        arms={name:{'status':'NOT_RUN','sink':{'status':'INCOMPLETE','em':None,'f1':None,'execution_accuracy':None},
+                    'cost':{'logical_calls':None},'data_deliveries':None,'control_frames':None} for name in arm_names}
+        records.append({'question_key':key,'team_size':n,'cohort':cohort,'mode':mode,'status':'MISSING','reason':'assigned_cell_not_saved','arms':arms,'timings':{}})
+        if scientific:paired.append({'question_key':key,'team_size':n,'mode':'REAL','arms':{name:{'em':None} for name in arm_names}})
+    contrasts={};stopping_contrasts={}
     if scientific:
-        for n in sorted({r.n_agents for r in question_runs}):
+        for n in sorted({n for _,n in expected}):
             contrasts[str(n)]=paired_summary([r for r in paired if r['team_size']==n],('selected','random'))
-    summary={'status':'SCIENTIFIC' if scientific else 'ENGINEERING — NO SCIENTIFIC SCORES',
-             'dataset':question_runs[0].dataset,'records':records,'selected_minus_random_by_n':contrasts,
+            if {'selected_always_run','selected_observable_stop'}<=set(arm_names):
+                stopping_contrasts[str(n)]=paired_summary([r for r in paired if r['team_size']==n],('selected_always_run','selected_observable_stop'))
+    coverage={'expected':len(expected),'saved':len(saved),'missing':len(expected)-len(saved)}
+    incomplete=coverage['missing'] or any(v['status']=='INCOMPLETE' for v in list(contrasts.values())+list(stopping_contrasts.values()))
+    summary={'status':('INCOMPLETE SCIENTIFIC' if incomplete else 'SCIENTIFIC') if scientific else 'ENGINEERING — NO SCIENTIFIC SCORES',
+             'dataset':dataset,'cohort':cohort,'coverage':coverage,'records':records,'selected_minus_random_by_n':contrasts,
+             'stopping_always_minus_observable_by_n':stopping_contrasts,
              'routing_policies':list({digest(r.policy_metadata):r.policy_metadata for r in question_runs}.values()),
              'provenance':provenance,
              'cost_warning':'Cross-arm references overlap; use immutable physical ledgers for unique actual attempts. Currency cost unknown.',
@@ -89,13 +110,15 @@ def write_report(question_runs,targets,output_dir,scientific=False,publics=None,
     atomic_json(directory/'report.json',summary)
     lines=['# Web reasoning '+('scientific report' if scientific else 'engineering validation'),' ',summary['status'],'',
            f'Question/team-size records: {len(records)}. No estimated legacy points are included.','',summary['cost_warning'],'']
-    for n in sorted({r.n_agents for r in question_runs}):
+    lines+=['Coverage: '+json.dumps(coverage,sort_keys=True),'']
+    for n in sorted({n for _,n in expected}):
         subset=[r for r in records if r['team_size']==n];lines+=['## Team size '+str(n),'']
         for name in subset[0]['arms']:
-            values=[r['arms'][name] for r in subset]
+            values=[r['arms'][name] for r in subset if r['status']=='SAVED']
             lines.append(f'- {name}: {sum(x["cost"]["logical_calls"] for x in values)} logical calls; '
                          f'{sum(x["data_deliveries"] for x in values)} data/request deliveries; '
-                         f'{sum(x["control_frames"] for x in values)} control frames.')
+                         f'{sum(x["control_frames"] for x in values)} control frames; {len(subset)-len(values)} missing assigned cells.')
         if scientific:lines+=['',json.dumps(contrasts[str(n)],sort_keys=True)]
+        if str(n) in stopping_contrasts:lines+=['','Stopping contrast (same initial states): '+json.dumps(stopping_contrasts[str(n)],sort_keys=True)]
         lines.append('')
     path=directory/'report.md';path.write_text('\n'.join(lines)+'\n');return path

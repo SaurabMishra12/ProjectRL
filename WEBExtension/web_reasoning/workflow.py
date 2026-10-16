@@ -1,9 +1,9 @@
 """Run frozen public inputs; private targets are loaded only by reporting."""
-from dataclasses import asdict
+from dataclasses import asdict,replace
 import json
 from pathlib import Path
 from .preparation import verify_run,make_tokenizer,file_sha,forecast
-from .config import validate_config
+from .config import validate_config,uses_adaptive,logical_call_ceiling
 from .contracts import AgentState
 from .backend import DurableBackend
 from .runner import run_w1,initialize,call,ArmResult,QuestionRun,contract_hash,policy_metadata
@@ -29,6 +29,11 @@ def w2(public,assignments,sink,backend,config):
     arms={'nocomm':ArmResult('nocomm',initial,sink,initial[sink].outcome)}
     for policy in ('private','static','random','selected','instar','dense'):
         arms[policy]=run_adaptive(public,initial,sink,backend,config,policy,always_run=not config.stopping)
+    if config.experiment=='W4':
+        current='selected_observable_stop' if config.stopping else 'selected_always_run'
+        other='selected_always_run' if config.stopping else 'selected_observable_stop'
+        arms[current]=arms['selected']
+        arms[other]=run_adaptive(public,initial,sink,backend,replace(config,stopping=not config.stopping),'selected',always_run=config.stopping)
     offset=len(backend.references);atoms=tuple(a for source in public.sources for a in source.atoms)
     outcome=call(public,atoms,None,(),None,'initial',backend,config,{'arm':'full_union','stage':'initial','node':sink})
     state=AgentState(sink,atoms,outcome.proposal.facts if outcome.proposal else (),outcome)
@@ -58,7 +63,7 @@ def run_manifest(manifest_path,mode='mock',cohort='pilot',permit_path=None):
     publics=tuple(public_from_dict(x) for x in json.loads((root/(original_cohort+'_inputs.json')).read_text()))
     keys=set(manifest['scaling_keys']) if cohort=='scaling' else {p.key for p in publics}
     ns=config.team_sizes if cohort=='scaling' else (3,)
-    expected_calls=sum(len(keys)*(2*n+6 if config.experiment!='W2' else 5*n+4*max(1,n//2)+10) for n in ns)
+    expected_calls=sum(len(keys)*logical_call_ceiling(config,n) for n in ns)
     if expected_calls>config.max_completions:raise ValueError('cohort_logical_ceiling_exceeds_frozen_budget')
     runs=[]
     for n in ns:
@@ -74,8 +79,9 @@ def run_manifest(manifest_path,mode='mock',cohort='pilot',permit_path=None):
                 saved=json.loads(path.read_text());run=run_from_dict(saved['run'])
                 if run.contract_hash!=expected:raise ValueError('saved_run_contract_mismatch')
             else:
-                run=(w2 if config.experiment=='W2' else run_w1)(public,assigned,sink,backend,config)
-                atomic_json(path,{'run':asdict(run),'sha256':digest(asdict(run)),'manifest_sha256':file_sha(manifest_path)})
+                run=(w2 if uses_adaptive(config) else run_w1)(public,assigned,sink,backend,config)
+                run=replace(run,cohort=original_cohort)
+                atomic_json(path,{'run':asdict(run),'sha256':digest(asdict(run)),'manifest_sha256':file_sha(manifest_path),'cohort':original_cohort})
             runs.append(run)
     atomic_json(root/'usage_summary.json',backend.summary())
     return tuple(runs)

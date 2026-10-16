@@ -27,3 +27,21 @@ def test_learned_policy_overhead_reported_once_and_roundtrips(tmp_path):
     assert obj['routing_policies'][0]['training_costs']=={'input_tokens':40,'output_tokens':12,'calls':4}
     assert len(obj['routing_policies'])==1
     assert obj['routing_policies'][0]['checkpoint_sha256']
+
+def test_missing_assigned_cell_keeps_primary_effect_incomplete(tmp_path,monkeypatch):
+    from dataclasses import replace
+    import json
+    from WEBExtension.web_reasoning.runner import run_w1
+    from WEBExtension.web_reasoning.reporting import write_report
+    class FixtureEvaluator:
+        def __init__(self,*a):pass
+        def score(self,*a,**kw):return {'status':'COMPLETE','em':100.,'f1':100.}
+    monkeypatch.setattr('WEBExtension.web_reasoning.reporting.OfficialEvaluator',FixtureEvaluator)
+    p,a,s,b,c=w1_case(3,tmp_path/'inference');run=replace(run_w1(p,a,s,b,c),mode='REAL')
+    from WEBExtension.web_reasoning.contracts import PrivateTargets
+    path=write_report([run],{p.key:PrivateTargets('Delta')},tmp_path/'report',True,expected_cells=[(p.key,3),('not-run',3)],cohort='evaluation',mode='REAL')
+    report=json.loads(path.with_suffix('.json').read_text())
+    assert report['coverage']=={'expected':2,'saved':1,'missing':1}
+    assert report['selected_minus_random_by_n']['3']['status']=='INCOMPLETE'
+    assert report['selected_minus_random_by_n']['3']['n_questions']==2
+    assert report['selected_minus_random_by_n']['3']['effect'] is None

@@ -45,7 +45,6 @@ def run_adaptive(public,initial,sink,backend,config,policy='selected',always_run
             frames.append(Packet(-1,recipient,text,backend.tokenizer.count(text),kind='control'))
         if not dense:check(frames)
         transmissions.extend(frames)
-    if not always_run and should_stop(states[sink]):return result('supported_stop')
     if policy=='private':
         # Fixed maximum private schedule; its outcomes cannot change the schedule.
         leaves=tuple(i for i in range(n) if i!=sink)[:max(1,n//2)]
@@ -54,12 +53,13 @@ def run_adaptive(public,initial,sink,backend,config,policy='selected',always_run
             states,_,_=update(public,states,Schedule((),recipients),backend,config,'adaptive_private')
         return result('phase_limit')
     if policy=='dense':
-        # Dense is a separate comparator; its quadratic schedule is not passed to the sparse-bound validator.
+        # Dense is fixed-depth; its quadratic schedule is not passed to the sparse-bound validator.
         for _ in range(config.max_phases):
             notices(tuple(range(n)),'dense',dense=True)
             states,packets,_=update(public,states,one_round_schedule('dense',n,sink,()),backend,config,'adaptive_dense')
             transmissions.extend(packets)
         return ArmResult('adaptive_dense',states,sink,states[sink].outcome,tuple(backend.references[start:]),tuple(transmissions),'phase_limit')
+    if not always_run and should_stop(states[sink]):return result('supported_stop')
     senders=tuple(i for i in range(n) if i!=sink) if policy=='instar' else route_senders(policy,metadata,sink,max(1,n//2),public.question,config,set())
     schedule=one_round_schedule('instar' if policy=='instar' else 'selected',n,sink,senders)
     check([Packet(i,sink,'',config.packet_cap) for i in senders])

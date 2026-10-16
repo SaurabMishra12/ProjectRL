@@ -22,10 +22,10 @@ python -m WEBExtension.web_reasoning prepare --config WEBExtension/web_reasoning
 python -m WEBExtension.web_reasoning forecast --manifest WEBExtension/web_reasoning/artifacts/mock_pilot/manifest.json
 python -m WEBExtension.web_reasoning run --manifest WEBExtension/web_reasoning/artifacts/mock_pilot/manifest.json --mode mock
 python -m WEBExtension.web_reasoning verify --run WEBExtension/web_reasoning/artifacts/mock_pilot
-python -m WEBExtension.web_reasoning report --run WEBExtension/web_reasoning/artifacts/mock_pilot --engineering
+python -m WEBExtension.web_reasoning report --run WEBExtension/web_reasoning/artifacts/mock_pilot --cohort pilot --engineering
 ```
 
-The supplied sources contain **20 explicitly synthetic, publisher-shaped test questions**, not actual 2Wiki benchmark examples. The N=3 W1 menu has 240 logical completions; physical mock invocations can be fewer because identical requests share the cache. Run the same command again to verify resume without extra executions. Reports are under `artifacts/mock_pilot/reports/` and prominently withhold scientific scores.
+The supplied sources contain **20 explicitly synthetic, publisher-shaped test questions**, not actual 2Wiki benchmark examples. The N=3 W1 menu has 240 logical completions; physical mock invocations can be fewer because identical requests share the cache. Run the same command again to verify resume without extra executions. Reports are under `artifacts/mock_pilot/reports/pilot/` and prominently withhold scientific scores.
 
 The standalone tests exercise N=2,3,4,5, adaptive follow-ups, exact call accounting, cache recovery, official scoring functions, and the optional scorer. No credentials, tokenizer downloads, or model requests are needed:
 
@@ -55,9 +55,11 @@ Use a config JSON containing the `RunConfig` fields you need to override. REAL m
 
 Preparation writes separate public inputs, private targets, frozen assignments, balanced sinks, source/code hashes, and the call forecast. Cross-partition duplicate questions and shared sources are rejected. Infeasible grouped exact sample sizes raise a descriptive error; do not silently relax grouping or replace records after reading outcomes. Grouped partitions may require a recorded design amendment on a real corpus.
 
-Primary `pilot`, `development`, and `evaluation` execution uses N=3. `--cohort scaling` uses the configured `team_sizes` and the frozen nested evaluation keys. Its N=3 results reuse evaluation records only when the entire contract matches; other N values use the same full source union. W2 is selected with `experiment: "W2"`; its forecast is a maximum-call schedule, with actual stopping measured separately. W4 variants are produced by the `variants` command and must be frozen individually; the factorial never runs automatically.
+Primary `pilot`, `development`, and `evaluation` execution uses N=3. `--cohort scaling` uses the configured `team_sizes` and the frozen nested evaluation keys. Its N=3 results reuse evaluation records only when the entire contract matches; other N values use the same full source union. W2 is selected with `experiment: "W2"`; its forecast is a maximum-call schedule, with actual stopping measured separately. Private revisions follow the frozen sink/leaves/sink schedule and dense follows fixed depth regardless of initial support. W4 variants are produced by the `variants` command and must be frozen individually; the two stopping conditions explicitly use `execution_protocol: "adaptive"`. Other W4 conditions use fixed W1 execution. The factorial never runs automatically.
 
-FinQA consumes text and rendered table rows, not raw HTML. A program must use the provided operation/constant/reference syntax. Arithmetic execution is deterministic postprocessing/scoring shared by all arms; no hidden extra model/tool loop is used. A bare numeric answer without a program cannot receive execution accuracy. Bounded numerical programs outside the safe interpreter envelope remain explicitly incomplete rather than receiving an invented official score. A row citation establishes visibility, not correct year selection or semantic support.
+Each adaptive W4 run also forks `selected_observable_stop` and `selected_always_run` from exactly the same initial states. Analyze that within-run pair for stopping effects. Its extra counterpart is included in the forecast (N=3 maximum 32 logical completions per question). Independent manifests alone do not guarantee identical provider outputs, even at temperature zero.
+
+FinQA consumes text and rendered table rows, not raw HTML. A supported answer requires a program using the operation/constant/reference syntax and mappings to visible cited operands. A partial/null answer cannot execute a leftover program. Arithmetic execution uses only that endpoint's visible rows; the complete registry is reserved for reference evaluation. Execution is deterministic postprocessing shared by all arms. Bounded numerical programs outside the safe interpreter envelope remain explicitly incomplete rather than receiving an invented official score. A row citation establishes visibility, not correct year selection or semantic support.
 
 ## Live boundary and accounting
 
@@ -66,6 +68,8 @@ FinQA consumes text and rendered table rows, not raw HTML. A program must use th
 The client uses `max_retries=0`, and the harness alone handles bounded explicit ungenerated 429 rejections. Unknown transport status blocks the namespace across restart; successful malformed/refused responses consume their slots. [Official Python SDK documentation](https://developers.openai.com/api/reference/python) supports the raw-response and retry configuration used by the optional adapter.
 
 Each raw response and physical attempt remains in `inference/`. Logical arm references identify the original ledger/attempt and distinguish cache hits. Repeated references are not additive physical spending. Reports retain missing usage as unknown and currency cost as unknown. The backend has persistent cumulative ceilings across all cohorts in one prepared run; a restart cannot reset them.
+
+Every report requires an explicit `--cohort pilot|development|evaluation|scaling`. Reports never pool these cohorts. Scaling filters every N, including reused N=3, to the same frozen keys. Reporting left-joins results onto all assigned question/team-size cells; missing cells remain explicit, with coverage and identification bounds, and prevent a complete primary effect. Raw attempts and logical references from interrupted questions remain in the durable ledger even when no question result was sealed.
 
 Engineering reports omit accuracy. Scientific reporting requires REAL records, private targets, verified sources/code, and official scoring. Sink and abstention-aware vote are both reported for every arm. Paired intervals resample whole questions; N values are presented separately. No equivalence/noninferiority claim is generated automatically.
 

@@ -47,7 +47,14 @@ def build_messages(question,visible_atoms,own_state,incoming_packets,request,dat
           'request':request,'output_schema':output_schema}
     task={'initial':INITIAL,'synthesis':SYNTHESIS,'request':REQUEST}[stage]
     system=COMMON+'\n\n'+task+'\nUse the visible atom_id as fact_id. Copy its document_id and sentence_id exactly.'
-    if dataset=='finqa':system+='\n\n'+FINQA
+    if dataset=='finqa':
+        system+='\n\n'+FINQA
+        system+=('\nProgram tokens use four tokens per step: operator(, operand1, operand2, ), followed by EOF. '
+                 'Allowed operators: add, subtract, multiply, divide, exp, greater, table_max, table_min, table_sum, table_average. '
+                 'Use #0, #1, etc. only for earlier steps; const_100 and const_m1 denote constants. '
+                 'For table operations use the exact row label as operand1 and none as operand2. '
+                 'Cite each nonconstant operand in operand_sources. Percentage literals divide by 100. '
+                 'Do not exceed 32 steps; keep exponents between -20 and 20. Execution rounds the final numeric result to five decimals.')
     if variant=='legacy':
         if dataset!='2wiki':raise ValueError('legacy_style_ablation_is_text_only')
         system=('Answer the multi-hop question using supplied Wikipedia evidence. Treat peer claims as unverified. '

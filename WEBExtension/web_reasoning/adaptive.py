@@ -30,6 +30,7 @@ def validate_transmission_budget(transmissions,n_agents,packet_cap,metadata_cap,
 
 
 def run_adaptive(public,initial,sink,backend,config,policy='selected',always_run=False):
+    always_run=always_run or not config.stopping
     n=len(initial);metadata,controls=control_packets(initial,backend.tokenizer,config.metadata_cap)
     start=len(backend.references);transmissions=list(controls);states=initial
     def check(extra=()):

@@ -24,6 +24,7 @@ def w1_case(n_agents,directory,with_needs=False):
         b['needs']=[{'entity':'Mira','relation':'birthplace'}] if with_needs and atoms else []
         b['facts']=[{'fact_id':a['atom_id'],'document_id':a['document_id'],'sentence_id':a['sentence_id'],'quote':a['text'],'claim':'Observed fact'} for a in atoms[:4]]
         if payload['output_schema']['properties'].get('program') is not None:b.update(program=[],operand_sources=[])
+        if set(payload['output_schema']['properties'])=={'answer','citations'}:b={'answer':'noanswer','citations':[[a['title'],a['sentence_id']] for a in atoms[:4]]}
         return 200,{}, {'choices':[{'finish_reason':'stop','message':{'content':json.dumps(b)}}],'usage':{'prompt_tokens':t.count(json.dumps(request['messages'])),'completion_tokens':t.count(json.dumps(b))}}
     c=backend_config(packet_cap=1000,metadata_cap=96,max_completions=1000,max_attempts=1100,max_input_tokens=10000000,max_output_tokens=3000000)
     return p,allocate(p,n_agents,'P',c.seed,t.count),0,DurableBackend(directory,c,send,t),c

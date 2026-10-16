@@ -28,7 +28,7 @@ def validate_schema(value,spec):
     if type(value) is int and value<spec.get('minimum',value):raise ValueError('invalid_index')
 
 
-def parse_outcome(raw,visible_atoms,dataset):
+def parse_outcome(raw,visible_atoms,dataset,variant='enhanced'):
     digest=hashlib.sha256(json.dumps(raw,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()
     usage=raw.get('usage') if isinstance(raw,dict) else None
     try:
@@ -37,6 +37,17 @@ def parse_outcome(raw,visible_atoms,dataset):
             return Outcome('refusal',raw_sha256=digest,usage=usage,reason='explicit_provider_refusal')
         if choice.get('finish_reason') not in ('stop',None):raise ValueError('unfinished_output')
         obj=json.loads(message['content'],object_pairs_hook=strict_object)
+        if variant=='legacy':
+            if dataset!='2wiki' or not isinstance(obj,dict) or set(obj)!={'answer','citations'} or not isinstance(obj['answer'],str) or not obj['answer'].strip() or not isinstance(obj['citations'],list):
+                raise ValueError('invalid_legacy_output')
+            lookup={(a.title,a.sentence_id):a for a in visible_atoms};facts=[]
+            for c in obj['citations']:
+                if not isinstance(c,list) or len(c)!=2 or not isinstance(c[0],str) or type(c[1]) is not int or tuple(c) not in lookup:raise ValueError('invalid_legacy_citation')
+                a=lookup[tuple(c)];facts.append({'fact_id':a.atom_id,'document_id':a.document_id,'sentence_id':a.sentence_id,'quote':a.text,'claim':''})
+            answer=None if obj['answer'].strip().casefold()=='noanswer' else obj['answer'].strip()
+            obj={'status':'supported' if answer else ('partial' if facts else 'no_evidence'),'answer':answer,'facts':facts,
+                 'entity_tags':[],'needs':[],'derivation':[],'conflicts':[]}
+        elif variant!='enhanced':raise ValueError('unknown_prompt_variant')
         validate_schema(obj,schema(dataset))
         lookup={a.atom_id:a for a in visible_atoms};facts=[];seen=set()
         for entry in obj['facts']:

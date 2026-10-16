@@ -26,6 +26,10 @@ class RunConfig:
     tokenizer_revision: str = 'mock-v1'
     mode: str = 'MOCK'
     replicate_id: str = '0'
+    packet_mode: str = 'atomic'
+    prompt_variant: str = 'enhanced'
+    include_answer: bool = True
+    stopping: bool = True
 
     def to_dict(self):
         return asdict(self)
@@ -53,4 +57,6 @@ def validate_config(config):
         raise ValueError('invalid_retry_or_framing')
     if c.mode == 'REAL' and (c.model.startswith('mock') or c.deployment_revision.startswith('mock') or c.tokenizer_revision in ('main','mock-v1','')):
         raise ValueError('real_identity_required')
+    if c.packet_mode not in ('atomic','prefix') or c.prompt_variant not in ('enhanced','legacy') or type(c.include_answer) is not bool or type(c.stopping) is not bool:
+        raise ValueError('invalid_ablation_configuration')
     return c

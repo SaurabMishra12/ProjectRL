@@ -138,11 +138,11 @@ class DurableBackend:
                     if self._finish(saved)=='success':break
                     prior_rejections+=1
                     if prior_rejections>self.config.max_retries:raise ProviderRejected('explicit_rejection_retry_limit')
-            slot={'key':key,'attempt_id':saved['attempt_id'],'cached':cached,**logical_slot}
+            slot={'key':key,'attempt_id':saved['attempt_id'],'cached':cached,'source_ledger':str(self.journal.path.resolve()),**logical_slot}
             self.references.append(slot);self.logical.append(slot)
             payload=json.loads(request.messages[-1]['content']);visible=[]
             for item in payload.get('visible_sources',[]):
                 visible.append(Atom(**{**item,'context':tuple(item.get('context',{}).items())}))
-            return parse_outcome(saved['raw'],tuple(visible),request.decoding['dataset'])
+            return parse_outcome(saved['raw'],tuple(visible),request.decoding['dataset'],variant=request.decoding.get('prompt_variant','enhanced'))
 
     def summary(self):return cost_summary(self._read(),self.references)

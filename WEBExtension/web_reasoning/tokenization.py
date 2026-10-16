@@ -6,6 +6,7 @@ from pathlib import Path
 class UTF8FixtureTokenizer:
     identity={'kind':'mock','name':'utf8-bytes','revision':'mock-v1'}
     def count(self,text):return len(text.encode('utf-8'))
+    def prefix(self,text,cap):return text.encode('utf-8')[:cap].decode('utf-8',errors='ignore')
 
 
 class PinnedTokenizer:
@@ -19,3 +20,10 @@ class PinnedTokenizer:
         if actual!=expected_hash:raise ValueError('tokenizer_hash_mismatch')
         self.identity={'kind':'pinned','name':str(path),'revision':revision,'sha256':actual}
     def count(self,text):return len(self.tokenizer.encode(text,add_special_tokens=False))
+    def prefix(self,text,cap):
+        ids=self.tokenizer.encode(text,add_special_tokens=False)[:cap]
+        while ids:
+            value=self.tokenizer.decode(ids,skip_special_tokens=False,clean_up_tokenization_spaces=False)
+            if '\ufffd' not in value and self.count(value)<=cap:return value
+            ids=ids[:-1]
+        return ''

@@ -31,13 +31,15 @@ class QuestionRun:
     logical_refs:tuple
     transmissions:tuple
     mode:str
+    contract_hash:str=''
 
 
 def call(public,visible,previous,incoming,request,stage,backend,config,slot):
-    messages=build_messages(public.question,visible,previous,incoming,request,public.dataset,stage)
+    messages=build_messages(public.question,visible,previous,incoming,request,public.dataset,stage,variant=config.prompt_variant)
     req=Request(messages,{'model':config.model,'revision':config.deployment_revision},backend.tokenizer.identity,
                 {'dataset':public.dataset,'max_tokens':config.max_output_per_call,'temperature':0,
-                 'prompt_version':config.prompt_version,'schema_version':config.schema_version,'replicate_id':config.replicate_id})
+                 'prompt_version':config.prompt_version,'schema_version':config.schema_version,'replicate_id':config.replicate_id,
+                 'prompt_variant':config.prompt_variant})
     return backend.complete(req,{'question':public.key,**slot})
 
 
@@ -50,6 +52,7 @@ def initialize(public,assignments,backend,config):
 
 
 def incoming_summary(packet):
+    if packet.kind=='prefix':return {'raw_prefix':packet.text,'facts':[]}
     body=json.loads(packet.text)
     return {**body,'facts':[{'fact_id':entry['source']['atom_id'],'claim':entry['claim']} for entry in body['facts']]}
 
@@ -61,7 +64,7 @@ def update(public,initial,schedule,backend,config,name,request=None,stage='synth
         for sender,target in schedule.edges:
             if target!=recipient:continue
             packet=pack_evidence(initial[sender],recipient,request,config.packet_cap,backend.tokenizer,
-                                 question=public.question,kind=kind)
+                                 question=public.question,kind=kind,include_answer=config.include_answer,mode=config.packet_mode)
             receiver=apply_delivery(receiver,packet);incoming.append(incoming_summary(packet));packets.append(packet)
         outcome=call(public,receiver.visible_atoms,receiver.outcome.proposal,tuple(incoming),request,stage,backend,config,
                      {'arm':name,'stage':stage,'node':recipient})
@@ -103,4 +106,9 @@ def run_w1(public,assignments,sink,backend,config):
     arms['full_union']=ArmResult('full_union',(fullstate,),sink,full,tuple(backend.references[ref_start:]))
     if digest(initial)!=before:raise ValueError('initial_state_mutated')
     return QuestionRun(public.key,public.dataset,n,initial,arms,tuple(backend.references[start:]),
-                       tuple(p for arm in arms.values() for p in arm.transmissions),config.mode)
+                       tuple(p for arm in arms.values() for p in arm.transmissions),config.mode,
+                       contract_hash(public,assignments,sink,config,backend.tokenizer.identity))
+
+
+def contract_hash(public,assignments,sink,config,tokenizer_identity):
+    return digest({'public':public,'assignments':assignments,'sink':sink,'config':config,'tokenizer':tokenizer_identity})

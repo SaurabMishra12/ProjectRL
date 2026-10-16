@@ -4,7 +4,7 @@ from dataclasses import replace
 import json
 from .packets import Packet,canonical,pack_control
 from .policies import one_round_schedule,Schedule,select_senders
-from .runner import control_packets,update,ArmResult
+from .runner import control_packets,update,ArmResult,route_senders
 
 
 def stop_fields(status,answer,valid_fact_count,needs_count,conflicts_count):
@@ -60,7 +60,7 @@ def run_adaptive(public,initial,sink,backend,config,policy='selected',always_run
             states,packets,_=update(public,states,one_round_schedule('dense',n,sink,()),backend,config,'adaptive_dense')
             transmissions.extend(packets)
         return ArmResult('adaptive_dense',states,sink,states[sink].outcome,tuple(backend.references[start:]),tuple(transmissions),'phase_limit')
-    senders=tuple(i for i in range(n) if i!=sink) if policy=='instar' else select_senders(policy,metadata,sink,max(1,n//2),public.question,config.seed,set())
+    senders=tuple(i for i in range(n) if i!=sink) if policy=='instar' else route_senders(policy,metadata,sink,max(1,n//2),public.question,config,set())
     schedule=one_round_schedule('instar' if policy=='instar' else 'selected',n,sink,senders)
     check([Packet(i,sink,'',config.packet_cap) for i in senders])
     notices((sink,),'gather')

@@ -30,6 +30,7 @@ class RunConfig:
     prompt_variant: str = 'enhanced'
     include_answer: bool = True
     stopping: bool = True
+    router_checkpoint: str = ''
 
     def to_dict(self):
         return asdict(self)

@@ -1,6 +1,8 @@
 """Frozen-state comparisons. Targets cannot enter this module's call signatures."""
 from dataclasses import dataclass,replace
+import hashlib
 import json
+from pathlib import Path
 from .contracts import AgentState
 from .backend import Request
 from .prompts import build_messages
@@ -90,7 +92,7 @@ def run_w1(public,assignments,sink,backend,config):
     metadata,controls=control_packets(initial,backend.tokenizer,config.metadata_cap)
     arms={'nocomm':ArmResult('nocomm',initial,sink,initial[sink].outcome,(),controls)}
     for name in ('private','static','random','selected','instar','dense'):
-        senders=select_senders(name,metadata,sink,max(1,n//2),public.question,config.seed,set()) if name in ('static','random','selected') else ()
+        senders=route_senders(name,metadata,sink,max(1,n//2),public.question,config,set()) if name in ('static','random','selected') else ()
         schedule=one_round_schedule(name,n,sink,senders)
         states,packets,refs=update(public,initial,schedule,backend,config,name)
         # Routing notices are explicit charged control frames, not model prompts.
@@ -111,4 +113,14 @@ def run_w1(public,assignments,sink,backend,config):
 
 
 def contract_hash(public,assignments,sink,config,tokenizer_identity):
-    return digest({'public':public,'assignments':assignments,'sink':sink,'config':config,'tokenizer':tokenizer_identity})
+    checkpoint_hash=hashlib.sha256(Path(config.router_checkpoint).read_bytes()).hexdigest() if config.router_checkpoint else None
+    return digest({'public':public,'assignments':assignments,'sink':sink,'config':config,'tokenizer':tokenizer_identity,'router_sha256':checkpoint_hash})
+
+
+def route_senders(kind,metadata,sink,k,question,config,delivered):
+    if kind=='selected' and config.router_checkpoint:
+        from .learned import FEATURE_VERSION,rank_senders
+        from .training import load_checkpoint
+        model,_=load_checkpoint(config.router_checkpoint,FEATURE_VERSION,config.prompt_version,mode=config.mode)
+        return rank_senders(model,metadata,sink,k,question,delivered,config.seed)
+    return select_senders(kind,metadata,sink,k,question,config.seed,delivered)

@@ -52,3 +52,15 @@ All five outcomes belong in the analysis report. None guarantees a publishable c
 ## Decision gate
 
 **REVISE**, with no automatic recommendation to spend. Finish the zero-call external compatibility check and blinded annotation preparation. If those reveal only a local missing-abstention implementation choice, choose **STOP THIS NARRATIVE**. A conditional small pilot is defensible only after a distinct unresolved contract/sufficiency question, a competent conservative baseline, and a feasible question-cluster interaction budget are concrete. Do not use this review as paid-inference authorization.
+
+## Final-evidence addendum
+
+I inspected final reports 01, 03, 04, and 08 after the offline work. Their conclusions are proportionate to the reported evidence, and my recommendation remains **REVISE / category C / no paid pilot now**.
+
+The public GSM8K reconstruction adds useful independent-pipeline evidence: eight configurations share 500 questions, and the original numeric decisions reconstruct exactly. The source already excludes parser failures; no separate semantic-abstention category is available. Consequently, original and aware decisions coincide by contract. This is neither an external replication of ProjectRL's abstention attenuation nor evidence that semantic abstention has no effect. The lexical and strict-majority contrasts establish only ordinary readout sensitivity, which the report correctly treats as known rather than a new Web finding. No matched private-revision control or evidence-sufficiency labels are present.
+
+The historical strict-majority result also matters: its Broadcast–NoComm gain remains approximately 7.667 points. That prevents a claim that any reasonable change of aggregator removes communication benefit. Its lower answerable accuracy does not establish whether it improves unsupported-question behavior; no such empirical outcome exists here. A consensus threshold is a conservative policy choice, not an automatically correct universal benchmark contract.
+
+MuSiQue's definitions, source availability, and evaluation contract justify its suitability assessment. Mirror hash verification is properly separated from unverified author-archive byte equality. The 48 blinded source cases remain PENDING, and a frozen question/model specification with unresolved launch gates is preparation rather than a completed confirmation. Neither item supplies new outcome evidence or benchmark novelty.
+
+Report 08's stop rule is adequate because the next step is explicitly zero inference, continuation is conditional on an independently consequential unresolved problem, and failure of that gate leads to **STOP THIS NARRATIVE**. Interpretation should remain strict: annotation completion or provenance repair alone does not meet the novelty gate. A future pilot requires a concrete contrast that existing competent aggregation and the cited abstention/sufficiency literature do not already resolve, plus a feasible budget for the question-cluster interaction. If only the local implementation choice survives, retain the audit and stop this WWW narrative.

@@ -1,0 +1,68 @@
+{
+  "p4_stream_files_count": 40,
+  "synthetic_provenance_samples": [
+    "Bob has 6 apples. Grace gives Bob 10 more apples. How many apples does Bob have now?",
+    "Alice has $10. Alice spends $20 on lunch and $7 on a book. How much money does Alice have left?",
+    "A store has 19 shirts. Each shirt costs $18. How much do all the shirts cost?",
+    "Eve has $31. Eve spends $9 on lunch and $8 on a book. How much money does Eve have left?",
+    "A store has 49 shirts. Each shirt costs $15. How much do all the shirts cost?"
+  ],
+  "mean_static_v50": 75.77733333333332,
+  "mean_static_v100": 79.11066666666666,
+  "mean_learned_v50": 91.86800000000001,
+  "mean_learned_v100": 92.0,
+  "gap_v50": 18.53800000000001,
+  "gap_v100": 15.329999999999998,
+  "critique_067_bound": {
+    "claimed_slope": 0.0668,
+    "extrapolation_flaw": "Linearly interpolates across a wide 50-token gap (V=50 to V=100). The local volume-outcome response partial(Y)/partial(V) is non-linear and step-like; dropping 1 critical token can destroy a proof step entirely.",
+    "truncation_confound": "In static supports, natural responses were 150-250 tokens and were severely truncated by the hard 25-token/edge cap. Learned controller naturally emitted shorter responses (~24 tokens/edge), avoiding truncation damage.",
+    "synthetic_provenance_issue": "P4 was executed on simple synthetic template problems ('Bob has X apples...'), where short answers suffice, unlike real multi-hop benchmarks.",
+    "p5_authentic_evidence": "When evaluated on real GSM8K under exact volume matching in P5, learned top-2 routing chose S_1 100% of the time. The isolated routing effect Delta_routing = Cell C - Cell A = 0.00 pp (p = 1.000). The observed accuracy gain was entirely driven by adaptive early stopping (+2.00 pp) saving 69.6% tokens.",
+    "verdict": "REMOVED. The <= 0.023 pp residual claim lacks rigorous empirical and theoretical justification. Topological routing does not explain the margin; early stopping and prompt conciseness drive efficiency."
+  },
+  "corrected_attribution_table": [
+    {
+      "Condition": "P4 Static Mean (V=50)",
+      "Realized_Tokens": "50.0 tok",
+      "Accuracy": "75.78%",
+      "Mechanism": "Static 2-edge graph with equal truncation"
+    },
+    {
+      "Condition": "P4 Static S01 Out-Star (V=50)",
+      "Realized_Tokens": "50.0 tok",
+      "Accuracy": "73.33%",
+      "Mechanism": "Static Out-Star with equal truncation"
+    },
+    {
+      "Condition": "P4 Learned Controller (V=50)",
+      "Realized_Tokens": "49.65 tok",
+      "Accuracy": "91.87%",
+      "Mechanism": "Dynamic prompt/generation adaptation (synthetic data)"
+    },
+    {
+      "Condition": "P5 Authentic GSM8K Static S1 Fixed Depth",
+      "Realized_Tokens": "46.0 tok",
+      "Accuracy": "91.00%",
+      "Mechanism": "Fixed 3 rounds, static Out-Star"
+    },
+    {
+      "Condition": "P5 Authentic GSM8K Learned Top-2 Fixed Depth",
+      "Realized_Tokens": "46.0 tok",
+      "Accuracy": "91.00%",
+      "Mechanism": "Fixed 3 rounds, learned routing (identical to S1)"
+    },
+    {
+      "Condition": "P5 Authentic GSM8K Static S1 Adaptive Stopping",
+      "Realized_Tokens": "14.0 tok",
+      "Accuracy": "93.00%",
+      "Mechanism": "1.0 round, static Out-Star + SPRT halt"
+    },
+    {
+      "Condition": "P5 Authentic GSM8K Learned Top-2 Adaptive Stopping",
+      "Realized_Tokens": "14.0 tok",
+      "Accuracy": "93.00%",
+      "Mechanism": "1.0 round, learned routing + SPRT halt"
+    }
+  ]
+}

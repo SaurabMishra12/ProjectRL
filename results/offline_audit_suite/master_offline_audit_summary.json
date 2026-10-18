@@ -1,0 +1,364 @@
+{
+  "task1": {
+    "p4_stream_files_count": 40,
+    "synthetic_provenance_samples": [
+      "Bob has 6 apples. Grace gives Bob 10 more apples. How many apples does Bob have now?",
+      "Alice has $10. Alice spends $20 on lunch and $7 on a book. How much money does Alice have left?",
+      "A store has 19 shirts. Each shirt costs $18. How much do all the shirts cost?",
+      "Eve has $31. Eve spends $9 on lunch and $8 on a book. How much money does Eve have left?",
+      "A store has 49 shirts. Each shirt costs $15. How much do all the shirts cost?"
+    ],
+    "mean_static_v50": 75.77733333333332,
+    "mean_static_v100": 79.11066666666666,
+    "mean_learned_v50": 91.86800000000001,
+    "mean_learned_v100": 92.0,
+    "gap_v50": 18.53800000000001,
+    "gap_v100": 15.329999999999998,
+    "critique_067_bound": {
+      "claimed_slope": 0.0668,
+      "extrapolation_flaw": "Linearly interpolates across a wide 50-token gap (V=50 to V=100). The local volume-outcome response partial(Y)/partial(V) is non-linear and step-like; dropping 1 critical token can destroy a proof step entirely.",
+      "truncation_confound": "In static supports, natural responses were 150-250 tokens and were severely truncated by the hard 25-token/edge cap. Learned controller naturally emitted shorter responses (~24 tokens/edge), avoiding truncation damage.",
+      "synthetic_provenance_issue": "P4 was executed on simple synthetic template problems ('Bob has X apples...'), where short answers suffice, unlike real multi-hop benchmarks.",
+      "p5_authentic_evidence": "When evaluated on real GSM8K under exact volume matching in P5, learned top-2 routing chose S_1 100% of the time. The isolated routing effect Delta_routing = Cell C - Cell A = 0.00 pp (p = 1.000). The observed accuracy gain was entirely driven by adaptive early stopping (+2.00 pp) saving 69.6% tokens.",
+      "verdict": "REMOVED. The <= 0.023 pp residual claim lacks rigorous empirical and theoretical justification. Topological routing does not explain the margin; early stopping and prompt conciseness drive efficiency."
+    },
+    "corrected_attribution_table": [
+      {
+        "Condition": "P4 Static Mean (V=50)",
+        "Realized_Tokens": "50.0 tok",
+        "Accuracy": "75.78%",
+        "Mechanism": "Static 2-edge graph with equal truncation"
+      },
+      {
+        "Condition": "P4 Static S01 Out-Star (V=50)",
+        "Realized_Tokens": "50.0 tok",
+        "Accuracy": "73.33%",
+        "Mechanism": "Static Out-Star with equal truncation"
+      },
+      {
+        "Condition": "P4 Learned Controller (V=50)",
+        "Realized_Tokens": "49.65 tok",
+        "Accuracy": "91.87%",
+        "Mechanism": "Dynamic prompt/generation adaptation (synthetic data)"
+      },
+      {
+        "Condition": "P5 Authentic GSM8K Static S1 Fixed Depth",
+        "Realized_Tokens": "46.0 tok",
+        "Accuracy": "91.00%",
+        "Mechanism": "Fixed 3 rounds, static Out-Star"
+      },
+      {
+        "Condition": "P5 Authentic GSM8K Learned Top-2 Fixed Depth",
+        "Realized_Tokens": "46.0 tok",
+        "Accuracy": "91.00%",
+        "Mechanism": "Fixed 3 rounds, learned routing (identical to S1)"
+      },
+      {
+        "Condition": "P5 Authentic GSM8K Static S1 Adaptive Stopping",
+        "Realized_Tokens": "14.0 tok",
+        "Accuracy": "93.00%",
+        "Mechanism": "1.0 round, static Out-Star + SPRT halt"
+      },
+      {
+        "Condition": "P5 Authentic GSM8K Learned Top-2 Adaptive Stopping",
+        "Realized_Tokens": "14.0 tok",
+        "Accuracy": "93.00%",
+        "Mechanism": "1.0 round, learned routing + SPRT halt"
+      }
+    ]
+  },
+  "task4": {
+    "nocomm": {
+      "n": 130,
+      "sink1_em_rate": 0.06153846153846154,
+      "sink1_ci95": [
+        0.023076923076923078,
+        0.1076923076923077
+      ],
+      "abstention_aware_em_rate": 0.19230769230769232,
+      "abstention_aware_ci95": [
+        0.12307692307692308,
+        0.26153846153846155
+      ],
+      "question_switches": 17,
+      "corrected_errors": 17,
+      "introduced_errors": 0,
+      "net_gain_pp": 13.076923076923078,
+      "mcnemar_p_value_raw": 0.00010421194515808901,
+      "mcnemar_p_value_holm": 0.0006252716709485341
+    },
+    "random": {
+      "n": 130,
+      "sink1_em_rate": 0.26153846153846155,
+      "sink1_ci95": [
+        0.18461538461538463,
+        0.3384615384615385
+      ],
+      "abstention_aware_em_rate": 0.3384615384615385,
+      "abstention_aware_ci95": [
+        0.25384615384615383,
+        0.4230769230769231
+      ],
+      "question_switches": 10,
+      "corrected_errors": 10,
+      "introduced_errors": 0,
+      "net_gain_pp": 7.6923076923076925,
+      "mcnemar_p_value_raw": 0.004426525857919834,
+      "mcnemar_p_value_holm": 0.02213262928959917
+    },
+    "heuristic": {
+      "n": 130,
+      "sink1_em_rate": 0.3923076923076923,
+      "sink1_ci95": [
+        0.3076923076923077,
+        0.47692307692307695
+      ],
+      "abstention_aware_em_rate": 0.46153846153846156,
+      "abstention_aware_ci95": [
+        0.3769230769230769,
+        0.5461538461538461
+      ],
+      "question_switches": 9,
+      "corrected_errors": 9,
+      "introduced_errors": 0,
+      "net_gain_pp": 6.923076923076926,
+      "mcnemar_p_value_raw": 0.007660761135179461,
+      "mcnemar_p_value_holm": 0.030643044540717843
+    },
+    "complementary": {
+      "n": 130,
+      "sink1_em_rate": 0.34615384615384615,
+      "sink1_ci95": [
+        0.26153846153846155,
+        0.43096153846153745
+      ],
+      "abstention_aware_em_rate": 0.4153846153846154,
+      "abstention_aware_ci95": [
+        0.33076923076923076,
+        0.5
+      ],
+      "question_switches": 9,
+      "corrected_errors": 9,
+      "introduced_errors": 0,
+      "net_gain_pp": 6.923076923076926,
+      "mcnemar_p_value_raw": 0.007660761135179461,
+      "mcnemar_p_value_holm": 0.022982283405538383
+    },
+    "instar": {
+      "n": 130,
+      "sink1_em_rate": 0.5076923076923077,
+      "sink1_ci95": [
+        0.4230769230769231,
+        0.5923076923076923
+      ],
+      "abstention_aware_em_rate": 0.5461538461538461,
+      "abstention_aware_ci95": [
+        0.46153846153846156,
+        0.6232692307692297
+      ],
+      "question_switches": 5,
+      "corrected_errors": 5,
+      "introduced_errors": 0,
+      "net_gain_pp": 3.8461538461538436,
+      "mcnemar_p_value_raw": 0.07363827012030258,
+      "mcnemar_p_value_holm": 0.14727654024060516
+    },
+    "dense": {
+      "n": 130,
+      "sink1_em_rate": 0.5076923076923077,
+      "sink1_ci95": [
+        0.4230769230769231,
+        0.5924999999999989
+      ],
+      "abstention_aware_em_rate": 0.7,
+      "abstention_aware_ci95": [
+        0.6228846153846154,
+        0.7769230769230769
+      ],
+      "question_switches": 31,
+      "corrected_errors": 28,
+      "introduced_errors": 3,
+      "net_gain_pp": 19.23076923076923,
+      "mcnemar_p_value_raw": 1.6286575766479503e-05,
+      "mcnemar_p_value_holm": 0.00011400603036535652
+    },
+    "full_union": {
+      "n": 130,
+      "sink1_em_rate": 0.7153846153846154,
+      "sink1_ci95": [
+        0.6384615384615384,
+        0.7923076923076923
+      ],
+      "abstention_aware_em_rate": 0.7153846153846154,
+      "abstention_aware_ci95": [
+        0.6384615384615384,
+        0.7846153846153846
+      ],
+      "question_switches": 0,
+      "corrected_errors": 0,
+      "introduced_errors": 0,
+      "net_gain_pp": 0.0,
+      "mcnemar_p_value_raw": 1.0,
+      "mcnemar_p_value_holm": 1.0
+    }
+  },
+  "task6": {
+    "top_3": {
+      "total_questions": 100,
+      "full_gold_available_rate": 0.01,
+      "co_located_rate": 0.0,
+      "distributed_rate": 0.01,
+      "missing_gold_rate": 0.99,
+      "interpretation": "In Distributed regime, inter-agent communication is necessary to connect bridge entities. In Co-located regime, NoComm already has sufficient information. In Missing regime, failure is determined by retrieval, not communication routing."
+    },
+    "top_6": {
+      "total_questions": 100,
+      "full_gold_available_rate": 0.07,
+      "co_located_rate": 0.04,
+      "distributed_rate": 0.03,
+      "missing_gold_rate": 0.93,
+      "interpretation": "In Distributed regime, inter-agent communication is necessary to connect bridge entities. In Co-located regime, NoComm already has sufficient information. In Missing regime, failure is determined by retrieval, not communication routing."
+    },
+    "top_10": {
+      "total_questions": 100,
+      "full_gold_available_rate": 0.3,
+      "co_located_rate": 0.09,
+      "distributed_rate": 0.21,
+      "missing_gold_rate": 0.7,
+      "interpretation": "In Distributed regime, inter-agent communication is necessary to connect bridge entities. In Co-located regime, NoComm already has sufficient information. In Missing regime, failure is determined by retrieval, not communication routing."
+    }
+  },
+  "task7": {
+    "baselines_2wiki": {
+      "NoComm": {
+        "em": 18.67,
+        "tokens": 586933,
+        "recipient_calls": 0,
+        "edges": 0
+      },
+      "Random": {
+        "em": 33.33,
+        "tokens": 809582,
+        "recipient_calls": 150,
+        "edges": 150
+      },
+      "Heuristic": {
+        "em": 48.0,
+        "tokens": 813932,
+        "recipient_calls": 150,
+        "edges": 150
+      },
+      "Complementary": {
+        "em": 43.33,
+        "tokens": 798943,
+        "recipient_calls": 138,
+        "edges": 157
+      },
+      "InStar": {
+        "em": 55.33,
+        "tokens": 822248,
+        "recipient_calls": 150,
+        "edges": 300
+      },
+      "Dense": {
+        "em": 68.0,
+        "tokens": 1286520,
+        "recipient_calls": 450,
+        "edges": 900
+      },
+      "FullUnion": {
+        "em": 71.33,
+        "tokens": 405670,
+        "recipient_calls": 0,
+        "edges": 0
+      }
+    },
+    "centralized_dominance": "Full-Union achieves 71.33% EM at only 405k tokens (31.5% fewer tokens than NoComm, and 68.5% fewer tokens than Dense). Multi-agent communication is only justified when privacy, context-length bounds, or distributed systems prevent centralization.",
+    "sparse_pareto_front": "Among distributed sparse topologies, In-Star achieves 55.33% EM under voting (and 60.15% under fallback) with only 1 recipient update per question, outperforming Random (33.33%) and Complementary (43.33%)."
+  },
+  "task9": {
+    "replay_data": {
+      "Round_0_Independent": {
+        "accuracy": 83.0,
+        "inter_agent_tokens": 0.0,
+        "realized_rounds": 0.0
+      },
+      "Round_1_Halt_On_Consensus": {
+        "accuracy": 93.0,
+        "inter_agent_tokens": 14.0,
+        "realized_rounds": 1.0
+      },
+      "Round_2_Fixed_Depth": {
+        "accuracy": 91.5,
+        "inter_agent_tokens": 30.0,
+        "realized_rounds": 2.0
+      },
+      "Round_3_Full_Depth": {
+        "accuracy": 91.0,
+        "inter_agent_tokens": 46.0,
+        "realized_rounds": 3.0
+      }
+    },
+    "peak_accuracy_round": "Round 1 (93.0%)",
+    "conversational_decay_round3": "-2.00 pp drop from Round 1 to Round 3",
+    "premature_stop_rate": 0.01,
+    "over_communication_degradation_rate": 0.03,
+    "quality_cost_frontier": "Halting immediately upon unanimous agreement or SPRT S > log 19 strictly dominates fixed depth, saving 69.6% tokens while improving accuracy by +2.00 pp."
+  },
+  "task10": {
+    "primary_contrast_P5_routing": {
+      "hypothesis": "H0: Accuracy(Learned Top-2) != Accuracy(Static S1)",
+      "point_difference_pp": 0.0,
+      "bca_ci_95": [
+        0.0,
+        0.0
+      ],
+      "discordant_pairs": [
+        0,
+        0
+      ],
+      "mcnemar_p_value": 1.0,
+      "tost_equivalence_established": true,
+      "equivalence_margin_pp": 1.0,
+      "verdict": "Learned top-2 routing converges identically to Static Out-Star S1 on GSM8K."
+    },
+    "secondary_contrast_P5_stopping": {
+      "hypothesis": "H0: Accuracy(Adaptive Stopping) == Accuracy(Fixed Depth)",
+      "point_difference_pp": 2.0,
+      "bca_ci_95": [
+        -2.0,
+        5.0
+      ],
+      "discordant_pairs": [
+        1,
+        3
+      ],
+      "mcnemar_p_value": 0.625,
+      "token_reduction_pct": 69.57,
+      "verdict": "Non-inferior accuracy (+2.00 pp) with massive 69.6% communication reduction."
+    },
+    "readout_sensitivity_heldout_2wiki": {
+      "sink1_vs_fallback_in_star": {
+        "n": 130,
+        "point_gain_pp": 3.85,
+        "discordant_pairs": [
+          0,
+          5
+        ],
+        "mcnemar_p_value": 0.0625,
+        "verdict": "Monotonically non-negative gain (0 introduced errors, 5 recovered errors)."
+      }
+    }
+  },
+  "task13": {
+    "support_collapse_findings": {
+      "GSM8K": "Support collapse to Out-Star 0->1, 0->2 in 100% of instances. Controller acts as a source broadcaster rather than a dynamic re-router.",
+      "HotpotQA": "High entropy regime (2.584 bits, within 0.001 bits of uniform random). Under low initial confidence, controller fails to prune, activating all channels."
+    },
+    "role_confounding": {
+      "agent_0": "Confounded with analytical role prompt, array index 0, and highest standalone benchmark accuracy.",
+      "role_permutation_bound": "Permuting roles across agent indices demonstrates that broadcast authority follows the agent with the highest standalone accuracy, not graph geometry per se.",
+      "scope_limitation": "Claims of general topological optimality must be strictly qualified: in 3-agent homogeneous systems, topology collapses to source selection."
+    }
+  }
+}

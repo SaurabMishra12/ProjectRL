@@ -259,7 +259,7 @@ def plot(summary):
     axes[1].legend(fontsize=8)
     for ax in axes:ax.spines[['top','right']].set_visible(False);ax.grid(axis='x',alpha=.15);ax.set_axisbelow(True)
     fig.suptitle('2Wiki · unchanged relaxed common prompt · N=3 partitioned agents',fontsize=12)
-    fig.text(.01,.015,'Source: frozen 2wiki_150_20261017 saved responses. Exploratory training split; logical costs overlap through physical reuse.',fontsize=8)
+    fig.text(.01,.015,f'Source: frozen {RUN.name} saved responses. Exploratory training split; logical costs overlap through physical reuse.',fontsize=8)
     fig.tight_layout(rect=(0,.05,1,.94))
     for ext in ('png','svg'):fig.savefig(OUT/('additional_results.'+ext),dpi=180,bbox_inches='tight')
     plt.close(fig)

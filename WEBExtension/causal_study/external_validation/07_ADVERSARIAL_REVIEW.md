@@ -1,0 +1,21 @@
+# Three independent adversarial perspectives
+
+Three separately delegated automated reviewers produced independent written perspectives. They are not three human peer reviewers, human source annotators, or independent experimental replications. The initial reviews preceded completed external counts and the final conditional protocol, which each explicitly disclosed. Their original files are retained; any follow-up review is recorded separately.
+
+- [Importance beyond ProjectRL](/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/reviews/importance.md): current evidence supports category C. A broader claim needs external source-bound consequences, not another recomputation of the 300 questions. Recommendation REVISE/no paid pilot.
+- [Identification and hidden confounds](/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/reviews/design.md): the averaged utility interaction can cancel opposite sufficiency effects; official MuSiQue uses dual fields and paired grouping; refusal/failure must remain distinct. Recommendation REVISE before pilot, with final-protocol review initially pending.
+- [Novelty relative to primary literature](/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/reviews/novelty.md): familiar aggregation and abstention ingredients overlap strongly with existing work. The exact unresolved interaction is a candidate only if independently consequential. Current category C; REVISE, with an explicit stopping condition.
+
+Repairs incorporated before the final report: retain mandatory context-specific components and false-answer change; label the average as custom utility; retain original official metrics; count all-refusal as refusal rather than credited semantic abstention; add strict typed MuSiQue parsing; freeze source access and peer packet; report the lack of literal partitioned-source replication; separate conditional power from worst-case infeasibility; keep uncertainty and operational failures in the ITT record. Independent semantic annotations remain pending.
+
+The final design reviewer verified closure of three implementation findings: the arm-level failure-utility wrapper and initial-failure branch rule, stale power artifacts, and provider-envelope type/conflict validation. Three targeted tests passed in that separate check. A later pre-inference identity check also removed seven duplicate question IDs from prospective sampling, preserving the superseded draft and adding a gold-free identity regression test. Full-suite results and historical hashes are in COMPLETION_AUDIT.json; that validation is separate from the reviewers' scientific recommendation.
+
+## Conclusions under every required outcome
+
+1. **Broadcast helps with matched aggregation:** report that residual benefit and uncertainty. Current conservative E5 readout already retains a +7.667 pp difference. Reject a universal claim that communication gains disappear.
+2. **Little incremental communication benefit:** report the interval and minimum meaningful effect. Nonsignificance does not show equivalence; a local null alone does not add novelty beyond prior vote/debate work.
+3. **Aware voting helps answerable questions but harms unsupported questions:** reject a universal repair; disclose false answers and risk/coverage. The logical harm is established by a test, but the empirical prevalence and communication interaction remain unmeasured.
+4. **Opposite model/dataset effects:** show model-specific signed effects and shared-question clustering. Do not select a preferred backbone or pool away reversal. External numeric initial-to-final gains already differ in sign, but that is not a source-sufficiency result.
+5. **A competent standard aggregator removes the issue:** stop the general-failure/main-track narrative unless independently established prevalence or a distinct consequence remains. The external numeric source already handles parse failures, which underlines this stopping risk; it is not a powered semantic null.
+
+All outcomes remain reportable even when they undermine the project. None by itself guarantees a publishable paper. Reviewer recommendations are evidence-limited and do not authorize paid execution.

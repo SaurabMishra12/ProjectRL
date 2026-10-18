@@ -42,18 +42,55 @@ def gsm_proposal(parsed_answer):
     return Proposal('','malformed') if parsed_answer is None else Proposal(str(parsed_answer))
 
 
+def musique_proposal(response,source_ids=None):
+    refusal=response.get('provider_refusal',False)
+    if type(refusal) is not bool:raise ValueError('Boolean provider refusal flag required')
+    if refusal:
+        if response.get('predicted_answerable') is True or response.get('predicted_answer',''):
+            raise ValueError('Refusal conflicts with source response')
+        return Proposal('','refusal')
+    if 'predicted_answerable' not in response or 'predicted_answer' not in response:return Proposal('','missing')
+    flag=response['predicted_answerable'];text=response['predicted_answer']
+    if type(flag) is not bool or not isinstance(text,str):return Proposal('','malformed')
+    if source_ids is not None:
+        citations=response.get('predicted_support_idxs')
+        if not isinstance(citations,list):return Proposal('','missing')
+        if any(type(i) is not int or i not in source_ids for i in citations) or len(citations)!=len(set(citations)):
+            return Proposal('','malformed')
+    if not flag:return Proposal('noanswer','abstain')
+    if hotpot_normalize(text)=='noanswer':return Proposal(text,'malformed')
+    return Proposal(text,'answer') if text.strip() else Proposal('','empty')
+
+
 def readout(proposals,rule,normalize=hotpot_normalize):
     if not proposals or rule not in RULES:raise ValueError('Known rule and nonempty original seats required')
     valid=[p for p in proposals if p.kind in {'answer','abstain','refusal'}]
     if not valid:return Proposal('','invalid')
     pool=valid if rule=='original' else [p for p in valid if p.kind=='answer']
-    if not pool:return Proposal('noanswer','abstain')
+    if not pool:
+        return Proposal('noanswer','abstain') if any(p.kind=='abstain' for p in valid) else Proposal('','refusal')
     counts=Counter(normalize(p.text) for p in pool)
     top=max(counts.values())
     if rule=='strict_majority' and top<=len(proposals)/2:return Proposal('noanswer','abstain')
     tied={k for k,v in counts.items() if v==top}
     key=min(tied) if rule=='lexical' else next(normalize(p.text) for p in pool if normalize(p.text) in tied)
     return next(p for p in pool if normalize(p.text)==key)
+
+
+def prospective_utility(proposals,rule,answerable,references,upstream_failed=False):
+    """Benchmark scoring, separate from gold-free candidate selection.
+
+    This implements the frozen arm-level ITT convention, not a silent removal
+    of failed agent seats. Bare readouts remain usable as diagnostic policies.
+    """
+    if type(answerable) is not bool or type(upstream_failed) is not bool:
+        raise ValueError('Explicit boolean evaluation metadata required')
+    if rule not in RULES:raise ValueError('Unknown readout')
+    if upstream_failed or len(proposals)!=3 or any(p.kind in {'empty','missing','malformed','invalid'} for p in proposals):return 0
+    decision=readout(proposals,rule)
+    if not answerable:return int(decision.kind=='abstain')
+    if not references or any(not isinstance(r,str) for r in references):raise ValueError('Reference strings required for answerable scoring')
+    return int(decision.kind=='answer' and hotpot_normalize(decision.text) in {hotpot_normalize(r) for r in references})
 
 
 def metrics(rows):

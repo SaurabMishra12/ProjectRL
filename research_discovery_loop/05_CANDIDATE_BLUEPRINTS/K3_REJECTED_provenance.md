@@ -1,0 +1,17 @@
+# K3 — REJECTED: Common-source corroboration
+
+Working title: *When Repeated Web Evidence Looks Independent*. No submission title is endorsed.
+
+Question/hypothesis: does replacing independent corroboration with descendants of one upstream claim increase unsupported consensus, at fixed message count/content budget? Hypothesis: shared derivation raises false-answer agreement even when surface forms differ. Importance is high for syndication, copied sources and agent summaries. Novelty verdict: **NOT NOVEL for synthetic duplication; unestablished for a qualified real-Web extension**.
+
+Three closest works: L7 directly constructs descendants and complementary sources, estimates effective source independence and traces parents; L11 changes evidence support imbalance and misinformation; L10 distinguishes sufficiency from answer occurrence. A genuinely traced natural copying population could differ from L7’s construction, but the difference must alter an identified mechanism rather than merely the data source.
+
+Repository support: repeated answer strings and citation addresses exist. Contradiction/limitation: titles/sentence IDs establish neither original publication provenance nor independent origin. No cohort has adjudicated lineages or independent-source alternatives. N=300 is not a valid N for this hypothesis, and no effect or CI can be honestly assigned.
+
+Estimand: E_q[F_q(shared-parent descendants)-F_q(independent corroboration)], where F is a prespecified false-answer/false-consensus indicator on independently adjudicated source cases. Cross actual derivation with disclosed provenance metadata to distinguish dependence from a label cue. Keep all original question units; do not filter by post-inference disagreement or favorable failure. Register answerability, reliability and semantic equivalence before outputs.
+
+Decisive design: paired lineage settings, same agent count and update schedule; randomize descendant realization/order and freeze readout. Blinded annotators verify actual upstream relationships, supported claims, and whether purported independent evidence adds anything. Independent origin and equal factual content are difficult to manipulate jointly; copying a paragraph and renaming its title is not a clean intervention on real Web independence.
+
+Calls: if the two settings each need 3 initial +3 revised outputs,12N/model; two backbones 24N, and a metadata cross 48N. Costs exclude source collection/adjudication. Minimum scientifically valid pilot N and confirmatory N are **NOT ESTIMABLE** until a qualified population and primary outcome variance exist. No 20-question placeholder is recommended. A design cap ofN1000 would mean 24,000 or 48,000 successes; it would not establish power. At the historical E6 mix,24,000 calls reference 15.432m input/5.761m output and 6.541 h summed HTTP/13.400 h amortized wall; long Web pages may be much larger. Deployment prices and real context lengths are unknown.
+
+Positive result: only a qualified new contrast could demonstrate dependence-induced false corroboration on that population; the generic mechanism already exists in L7. Negative result: informative only with validated lineage contrast and a tight error bound. Otherwise it could reflect invalid independence labels, memorization or no exposure. Final gate: **REJECT** for direct novelty overlap and absent suitable independent evaluation population.

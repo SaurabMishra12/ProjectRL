@@ -33,8 +33,8 @@ def load_gsm8k(n_train: int = 30, n_test: int = 50, seed: int = 42) -> Tuple[Lis
     """Load GSM8K. Uses 'train' split for training, 'test' split for testing."""
     try:
         from datasets import load_dataset
-        ds_train = load_dataset("gsm8k", "main", split="train")
-        ds_test = load_dataset("gsm8k", "main", split="test")
+        ds_train = load_dataset("openai/gsm8k", "main", split="train")
+        ds_test = load_dataset("openai/gsm8k", "main", split="test")
         
         rng = random.Random(seed)
         

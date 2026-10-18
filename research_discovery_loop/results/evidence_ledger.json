@@ -1,0 +1,442 @@
+[
+  {
+    "id": "H01",
+    "status": "VERIFIED",
+    "claim": "The original and Web controllers are materially different instruments.",
+    "experiment": "Current source audit",
+    "dataset": "Not an outcome dataset",
+    "unique_question_count": 0,
+    "model_configuration": "Legacy NumPy Gaussian actor/critic versus Web categorical contextual controller",
+    "measured_effect": "Legacy reward uses correctness/sparsity/cycle/halt terms; current query vectors are stored but not consumed by communication.py; word-count proxy is int(words*1.3).",
+    "uncertainty": "Code facts, no population uncertainty.",
+    "limitations": "KL sparsity and cosine retention are not measured mutual information. Source identity cannot prove which version produced an old checkpoint.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/controller.py",
+      "/home/saurab/Documents/projectRLMAIN/communication.py",
+      "/home/saurab/Documents/projectRLMAIN/utils.py",
+      "/home/saurab/Documents/projectRLMAIN/pipeline.py",
+      "/home/saurab/Documents/projectRLMAIN/agents.py",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/learned_controller.py",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/controller_study.py"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Implementation fact"
+  },
+  {
+    "id": "H02",
+    "status": "VERIFIED",
+    "claim": "Current legacy PPO mean/log_std updates do not implement the flat clipped-surrogate region.",
+    "experiment": "Offline finite-difference check",
+    "dataset": "Mathematical objective",
+    "unique_question_count": 0,
+    "model_configuration": "Current controller.py:445–463 only",
+    "measured_effect": "At ratio 1.5, A=1, epsilon=.2, clipped objective derivative is 0; implemented mean multiplier remains 1.2 before the score-function factor.",
+    "uncertainty": "Deterministic algebra; not an experiment effect.",
+    "limitations": "No training run, performance prediction, checkpoint attribution or historical invalidation follows. The newer PyTorch Web controller is a separate implementation.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/controller.py",
+      "/home/saurab/Documents/projectRLMAIN/research_discovery_loop/results/offline_audit.json"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Local validation finding, not a research contribution",
+    "inference_status": "Implementation fact"
+  },
+  {
+    "id": "H03",
+    "status": "UNSUPPORTED",
+    "claim": "Legacy summary accuracies establish authentic benchmark-level SparseComm superiority.",
+    "experiment": "Original GSM8K/Hotpot and P1–P4 claims",
+    "dataset": "Claimed GSM8K/HotpotQA; provenance unresolved for some runs",
+    "unique_question_count": "Not independently certifiable from summary files",
+    "model_configuration": "Models/checkpoints vary by legacy output; not all runs have immutable provenance",
+    "measured_effect": "Full-budget summaries and report tables exist; this phase does not certify their benchmark identity or causal comparison.",
+    "uncertainty": "No valid new population interval assigned.",
+    "limitations": "The honest-budget six cells contain the same 150 distinct simple arithmetic strings, e.g. Bob has 6 apples. This is a provenance red flag, not proof all questions are synthetic. Current loader fails closed; past fallback behavior cannot be inferred from current code alone.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/results/full_results_gsm8k.json",
+      "/home/saurab/Documents/projectRLMAIN/results/full_results_hotpotqa.json",
+      "/home/saurab/Documents/projectRLMAIN/results/honest_fixed_budget/full_150q_results.json",
+      "/home/saurab/Documents/projectRLMAIN/dataset_loaders.py",
+      "/home/saurab/Documents/projectRLMAIN/HOTPOTQA_EXPERIMENT_DETAILS.md"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Do not use these tables as independent Web evidence",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H04",
+    "status": "INVALIDATED",
+    "claim": "The legacy 2x2 ablation cleanly isolates no compression versus learned compression.",
+    "experiment": "Legacy factorial volume",
+    "dataset": "Claimed reasoning benchmarks",
+    "unique_question_count": 150,
+    "model_configuration": "Multiple archived checkpoints, three train-size labels",
+    "measured_effect": "Saved mode table labels all static no-compression messages PARTIAL, with zero FULL in those cells.",
+    "uncertainty": "Reported tests do not repair an unsuccessful intervention.",
+    "limitations": "The requested factorial_volume_results.json is unavailable; the .md/.tex are present. Train-size/checkpoint arms are not independent populations. Runtime source/version provenance remains limited.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/results/factorial_volume/factorial_volume_results.md",
+      "/home/saurab/Documents/projectRLMAIN/results/factorial_volume/factorial_volume_results.tex",
+      "/home/saurab/Documents/projectRLMAIN/communication.py"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Historical failed isolation retained",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H05",
+    "status": "CONDITIONAL",
+    "claim": "Legacy budget-controlled results distinguish learned policy behavior from fixed graph support only under their own execution protocols.",
+    "experiment": "Honest fixed budget, P4 and role permutations",
+    "dataset": "Claimed GSM8K",
+    "unique_question_count": 150,
+    "model_configuration": "gpt-oss-120b; checkpoint and execution choices recorded in scripts",
+    "measured_effect": "Honest V50 is_correct totals: Ring118, Star120, Learned143/150. P4 learned-support replay is 73.33%, versus static range73.33–80%; learned policy runs are different executions.",
+    "uncertainty": "No single valid effect combines those heterogeneous protocols.",
+    "limitations": "Fixed ceilings need not mean equal realized tokens, active receivers, frozen initial responses, or authenticated dataset identity. P4 report alone does not authenticate all stream outcomes; no exhaustive raw replay was done here.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/results/honest_fixed_budget/full_150q_results.json",
+      "/home/saurab/Documents/projectRLMAIN/results/p4_definitive_suite/p4_definitive_report.md",
+      "/home/saurab/Documents/projectRLMAIN/results/role_permutation_experiment/role_permutation_summary.json",
+      "/home/saurab/Documents/projectRLMAIN/run_honest_fixed_budget.py",
+      "/home/saurab/Documents/projectRLMAIN/run_p4_definitive_suite.py",
+      "/home/saurab/Documents/projectRLMAIN/run_role_permutation_experiment.py"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Conditional historical records; do not claim optimal topology",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H06",
+    "status": "CONDITIONAL",
+    "claim": "P5 reports no routing difference while adaptive stopping changes cost and observed accuracy.",
+    "experiment": "P5",
+    "dataset": "Claimed reasoning benchmark",
+    "unique_question_count": 100,
+    "model_configuration": "gpt-oss-120b, gsm8k_pretrained_400.pt.npz, V50",
+    "measured_effect": "StaticFixed=LearnedFixed91%; StaticAdaptive=LearnedAdaptive93%; reported tokens46 versus14, rounds3 versus1.",
+    "uncertainty": "Reported stopping difference +2 pp CI[-2,+5]; this interval is transcribed, not newly regenerated.",
+    "limitations": "Summary equality is not policy equivalence outside these runs. Recipient-only updates and shared cache choices differ from the main legacy all-agent loop.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/results/p5_communication_control/p5_master_results.json",
+      "/home/saurab/Documents/projectRLMAIN/run_p5_master_experiment.py"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H07",
+    "status": "CONDITIONAL",
+    "claim": "Early Web cost reductions do not establish a topology mechanism or performance noninferiority.",
+    "experiment": "W1/W2",
+    "dataset": "HotpotQA candidate-context subset",
+    "unique_question_count": 100,
+    "model_configuration": "Legacy Web gpt-oss-120b deployment; see run manifests",
+    "measured_effect": "W1 raw mean F1: NoComm46.794, MAD49.863, Sparse44.511; mean transmitted tokens0/296.98/44.94. W2 semantic-minus-random F1+2.083 pp.",
+    "uncertainty": "No preregistered noninferiority margin or new confirmatory test.",
+    "limitations": "Communication tokens differ from full prompt/completion spend. Historical prompt/cache identity and prefix heuristics limit mechanism claims.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/results/W1_web_cost_accuracy/raw_results.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/results/W2_context_rationing/raw_results.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/web_suite.py"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Exploratory prior evidence only",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H08",
+    "status": "SUGGESTIVE",
+    "claim": "Corrected W4 provides no resolved learned-routing advantage at matched two-edge volume.",
+    "experiment": "W3/W4 corrected",
+    "dataset": "HotpotQA",
+    "unique_question_count": 100,
+    "model_configuration": "Legacy Web fixed depth2 for W4; explicit cache namespaces in corrected source",
+    "measured_effect": "W4 learned-minus-static -0.867 pp; exploratory paired bootstrap 95% CI [-3.824, +1.630], N=100 unique questions",
+    "uncertainty": "New bootstrap seed20261016; W4 learned-minus-random -2.567 pp; exploratory paired bootstrap 95% CI [-6.209, +0.397], N=100 unique questions",
+    "limitations": "Static/learned/random each mean24.08 transmitted proxy tokens; matched broadcast20.88, so equality does not extend to all arms. Wide intervals permit positive/negative effects. W3 adaptation is a separate stopping effect.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/results/W4_corrected/raw_results.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/results/W3_corrected/raw_results.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/run_w4_corrected.py",
+      "/home/saurab/Documents/projectRLMAIN/run_w3_corrected.py"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Retain corrected runs; reject old verdict that volume universally dominates",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H09",
+    "status": "SUGGESTIVE",
+    "claim": "The E1 regime-by-communication interaction is unresolved.",
+    "experiment": "E1",
+    "dataset": "HotpotQA frozen heldout",
+    "unique_question_count": 300,
+    "model_configuration": "Azure deployment alias gpt-oss-120b, temperature 0, three role-assigned agents; immutable serving snapshot unavailable; E1 frozen_manifest.json records tokenizer revision and decoding limits.",
+    "measured_effect": "R-minus-P change for CW-versus-NoComm: -2.882 pp; exploratory paired bootstrap 95% CI [-6.096, +0.156], N=300 unique questions",
+    "uncertainty": "Question bootstrap10,000 draws; sign is opposite the historical P-minus-R convention.",
+    "limitations": "P and R differ in evidence construction/access, not semantic necessity alone. NoComm has no revision; SelfUpdate is required to isolate peer content from extra compute. This already-inspected set is exploratory.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/run_f6aa61bac2c3dfae/E1.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/experiments.py",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/protocol.py"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "No confirmed complementarity claim",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H10",
+    "status": "CONDITIONAL",
+    "claim": "E2 is a labeled edge-assignment contrast and reuses E1 responses.",
+    "experiment": "E2",
+    "dataset": "Same HotpotQA identities",
+    "unique_question_count": 300,
+    "model_configuration": "Azure deployment alias gpt-oss-120b, temperature 0, three role-assigned agents; immutable serving snapshot unavailable; E1 frozen_manifest.json records tokenizer revision and decoding limits.",
+    "measured_effect": "All900 shared arm request-key lists match E1. CW-minus-CCW F1 -0.107 pp; exploratory paired bootstrap 95% CI [-1.465, +1.181], N=300 unique questions",
+    "uncertainty": "Exploratory paired question bootstrap.",
+    "limitations": "CW and CCW are isomorphic unlabeled cycles. Unequal source/role placements make this a labeled assignment experiment. Reused cached results are not independent replication.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/run_f6aa61bac2c3dfae/E2.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/run_f6aa61bac2c3dfae/E1.jsonl"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H11",
+    "status": "INVALIDATED",
+    "claim": "Original E3 establishes a general content-selection advantage.",
+    "experiment": "E3_original",
+    "dataset": "Same HotpotQA identities",
+    "unique_question_count": 300,
+    "model_configuration": "Azure deployment alias gpt-oss-120b, temperature 0, three role-assigned agents; immutable serving snapshot unavailable; E1 frozen_manifest.json records tokenizer revision and decoding limits.",
+    "measured_effect": "298/300 prefix/crop payload pairs were identical.",
+    "uncertainty": "A failed manipulation cannot identify a content effect.",
+    "limitations": "Historical label preserved; do not pool with corrected protocol.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/run_f6aa61bac2c3dfae/E3.jsonl"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "E3_original historical; superseded for the intended manipulation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H12",
+    "status": "SUGGESTIVE",
+    "claim": "Corrected E3-v2 has distinct fixed-budget payloads but unresolved receiver performance difference.",
+    "experiment": "E3-v2",
+    "dataset": "Same screened HotpotQA set",
+    "unique_question_count": 299,
+    "model_configuration": "Azure deployment alias gpt-oss-120b, temperature 0, three role-assigned agents; immutable serving snapshot unavailable; E1 frozen_manifest.json records tokenizer revision and decoding limits.",
+    "measured_effect": "Prefix-minus-crop -1.795 pp; exploratory paired bootstrap 95% CI [-4.159, +0.558], N=299 unique questions",
+    "uncertainty": "299 eligible from300 screened; 598 recorded payloads each128 tokens; 299 distinct payload pairs.",
+    "limitations": "Receiver1 endpoint, not ensemble. Follow-up was chosen after inspecting original outcomes. Recorded token lengths are checked here; tokenizer byte validation is inherited from the preserved correction audit, not rerun in this script.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/e3_corrected_b5c4ff9db9b9b2bc/E3.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/e3_corrected_b5c4ff9db9b9b2bc/frozen_manifest.json"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current exploratory corrected protocol",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H13",
+    "status": "CONDITIONAL",
+    "claim": "E4 stopping replay preserves observed F1 but is not realized cost saving or a safety guarantee.",
+    "experiment": "E4",
+    "dataset": "Same HotpotQA identities",
+    "unique_question_count": 300,
+    "model_configuration": "Azure deployment alias gpt-oss-120b, temperature 0, three role-assigned agents; immutable serving snapshot unavailable; E1 frozen_manifest.json records tokenizer revision and decoding limits.",
+    "measured_effect": "Stopped-minus-final F1 exactly0 for all300; 6 wrong unanimous stops, 0 corrected on continuation; 54 hypothetical calls avoided.",
+    "uncertainty": "Replay sample has no nonzero paired F1 differences; a degenerate bootstrap is not a population equivalence bound.",
+    "limitations": "All trajectories were generated. Adaptive-path counterfactual physical spending and rare later corrections remain unknown.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/run_f6aa61bac2c3dfae/E4.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/experiments.py"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H14",
+    "status": "CONDITIONAL",
+    "claim": "E5 learned-versus-matched-random does not control recipient activity.",
+    "experiment": "E5",
+    "dataset": "Same HotpotQA identities",
+    "unique_question_count": 300,
+    "model_configuration": "Azure deployment alias gpt-oss-120b, temperature 0, three role-assigned agents; immutable serving snapshot unavailable; E1 frozen_manifest.json records tokenizer revision and decoding limits.",
+    "measured_effect": "1800 question/regime/seed pairs; 0 edge-count/quota mismatches; 912 recipient-count and1153 recipient-set mismatches. P seed19/31 each revise only one receiver on all300 questions.",
+    "uncertainty": "Exact saved action counts; seeds/arms are not additional independent questions.",
+    "limitations": "Recipient activation changes generation calls. N=3 two-edge fixed-recipient in-star has one feasible graph. Training/search costs are excluded from reported test-arm cost references.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/controller_study_a0b3768357484b45/E5.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/controller_study.py",
+      "/home/saurab/Documents/projectRLMAIN/research_discovery_loop/results/activity_pairs.jsonl"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Budget-matched edge/quota does not establish optimal routing",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H15",
+    "status": "VERIFIED",
+    "claim": "Changing readout changes the measured P communication gain on frozen proposals.",
+    "experiment": "Matched-readout E5 reassessment",
+    "dataset": "Same HotpotQA identities",
+    "unique_question_count": 300,
+    "model_configuration": "Azure deployment alias gpt-oss-120b, temperature 0, three role-assigned agents; immutable serving snapshot unavailable; E1 frozen_manifest.json records tokenizer revision and decoding limits.",
+    "measured_effect": "P NoComm/Broadcast correct counts: original10/34, aware62/65, lexical64/64, strict9/32. Aware-minus-original communication interaction -7.000 pp; exploratory paired bootstrap 95% CI [-10.333, -4.000], N=300 unique questions",
+    "uncertainty": "Four frozen gold-free rules; 24,000 question/arm/readout outcomes from300 question units. Strict majority preserves +7.667 pp P gain.",
+    "limitations": "Post-hoc exploratory readout sensitivity, not universal repair or proof all communication gains vanish. Unsupported-answer harm is not estimable without semantic source labels.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/artifacts/controller_study_a0b3768357484b45/E5.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/contracts.py",
+      "/home/saurab/Documents/projectRLMAIN/research_discovery_loop/results/offline_audit.json"
+    ],
+    "independent_replication": "Independent code reanalysis here, same data; public arithmetic traces do not replicate the abstention mechanism",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H16",
+    "status": "SUGGESTIVE",
+    "claim": "E6 does not establish a positive evidence-placement interaction.",
+    "experiment": "E6 paid pilot",
+    "dataset": "Fresh selected HotpotQA pilot",
+    "unique_question_count": 8,
+    "model_configuration": "gpt-oss-120b; matched own-state/peer revision; 18 unique generations per question; frozen protocol",
+    "measured_effect": "-8.214 pp; exploratory paired bootstrap 95% CI [-30.000, +5.357], N=8 unique questions",
+    "uncertainty": "One positive, one negative, six zero question interactions. All32 saved cell scores independently match raw answers/gold.",
+    "limitations": "All8 pools contain a literal reference answer. Supporting facts present does not prove both sources necessary; zero cases independently necessity-qualified. N8 is not confirmatory.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/paid_pilot/questions",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/frozen/manifest.json",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/next_phase/source_artifacts/source_observations.jsonl"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H17",
+    "status": "UNSUPPORTED",
+    "claim": "E7 source-association intervention has demonstrated a selection mechanism.",
+    "experiment": "E7 plan/dry run",
+    "dataset": "Proposed conflict population",
+    "unique_question_count": 0,
+    "model_configuration": "Prepared runner only; mock outputs",
+    "measured_effect": "No scientific inference outcome; old20/300 substantive-conflict yield is a screening estimate.",
+    "uncertainty": "No live effect or confidence interval.",
+    "limitations": "Mock calls validate plumbing only. The proposed825 accepted cases at5 pp require more screened source-capable questions than available at the observed yield.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/next_phase/04_DECISIVE_EXPERIMENT_BLUEPRINT.md",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/next_phase/05_API_BUDGET_AND_POWER.md"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Unexecuted; not a finding",
+    "inference_status": "Design only"
+  },
+  {
+    "id": "H18",
+    "status": "CONDITIONAL",
+    "claim": "E8 identifies proposal transitions and aggregation loss, not faithful evidence use.",
+    "experiment": "E8 offline reconstruction",
+    "dataset": "Same HotpotQA identities",
+    "unique_question_count": 300,
+    "model_configuration": "Azure deployment alias gpt-oss-120b, temperature 0, three role-assigned agents; immutable serving snapshot unavailable; E1 frozen_manifest.json records tokenizer revision and decoding limits.",
+    "measured_effect": "12,898 records across43 groups. E5 P_Broadcast: initial correct-proposal coverage67, final66; 11 questions have degradation of an initially correct agent, 32 final correct proposals rejected.",
+    "uncertainty": "Exact observed memberships; group rows are not independent samples.",
+    "limitations": "Temporal association is not randomized mediation. Correct answers may come from memory; addresses are not entailment. Two corrected-E3 arm records are unavailable, not scored as failures.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/offline/e8_question_conditions.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/next_phase/01_E8_DEEP_TRANSITIONS.md"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H19",
+    "status": "CONDITIONAL",
+    "claim": "External arithmetic traces cannot validate a semantic-abstention communication interaction.",
+    "experiment": "Public frozen GSM8K debate traces",
+    "dataset": "Public subset shared across eight model directories",
+    "unique_question_count": 500,
+    "model_configuration": "Pinned sakana-debate commit b0ad106f5ba26ad1646e3bff875f9c911864aec6; N3 R2 seed1; eight models",
+    "measured_effect": "4000 model/question runs share500 questions;36,000 agent states; zero raw empty strings in the inspected states. 35,999 parsed states are numeric and one is a parser miss; none is a semantic-abstention candidate. Original and aware numeric readouts coincide under the source missing-value convention.",
+    "uncertainty": "The zero is a readout identity, not powered support for a general null.",
+    "limitations": "No matched private-revision control or independent sufficiency labels. Parser failures are not semantic abstentions. This phase rechecks shared identities and inventories; previous parser audit remains separately hash-protected.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/sources/moozwen__sakana-debate",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/results/external_gsm_results.json"
+    ],
+    "independent_replication": "Independent external dataset; fails mechanism eligibility, not a successful replication",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H20",
+    "status": "VERIFIED",
+    "claim": "MuSiQue-Full available independent question count is2410, not4834 or2417.",
+    "experiment": "External design population inspection",
+    "dataset": "Pinned MuSiQue-Full dev mirror",
+    "unique_question_count": 2410,
+    "model_configuration": "No model outcomes; record inspection only",
+    "measured_effect": "4834 rows,2417 paired IDs, seven cross-ID duplicate-text groups;2366 disjoint confirmation units after20 pilot and24 annotation reservations.",
+    "uncertainty": "Text normalization groups Unicode word tokens after casefold; semantic duplicate and template independence remain unproven.",
+    "limitations": "Both contexts must stay clustered by question. Mirror hash validated; original author archive byte identity not established. Prepared semantic annotation templates are pending.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/sources/musique_full_v1.0_dev.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/research_discovery_loop/results/history_checks.json"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Dataset inventory, no scientific outcome"
+  },
+  {
+    "id": "H21",
+    "status": "VERIFIED",
+    "claim": "Historical physical spending must be nonadditive and include missingness.",
+    "experiment": "E5 cost audit and E6 raw ledger",
+    "dataset": "Associated historical requests",
+    "unique_question_count": "No added question units",
+    "model_configuration": "Physical ledgers, not arm sums",
+    "measured_effect": "E5 associated union7634 referenced success keys,7648 documented attempts,5 uncertain attempts, input>=7,786,951/output>=1,992,938 tokens,37 missing output usages. E6:144 successful attempts,92594 input,34564 output,0 retries.",
+    "uncertainty": "E5 figures are inherited accounting revalidated for preservation; E6 request counts/timing independently recomputed.",
+    "limitations": "Shared keys cannot be charged repeatedly. Search/training costs and unknown execution remain excluded/unknown. Deployment dollar price is unverified.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/readout_reassessment/results/physical_accounting.json",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/paid_pilot/ledger.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/paid_pilot/status.json"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Current conditional interpretation",
+    "inference_status": "Exploratory"
+  },
+  {
+    "id": "H22",
+    "status": "CONTRADICTED",
+    "claim": "The old external budget describes289.45 seconds as E6 summed HTTP latency.",
+    "experiment": "Historical timing-label correction",
+    "dataset": "E6 physical requests",
+    "unique_question_count": 8,
+    "model_configuration": "Same144 successes",
+    "measured_effect": "Raw sum latency141.283381 s; mean0.981135 s/request. Session wall289.447695 s; amortized2.010053 s/success.",
+    "uncertainty": "Measured timing only; no transportability or parallel-scaling claim.",
+    "limitations": "external_validation/power_budget.py and report06 conflated the two labels. Preserve originals and use this explicit correction in new budgets.",
+    "artifacts": [
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/power_budget.py",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/external_validation/06_API_AND_POWER_BUDGET.md",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/paid_pilot/ledger.jsonl",
+      "/home/saurab/Documents/projectRLMAIN/WEBExtension/causal_study/paid_pilot/status.json"
+    ],
+    "independent_replication": "No independent replication of this exact claim",
+    "correction_status": "Corrected here; historical files retained unchanged",
+    "inference_status": "Accounting correction"
+  }
+]
